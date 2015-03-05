@@ -78,6 +78,70 @@ class King < Piece
   end
 end
 
+class Bishop < Piece
+  attr_reader :possible_moves, :color
+  def initialize(color, position)
+    super
+    @possible_moves = []
+  end
+
+  def movement(board)
+    #checks diagnol from top left to bottom right
+    (-7..7).each do |num|
+      pos = position[0] - num
+      if pos.between?(0,7)
+        if board[pos][pos] == "-" || board[pos][pos].color != self.color
+          @possible_moves << [pos, pos]
+        end
+      else
+        next
+      end
+    end
+    #checks diagnol from bottom left to top right
+    (-7..7).each do |dy|
+      (-7..7).each do |dx|
+        y_pos = position[0] - dy
+        x_pos = position[1] - dx
+        if y_pos.between?(0,7) && x_pos.between?(0,7)
+          if (y_pos + x_pos) == (position[0] + position[1])
+            if board[y_pos][x_pos] == "-" || board[y_pos][x_pos].color != self.color
+              @possible_moves << [y_pos, x_pos]
+            end
+          end
+        else
+          next
+        end
+      end
+    end
+      @possible_moves
+  end
+end
+
+# class Queen < Piece
+#   attr_reader :possible_moves, :color
+#   def initialize(color, position)
+#     super
+#     @possible_moves = []
+#   end
+
+#   def movement(board)
+#     (-8..8).each do |dy|
+#       (-8..8).each do |dx|
+#         y_pos = position[0] - dy
+#         x_pos = position[1] - dx
+#         if y_pos < 0 || y_pos > 7 || x_pos < 0 || x_pos > 7
+#           next
+#         else
+#           if board[y_pos][x_pos] == "-" || board[y_pos][x_pos].color != self.color
+#             @possible_moves << [y_pos, x_pos]
+#           end
+#         end
+#       end
+#     end
+#     @possible_moves
+#   end
+# end
+
 class ChessBoard
   attr_accessor :board
 
@@ -85,6 +149,8 @@ class ChessBoard
     # Populate new board by creating a 2D array with rows (0..7)
     @board = Array.new(8) {["-","-","-","-","-","-","-","-"]}
     @board[4][4] = King.new("black", [4,4])
+    @board[3][3] = Bishop.new("black", [3,3])
+    @board[2][4] = Bishop.new("white", [2][4])
   end
 
   def select_piece(array)
