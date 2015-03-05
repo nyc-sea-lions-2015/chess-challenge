@@ -8,11 +8,13 @@ class Board
   end
 
   def start
-
+    #TODO: place pawns in appropriate places
   end
 
   def place(piece, position)
-
+    #assume piece = some instance of a piece-type class
+    #assume position is an array [x,y]
+    piece.arguments = position
   end
 
   def removed
