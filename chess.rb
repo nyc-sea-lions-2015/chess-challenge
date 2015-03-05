@@ -78,6 +78,7 @@ class King < Piece
   end
 end
 
+
 class Bishop < Piece
   attr_reader :possible_moves, :color
   def initialize(color, position)
@@ -142,6 +143,29 @@ end
 #   end
 # end
 
+class Knight < Piece
+  attr_reader :possible_moves, :color
+  def initialize(color, position)
+    super
+    @possible_moves = []
+  end
+
+  def movement(board)
+    [[-2,1],[-2,-1],[2,1],[2,-1],[1,-2],[1,2],[-1,-2],[-1,2]].each do |dy, dx|
+        y_pos = position[0] - dy
+        x_pos = position[1] - dx
+        y_pos.between?(0,7) && x_pos.between?(0,7) ? coord = board[y_pos][x_pos] : coord = nil
+        unless coord == nil
+          if coord == "-" || coord.color != self.color
+            @possible_moves << [y_pos,x_pos]
+          end
+        end
+    end
+    @possible_moves
+  end
+end
+
+
 class ChessBoard
   attr_accessor :board
 
@@ -150,7 +174,7 @@ class ChessBoard
     @board = Array.new(8) {["-","-","-","-","-","-","-","-"]}
     @board[4][4] = King.new("black", [4,4])
     @board[3][3] = Bishop.new("black", [3,3])
-    @board[2][4] = Bishop.new("white", [2][4])
+    @board[6][4] = Knight.new("white", [6,4])
   end
 
   def select_piece(array)
