@@ -10,8 +10,8 @@
 WIDTH = 8
 
 class Piece
-  def initialize(arguments, captured = false)
-    # @captured, @color = captured#, color
+  def initialize(arguments, color="black", captured = false)
+    @captured, @color = captured#, color
     # @color = ... for the purpose of whether or not a piece can be captured.
     @x, @y = arguments[0], arguments[1]
     @moves = []
@@ -52,17 +52,21 @@ end
 class Rook < Piece
   def initialize(arguments)
     super(arguments)
+    @moves = Array.new(4){[]}
   end
 
   def moves
     [*@x..WIDTH-1].each_index do |dx|
-      @moves << [@x+(dx+1), @y]
+      @moves[0] << [@x+(dx+1), @y]
     end
-    1.upto(@x) {|dx| @moves << [@x-dx, @y]}
+
+    1.upto(@x) {|dx| @moves[1] << [@x-dx, @y]}
+
     [*@y..WIDTH-1].each_index do |dy|
-      @moves << [@x, @y+(dy+1)]
+      @moves[2] << [@x, @y+(dy+1)]
     end
-    1.upto(@y) {|dy| @moves << [@x, @y-dy]}
+
+    1.upto(@y) {|dy| @moves[3] << [@x, @y-dy]}
     return @moves
   end
 
@@ -73,34 +77,68 @@ class Bishop < Piece
     super(arguments)
   end
 
-  def move
+  def moves
     arr = [1, 1, -1, -1].permutation(2).to_a.uniq
     empty = [[@x, @y]]
+    array_temp = Array.new
+    i = 0
     arr.each do |dx, dy|
       empty.each do |cx, cy|
         WIDTH.times do |num|
-          cx -= dx
-          cy -= dy
-          @moves << [cx, cy] unless cx > WIDTH-1 || cx < 0 || cy > WIDTH-1 || cy < 0
+          cx += dx
+          cy += dy
+          array_temp << [cx, cy] unless cx > WIDTH-1 || cx < 0 || cy > WIDTH-1 || cy < 0
+          if cx > WIDTH-1 || cx < 0 || cy > WIDTH-1 || cy < 0
+            @moves << array_temp.compact unless array_temp.empty?
+            array_temp.clear
+          end
         end
       end
     end
-    return @moves
+    @moves
   end
 end
 
-king = King.new([5,3])
-p king.moves
+class Queen < Piece
+  def initialize(arguments)
+    super(arguments)
+  end
 
-knight = Knight.new([5,3])
-p knight.moves
+  def moves
+    arr1 = Bishop.new([@x, @y]).moves
+    arr2 = Rook.new([@x, @y]).moves
+    return arr1.concat(arr2)
+  end
+end
 
-rook = Rook.new([5,3])
+class Pawn < Piece
+  def initialize(arguments, status = false)
+    super(arguments)
+    @status = status
+  end
+
+  def moves
+
+  end
+
+end
+
+# king = King.new([5,3])
+# p king.moves
+
+# knight = Knight.new([5,3])
+# p knight.moves
+puts "rook:"
+rook = Rook.new([4,3])
 p rook.moves
 
+puts "bishop:"
 bishop = Bishop.new([4,3])
-p bishop.move
+p bishop.moves
 
+puts "queen:"
+queen = Queen.new([4,3])
+p queen.moves
 
 
 
