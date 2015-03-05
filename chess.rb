@@ -48,18 +48,71 @@ I want to see if I won.
   - check mate... worry about later.
 =end
 
-class King
-  def initialize(color)
-    #@color = color
-    #@type = king
+class Piece
+  attr_accessor :position
+  def initialize(color, position)
+    @color = color
+    @position = position
+  end
+end
+
+
+class King < Piece
+  attr_reader :possible_moves, :color
+  def initialize(color, position)
+    super
+    @possible_moves = []
   end
 
-  # def movement("array[row, col]")
-  #   #specific rules of movement for this piece
+  def movement(board)
+    (-1..1).each do |dy|
+      (-1..1).each do |dx|
+        y_pos = position[0] - dy
+        x_pos = position[1] - dx
+        if board[y_pos][x_pos] == "-" || board[y_pos][x_pos].color != self.color
+          @possible_moves << [y_pos,x_pos]
+        end
+      end
+    end
+    @possible_moves
+  end
+end
+
+class ChessBoard
+  attr_accessor :board
+
+  def initialize
+    # Populate new board by creating a 2D array with rows (0..7)
+    @board = Array.new(8) {["-","-","-","-","-","-","-","-"]}
+    @board[4][4] = King.new("black", [4,4])
+  end
+
+  def select_piece(array)
+    col = array[0]
+    row = array[1]
+    #User inputs coordinates of piece they want to move
+    #gets information about piece in this position
+    #Board grabs movement(array[row, col]) from PIECE class
+    # returns an array of coordinates
+    @board[col][row].movement(@board)
+  end
+
+  # def valid_move?("array[row, col]")
+  #   #takes move coordinates from user, compares it to piece class(possible moves)
+  #   # returns a boolean.
+  # end
+
+  # def make_move
+  #   # if valid move?
+  #   #    - deletes selected Piece from current coordinate and writes it in new spot
+  #   #
+  # end
+
+  # def to_s
+  #   # Display the current state of the board by iterating through it.
   # end
 
 end
-
 
 # class Game
 #   def initialize
@@ -79,41 +132,6 @@ end
 #   end
 
 # end
-
-class ChessBoard
-  attr_accessor :board
-
-  def initialize
-    # Populate new board by creating a 2D array with rows (0..7)
-    @board = Array.new(8) {["-","-","-","-","-","-","-","-"]}
-    @board[4][4] = King.new("black")
-  end
-
-  # def select_piece("array[row, col]")
-  #   #User inputs coordinates of piece they want to move
-  #   #gets information about piece in this position
-  #   #Board grabs movement(array[row, col]) from PIECE class
-  #   # returns an array of coordinates
-  # end
-
-  # def valid_move?("array[row, col]")
-  #   #takes move coordinates from user, compares it to piece class(possible moves)
-  #   # returns a boolean.
-  # end
-
-  # def make_move
-  #   # if valid move?
-  #   #    - deletes selected Piece from current coordinate and writes it in new spot
-  #   #
-  # end
-
-  # def to_s
-  #   # Display the current state of the board by iterating through it.
-  # end
-
-end
-
-
 
 
 
