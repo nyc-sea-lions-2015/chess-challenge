@@ -56,7 +56,6 @@ class Piece
   end
 end
 
-
 class King < Piece
   attr_reader :possible_moves, :color
   def initialize(color, position)
@@ -78,13 +77,50 @@ class King < Piece
   end
 end
 
+class Rook < Piece
+  attr_reader :possible_moves, :color
+  def initialize(color, position)
+    super
+    @possible_moves = []
+  end
+
+# I want to start at the position and move only one coordinate until I hit the end of the board.
+# Needs a left-right movement
+# Needs a up-down movement
+# Needs to stop if position is greater than 7 or less than 0
+  def movement(board)
+    #horizontal
+    (-7..7).each do |dy|
+      y_pos = position[0] - dy
+      # puts y_pos
+      if y_pos.between?(0,7)
+        if board[y_pos][position[1]] == "-" || board[y_pos][position[1]].color != self.color
+          @possible_moves << [y_pos, position[1]]
+        end
+      end
+    end
+    #vertical
+    (-7..7).each do |dx|
+      x_pos = position[1] - dx
+      # puts y_pos
+      if x_pos.between?(0,7)
+        if board[position[0]][x_pos] == "-" || board[position[0]][x_pos].color != self.color
+          @possible_moves << [position[1], x_pos]
+        end
+      end
+    end
+    @possible_moves
+  end
+end
+
 class ChessBoard
   attr_accessor :board
 
   def initialize
     # Populate new board by creating a 2D array with rows (0..7)
     @board = Array.new(8) {["-","-","-","-","-","-","-","-"]}
-    @board[4][4] = King.new("black", [4,4])
+    # @board[4][4] = King.new("black", [4,4])
+    @board[4][4] = Rook.new("black", [4, 4])
   end
 
   def select_piece(array)
