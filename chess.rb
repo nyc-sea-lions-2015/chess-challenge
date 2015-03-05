@@ -73,37 +73,68 @@ class Bishop < Piece
   def initialize(x, y)
     @x, @y = x, y
     @moves = []
+    @stable_x = @x
+    @stable_y = @y
   end
 
-  def moves
+  #DO A @X AND @Y.EACH FOR EACH LOOP SO YOU DONT NEED TO DO THIS REPETITIVE STUFF! YEA? COO!
+  def move_LR
     arr = [1, 1, -1, -1].permutation(2).to_a.uniq
     arr.each do |dx, dy|
-        x = @x
-        y = @y
-      WIDTH-1-@x.times do |num|
-        next if @x > WIDTH-1 || @x < 0 || @y > WIDTH-1 || @y < 0
-        x += dx
-        y += dy
-        puts "x: #{@x}"
-        puts "y: #{@y}"
-        @moves << [x, y]
+      WIDTH.times do |num|
+        @x += dx
+        @y += dy
+        @moves << [@x, @y] unless @x > WIDTH-1 || @x < 0 || @y > WIDTH-1 || @y < 0
       end
-
-      WIDTH-1-@x.times do |num|
-        x = @x
-        y = @y
-        next if @x > WIDTH-1 || @x < 0 || @y > WIDTH-1 || @y < 0
-        x += dx
-        y += dy
-        puts "second loop"
-        puts "x: #{@x}"
-        puts "y: #{@y}"
-        @moves << [x, y]
-      end
+      return @moves
     end
-    @moves
+    @x = @stable_x
+    @y = @stable_y
   end
 
+  def move_LR2
+    arr = [1, 1, -1, -1].permutation(2).to_a.uniq
+    arr.each do |dx, dy|
+      WIDTH.times do |num|
+        @x -= dx
+        @y -= dy
+        @moves << [@x, @y] unless @x > WIDTH-1 || @x < 0 || @y > WIDTH-1 || @y < 0
+      end
+    end
+    @x = @stable_x
+    @y = @stable_y
+    return @moves.uniq
+  end
+
+  def move_RL
+    arr = [1, 1, -1, -1].permutation(2).to_a.uniq
+    arr.each do |dx, dy|
+      WIDTH.times do |num|
+        puts "loop one #{@x}, #{@y}"
+        @x -= dx
+        @y -= dy
+        @moves << [@x, @y] unless @x > WIDTH-1 || @x < 0 || @y > WIDTH-1 || @y < 0
+      end
+    end
+    @x = @stable_x
+    @y = @stable_y
+    return @moves.uniq
+  end
+
+  def move_RL2
+    arr = [1, 1, -1, -1].permutation(2).to_a.uniq
+    arr.each do |dx, dy|
+      WIDTH.times do |num|
+        @x -= dx
+        @y += dy
+        next if @x > WIDTH-1 || @x < 0 || @y > WIDTH-1 || @y < 0
+        @moves << [@x, @y]
+      end
+    end
+    @x = @stable_x
+    @y = @stable_y
+    return @moves.uniq
+  end
 
 end
 
@@ -117,7 +148,10 @@ end
 # p rook.moves
 
 bishop = Bishop.new(4,3)
-p bishop.moves
+bishop.move_LR
+bishop.move_LR2
+bishop.move_RL
+p bishop.move_RL2
 
 
 
