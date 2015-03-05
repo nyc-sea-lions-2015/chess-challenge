@@ -87,11 +87,12 @@ class Bishop < Piece
         WIDTH.times do |num|
           cx += dx
           cy += dy
-          array_temp << [cx, cy] unless cx > WIDTH-1 || cx < 0 || cy > WIDTH-1 || cy < 0
           if cx > WIDTH-1 || cx < 0 || cy > WIDTH-1 || cy < 0
             @moves << array_temp.compact unless array_temp.empty?
             array_temp.clear
+            next
           end
+          array_temp << [cx, cy]
         end
       end
     end
@@ -112,22 +113,29 @@ class Queen < Piece
 end
 
 class Pawn < Piece
-  def initialize(arguments, status = false)
+  def initialize(arguments, capture = false, status = false)
     super(arguments)
     @status = status
+    @capture = capture
   end
 
   def moves
+    @moves << [@x, @y+2] if status
+    @moves << [@x+1, @y]
+    capture? if @capture
+  end
 
+  def capture?
+    @moves << [@x+1, @y+1], [@x-1, @y+1]
   end
 
 end
 
-# king = King.new([5,3])
-# p king.moves
+king = King.new([5,3])
+p king.moves
 
-# knight = Knight.new([5,3])
-# p knight.moves
+knight = Knight.new([5,3])
+p knight.moves
 puts "rook:"
 rook = Rook.new([4,3])
 p rook.moves
