@@ -10,9 +10,11 @@
 WIDTH = 8
 
 class Piece
-  def initialize(captured = false)#,color)
-    @captured, @color = captured#, color
+  def initialize(arguments, captured = false)
+    # @captured, @color = captured#, color
     # @color = ... for the purpose of whether or not a piece can be captured.
+    @x, @y = arguments[0], arguments[1]
+    @moves = []
   end
 
   def captured!
@@ -21,9 +23,8 @@ class Piece
 end
 
 class King < Piece
-  def initialize(x,y)
-    @x, @y = x,y
-    @moves = []
+  def initialize(arguments)
+    super(arguments)
   end
 
   def moves
@@ -36,9 +37,8 @@ class King < Piece
 end
 
 class Knight < Piece
-  def initialize(x, y)
-    @x, @y = x, y
-    @moves = []
+  def initialize(arguments)
+    super(arguments)
   end
 
   def moves
@@ -50,9 +50,8 @@ class Knight < Piece
 end
 
 class Rook < Piece
-  def initialize(x, y)
-    @x, @y = x, y
-    @moves = []
+  def initialize(arguments)
+    super(arguments)
   end
 
   def moves
@@ -64,94 +63,43 @@ class Rook < Piece
       @moves << [@x, @y+(dy+1)]
     end
     1.upto(@y) {|dy| @moves << [@x, @y-dy]}
-    @moves
+    return @moves
   end
 
 end
 
 class Bishop < Piece
-  def initialize(x, y)
-    @x, @y = x, y
-    @moves = []
-    @stable_x = @x
-    @stable_y = @y
+  def initialize(arguments)
+    super(arguments)
   end
 
-  #DO A @X AND @Y.EACH FOR EACH LOOP SO YOU DONT NEED TO DO THIS REPETITIVE STUFF! YEA? COO!
-  def move_LR
+  def move
     arr = [1, 1, -1, -1].permutation(2).to_a.uniq
+    empty = [[@x, @y]]
     arr.each do |dx, dy|
-      WIDTH.times do |num|
-        @x += dx
-        @y += dy
-        @moves << [@x, @y] unless @x > WIDTH-1 || @x < 0 || @y > WIDTH-1 || @y < 0
-      end
-      return @moves
-    end
-    @x = @stable_x
-    @y = @stable_y
-  end
-
-  def move_LR2
-    arr = [1, 1, -1, -1].permutation(2).to_a.uniq
-    arr.each do |dx, dy|
-      WIDTH.times do |num|
-        @x -= dx
-        @y -= dy
-        @moves << [@x, @y] unless @x > WIDTH-1 || @x < 0 || @y > WIDTH-1 || @y < 0
+      empty.each do |cx, cy|
+        WIDTH.times do |num|
+          cx -= dx
+          cy -= dy
+          @moves << [cx, cy] unless cx > WIDTH-1 || cx < 0 || cy > WIDTH-1 || cy < 0
+        end
       end
     end
-    @x = @stable_x
-    @y = @stable_y
-    return @moves.uniq
+    return @moves
   end
-
-  def move_RL
-    arr = [1, 1, -1, -1].permutation(2).to_a.uniq
-    arr.each do |dx, dy|
-      WIDTH.times do |num|
-        puts "loop one #{@x}, #{@y}"
-        @x -= dx
-        @y -= dy
-        @moves << [@x, @y] unless @x > WIDTH-1 || @x < 0 || @y > WIDTH-1 || @y < 0
-      end
-    end
-    @x = @stable_x
-    @y = @stable_y
-    return @moves.uniq
-  end
-
-  def move_RL2
-    arr = [1, 1, -1, -1].permutation(2).to_a.uniq
-    arr.each do |dx, dy|
-      WIDTH.times do |num|
-        @x -= dx
-        @y += dy
-        next if @x > WIDTH-1 || @x < 0 || @y > WIDTH-1 || @y < 0
-        @moves << [@x, @y]
-      end
-    end
-    @x = @stable_x
-    @y = @stable_y
-    return @moves.uniq
-  end
-
 end
 
-# king = King.new(5,3)
-# p king.moves
+king = King.new([5,3])
+p king.moves
 
-# knight = Knight.new(5,3)
-# p knight.moves
+knight = Knight.new([5,3])
+p knight.moves
 
-# rook = Rook.new(5,5)
-# p rook.moves
+rook = Rook.new([5,3])
+p rook.moves
 
-bishop = Bishop.new(4,3)
-bishop.move_LR
-bishop.move_LR2
-bishop.move_RL
-p bishop.move_RL2
+bishop = Bishop.new([4,3])
+p bishop.move
 
 
 
