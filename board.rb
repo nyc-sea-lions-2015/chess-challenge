@@ -78,14 +78,17 @@ class Board
   def to_s
     @board.each_with_index.map do |row, i|
       # puts "#{8-i} #{row}"
-      print "#{i}  "
+      print "#{8-i}  "
       row.each_with_index do |square, square_i|
-        next if square.empty?
+        if square.empty?
+          print "_ "
+          next
+        end
         print "#{square.first.name} "
       end
       puts
     end#.join(" \n")
-    "   " + [*"a".."h"].join("   ")
+    "   " + [*"a".."h"].join(" ")
   end
 end
 
@@ -93,9 +96,15 @@ end
 class Piece
   attr_reader :captured
   attr_accessor :color
+<<<<<<< HEAD
   def initialize(opts={})
     @captured, @color = captured, color
     @x, @y = opts[:pos]
+=======
+  def initialize(arguments, color = "black", captured = false)
+    @captured, @color = captured, color
+    @x, @y = arguments[0], arguments[1]
+>>>>>>> d2a9305b6cfc2b1dcf103952af4267f26cb25f3c
     @moves = []
   end
 
@@ -104,7 +113,7 @@ class Piece
   end
 
   def to_s
-    "#{@color.upcase} #{self.name} moves: #{@moves.flatten(1)}"
+    "#{@color.upcase} #{(self.color == "black" ? self.name : self.name.downcase)} moves: #{@moves.flatten(1)}"
   end
 end
 
@@ -112,7 +121,7 @@ class King < Piece
   attr_reader :name
   def initialize(arguments)
     super(arguments, color)
-    @name = "KING"
+    @name = "K"
     moves
   end
 
@@ -130,7 +139,7 @@ class Knight < Piece
   attr_reader :name
   def initialize(arguments)
     super(arguments)
-    @name = "KNIGHT"
+    @name = "N"
     moves
   end
 
@@ -148,7 +157,7 @@ class Rook < Piece
   def initialize(arguments)
     super(arguments)
     @moves = Array.new(4){[]}
-    @name = "ROOK"
+    @name = "R"
     moves
   end
 
@@ -173,7 +182,7 @@ class Bishop < Piece
   attr_reader :name
   def initialize(arguments)
     super(arguments, color)
-    @name = "BISHOP"
+    @name = "B"
     moves
   end
 
@@ -205,7 +214,7 @@ class Queen < Piece
   attr_reader :name
   def initialize(arguments)
     super(arguments)
-    @name = "QUEEN"
+    @name = "Q"
     moves
   end
 
@@ -221,7 +230,7 @@ class Pawn < Piece
   attr_reader :name
   def initialize(arguments, capture = false, status = false)
     super(arguments)
-    @name = "PAWN"
+    @name = "P"
     @status = status
     @capture = capture
     moves
@@ -244,7 +253,7 @@ end
 board = Board.new
 # knight = Knight.new([1,7])
 
-# board.start
+board.start
 puts board.to_s
 
 print board.move_valid(Knight.new([1,7]))
