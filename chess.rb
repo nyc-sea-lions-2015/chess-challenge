@@ -91,27 +91,85 @@ class Rook < Piece
   end
 
   def movement(board)
-    #horizontal
-    (-7..7).each do |dy|
+    #up
+    -1.downto(-7) do |dy|
       y_pos = position[0] - dy
       # puts y_pos
       if y_pos.between?(0,7)
-        if board[y_pos][position[1]] == "-" || board[y_pos][position[1]].color != self.color
+        if board[y_pos][position[1]] == "-"
           @possible_moves << [y_pos, position[1]]
-        end
-      end
-    end
-    #vertical
-    (-7..7).each do |dx|
-      x_pos = position[1] - dx
-      # puts y_pos
-      if x_pos.between?(0,7)
-        if board[position[0]][x_pos] == "-" || board[position[0]][x_pos].color != self.color
-          @possible_moves << [position[1], x_pos]
+        else
+          # puts "Original: #{@color}"
+          # puts "Obstruction: #{board[y_pos][position[1]].color}"
+          if board[y_pos][position[1]].color != @color
+            @possible_moves << [y_pos, position[1]]
+            break
+          else
+            # @possible_moves << [y_pos, position[1]]
+            break
+          end
         end
       end
     end
 
+    #down
+    1.upto(7) do |dy|
+      y_pos = position[0] - dy
+      if y_pos.between?(0,7)
+        if board[y_pos][position[1]] == "-"
+          @possible_moves << [y_pos, position[1]]
+        else
+          # puts "Original: #{@color}"
+          # puts "Obstruction: #{board[y_pos][position[1]].color}"
+          if board[y_pos][position[1]].color != @color
+            @possible_moves << [y_pos, position[1]]
+            break
+          else
+            # @possible_moves << [y_pos, position[1]]
+            break
+          end
+        end
+      end
+    end
+
+    #left
+    -1.downto(-7) do |dx|
+      x_pos = position[1] - dx
+      # puts y_pos
+      if x_pos.between?(0,7)
+        if board[position[0]][x_pos] == "-"
+          @possible_moves << [position[0], x_pos]
+        else
+          if board[position[0]][x_pos].color == @color
+            # @possible_moves << [y_pos, position[1]]
+            break
+          else
+            @possible_moves << [position[0], x_pos]
+            break
+          end
+        end
+      end
+    end
+
+    # #right
+    1.upto(7) do |dx|
+      x_pos = position[1] - dx
+      # puts y_pos
+      if x_pos.between?(0,7)
+        if board[position[0]][x_pos] == "-"
+          @possible_moves << [position[0], x_pos]
+        else
+          if board[position[0]][x_pos].color == @color
+            # @possible_moves << [y_pos, position[1]]
+            break
+          else
+            @possible_moves << [position[0], x_pos]
+            break
+          end
+        end
+      end
+    end
+  @possible_moves
   end
 end
 
@@ -234,6 +292,10 @@ class Queen < Piece
     movement_bottom_right(board)
     movement_top_right(board)
     movement_bottom_left(board)
+    movement_up(board)
+    movement_down(board)
+    movement_right(board)
+    movement_left(board)
   end
   #checks diagnol from piece to top left
   def movement_top_left(board)
@@ -258,6 +320,53 @@ class Queen < Piece
     end
     @possible_moves
   end
+    #up
+    def movement_up(board)
+      -1.downto(-7) do |dy|
+        y_pos = position[0] - dy
+        # puts y_pos
+        if y_pos.between?(0,7)
+          if board[y_pos][position[1]] == "-"
+            @possible_moves << [y_pos, position[1]]
+          else
+            # puts "Original: #{@color}"
+            # puts "Obstruction: #{board[y_pos][position[1]].color}"
+            if board[y_pos][position[1]].color != @color
+              @possible_moves << [y_pos, position[1]]
+              break
+            else
+              # @possible_moves << [y_pos, position[1]]
+              break
+            end
+          end
+        end
+      end
+      @possible_moves
+    end
+
+    #down
+    def movement_down(board)
+      1.upto(7) do |dy|
+        y_pos = position[0] - dy
+        if y_pos.between?(0,7)
+          if board[y_pos][position[1]] == "-"
+            @possible_moves << [y_pos, position[1]]
+          else
+            # puts "Original: #{@color}"
+            # puts "Obstruction: #{board[y_pos][position[1]].color}"
+            if board[y_pos][position[1]].color != @color
+              @possible_moves << [y_pos, position[1]]
+              break
+            else
+              # @possible_moves << [y_pos, position[1]]
+              break
+
+            end
+          end
+        end
+      end
+      @possible_moves
+    end
   #checks diagnol from piece to bottom_left
   def movement_bottom_right(board)
     (1..7).each do |num|
@@ -281,6 +390,51 @@ class Queen < Piece
     end
     @possible_moves
   end
+
+
+    #left
+    def movement_left(board)
+      -1.downto(-7) do |dx|
+        x_pos = position[1] - dx
+        # puts y_pos
+        if x_pos.between?(0,7)
+          if board[position[0]][x_pos] == "-"
+            @possible_moves << [position[0], x_pos]
+          else
+            if board[position[0]][x_pos].color == @color
+              # @possible_moves << [y_pos, position[1]]
+              break
+            else
+              @possible_moves << [position[0], x_pos]
+              break
+            end
+          end
+        end
+      end
+      @possible_moves
+    end
+
+    # #right
+    def movement_right(board)
+      1.upto(7) do |dx|
+        x_pos = position[1] - dx
+        # puts y_pos
+        if x_pos.between?(0,7)
+          if board[position[0]][x_pos] == "-"
+            @possible_moves << [position[0], x_pos]
+          else
+            if board[position[0]][x_pos].color == @color
+              # @possible_moves << [y_pos, position[1]]
+              break
+            else
+              @possible_moves << [position[0], x_pos]
+              break
+            end
+          end
+        end
+      end
+      @possible_moves
+    end
   #checks diagnol from piece to top_right
   def movement_top_right(board)
     (1..7).each do |num|
@@ -363,7 +517,6 @@ class ChessBoard
     @board[1][1] = Bishop.new("black", [1,1])
     @board[1][5] = Bishop.new("black", [1,5])
     @board[5][1] = Bishop.new("white", [5,1])
-
   end
 
   def select_piece(array)
