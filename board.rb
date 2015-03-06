@@ -63,18 +63,12 @@ class Board
     #   row.each_with_index do |square, square_i|
         piece.moves.each do |coordinate_set|
           coordinate_set.each do |x,y|
-              puts "hello: [#{x},#{y}]"
-            # next if x.nil? || y.nil?
-            if @board[x][y].empty?
-             @poss_moves << [x, y]
-            # else
-            #   next
-            end
-          # if coordinate.include?([square_i, row_i])
+            @poss_moves << [x, y] if @board[x][y].empty?
+            if @board[x][y].empty? == false
+              break
             end
           end
-      #   end
-      # end
+        end
       return @poss_moves
   end
 
@@ -262,13 +256,15 @@ board = Board.new
 # knight = Knight.new([1,3])
 
 board.start
-puts board.to_s
-rook = Queen.new([1,7])
-p rook.moves
+puts board
+p board.move_valid(Queen.new([1,7]))
+puts board
+# rook = Queen.new([1,7])
+# p rook.moves
 
-puts
-rook2 = Rook.new([1,7])
-p rook2.moves
+# puts
+# rook2 = Rook.new([1,7])
+# p rook2.moves
 
 
-print board.move_valid(Queen.new([1,7]))
+# print board.move_valid(Queen.new([1,7]))
