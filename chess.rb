@@ -586,11 +586,16 @@ class ChessBoard
     #gets information about piece in this position
     #Board grabs movement(array[row, col]) from PIECE class
     # returns an array of coordinates
-    @board[col][row].movement(@board)
+    if @board[col][row] != "-"
+      @board[col][row].movement(@board)
+    else
+      nil
+    end
   end
 
   def valid_move?(optional_moves, move)
-   return true if optional_moves.include?(move)
+    return true if optional_moves.include?(move)
+    return false
     #takes move coordinates from user, compares it to piece class(possible moves)
     # returns a boolean.
   end
@@ -628,18 +633,24 @@ class Game
   end
 
   def white_turn
-    puts "Player White select piece to move: "
-    @user_piece = gets.chomp.split("") #get number ex: 75 02 33
-    @user_piece[0], @user_piece[1] = @user_piece[0].to_i, @user_piece[1].to_i
-    piece_select
-
-    valid = false
-    until valid
+    valid_piece = false
+    until valid_piece
+      puts "Player White select piece to move: "
+      @user_piece = gets.chomp.split("") #get number ex: 75 02 33
+      @user_piece[0], @user_piece[1] = @user_piece[0].to_i, @user_piece[1].to_i
+      if piece_select
+        valid_piece = true
+      else
+        puts "Try again."
+      end
+    end
+    valid_move = false
+    until valid_move
       puts "Choose spot to move: "
       @user_move = gets.chomp.split("")
       @user_move[0], @user_move[1] = @user_move[0].to_i, @user_move[1].to_i
       if @new_game.valid_move?(@valid_moves, @user_move)
-        valid = true
+        valid_move = true
         puts "Valid Move"
       else
         puts "Invalid move"
@@ -648,18 +659,25 @@ class Game
   end
 
   def black_turn
-    puts "Player Black select piece to move: "
-    @user_piece = gets.chomp.split("") #get number ex: 75 02 33
-    @user_piece[0], @user_piece[1] = @user_piece[0].to_i, @user_piece[1].to_i
-    piece_select
-
-    valid = false
-    until valid
+    valid_piece = false
+    until valid_piece
+      puts "Player Black select piece to move: "
+      @user_piece = gets.chomp.split("") #get number ex: 75 02 33
+      @user_piece[0], @user_piece[1] = @user_piece[0].to_i, @user_piece[1].to_i
+      piece_select
+      if piece_select
+        valid_piece = true
+      else
+        puts "Try again."
+      end
+    end
+    valid_move = false
+    until valid_move
       puts "Choose spot to move: "
       @user_move = gets.chomp.split("")
       @user_move[0], @user_move[1] = @user_move[0].to_i, @user_move[1].to_i
       if @new_game.valid_move?(@valid_moves, @user_move)
-        valid = true
+        valid_move = true
         puts "Valid Move"
       else
         puts "Invalid move"
