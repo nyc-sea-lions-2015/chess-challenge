@@ -13,12 +13,12 @@ class Board
     #TODO: place pawns in appropriate places
 
     @board.map.with_index do |row, row_i|
-      if i== 1 || i == 6
+      if row_i== 1 || row_i == 6
         row.map.with_index do |square, square_i|
           square << Pawn.new([row_i, square_i])
         end
       end
-      if i == 0 || i == WIDTH-1
+      if row_i == 0 || row_i == WIDTH-1
         row.map.with_index do |square,square_i|
           if square_i == 0 || square_i == WIDTH-1
             square << Rook.new([row_i, square_i])
@@ -38,13 +38,13 @@ class Board
     @board
   end
 
-   def remove
-    #TODO: remove pieces if piece.captured == true
-    #stores removed pieces in removed array.
-    @board.map.with_index |row, row_i|
-      row.map.with_index
-    end
-  end
+  #  def remove
+  #   #TODO: remove pieces if piece.captured == true
+  #   #stores removed pieces in removed array.
+  #   @board.map.with_index |row, row_i|
+  #     row.map.with_index
+  #   end
+  # end
 
   def to_s
     @board.each_with_index.map do |row, i|
