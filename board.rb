@@ -65,13 +65,17 @@ class Board
           coordinate_set.each do |x,y|
               puts "hello: [#{x},#{y}]"
             # next if x.nil? || y.nil?
-            @poss_moves << [x, y] if @board[x][y].empty?
+            if @board[x][y].empty?
+             @poss_moves << [x, y]
+            # else
+            #   next
+            end
           # if coordinate.include?([square_i, row_i])
             end
           end
       #   end
       # end
-      @poss_moves.uniq
+      return @poss_moves
   end
 
 
@@ -154,16 +158,21 @@ class Rook < Piece
 
   def moves
     [*@x..WIDTH-1].each_index do |dx|
-      @moves[0] << [@x+(dx+1), @y]
+      @moves[0] << [@x+(dx+1), @y] unless @x+(dx+1) > WIDTH-1 || @x+(dx+1) < 0
     end
 
-    1.upto(@x) {|dx| @moves[1] << [@x-dx, @y]}
+    1.upto(@x) {|dx| @moves[1] << [@x-dx, @y] unless @x-dx > WIDTH-1 || @x-dx < 0}
 
     [*@y..WIDTH-1].each_index do |dy|
-      @moves[2] << [@x, @y+(dy+1)]
+      @moves[2] << [@x, @y+(dy+1)] unless @y+(dy+1) > WIDTH-1 || @y+(dy+1) < 0
     end
 
-    1.upto(@y) {|dy| @moves[3] << [@x, @y-dy]}
+    1.upto(@y) {|dy| @moves[3] << [@x, @y-dy] unless @y-dy > WIDTH-1 || @y-dy < 0}
+
+    @moves.each do |x|
+      @moves.delete(x) if x.empty?
+    end
+
     return @moves
   end
 
@@ -204,12 +213,15 @@ class Queen < Piece
   attr_reader :name
   def initialize(arguments)
     super(arguments)
+    moves
   end
 
   def moves
+    cx = @x
+    cy = @y
     arr1 = Bishop.new([@x, @y]).moves
     arr2 = Rook.new([@x, @y]).moves
-    @moves = arr1+arr2
+    @moves = arr1 + arr2
   end
 
 end
@@ -237,9 +249,16 @@ end
 
 
 board = Board.new
-# knight = Knight.new([1,7])
+# knight = Knight.new([1,3])
 
 board.start
 puts board.to_s
+rook = Queen.new([1,7])
+p rook.moves
 
-print board.move_valid(Knight.new([1,7]))
+puts
+rook2 = Rook.new([1,7])
+p rook2.moves
+
+
+print board.move_valid(Queen.new([1,7]))
