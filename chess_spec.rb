@@ -2,17 +2,17 @@ require_relative 'chess'
 
 describe 'let' do
 
-  let(:board) {Board.new}
+  # let(:board) {Board.new}
 
-  it "has a width and height of 8 rows and columns" do
-    expect(board.width).to_eq(8)
-    expect(board.height).to_eq(8)
-  end
+  # it "has a width and height of 8 rows and columns" do
+  #   expect(board.width).to_eq(8)
+  #   expect(board.height).to_eq(8)
+  # end
 
-  it "has a clear method that removes all pieces" do
-    board.clear
-    expect(board.pieces.empty?).to_eq(true)
-  end
+  # it "has a clear method that removes all pieces" do
+  #   board.clear
+  #   expect(board.pieces.empty?).to_eq(true)
+  # end
 
 #   it "has 32 pieces"
 describe 'Piece'
@@ -21,64 +21,150 @@ describe 'Piece'
   let(:white_piece) {Piece.new([5,3],'white', false)}
 
     it "should accept (arguments, color, captured) as parameters" do
-      expect (piece(arguments, color, captured)).to_not raise_error
+      expect {Piece.new([5,4],'black', false)}.to_not raise_error
     end
 
-    it 'should have an arity of 2' do
-      expect piece.arity.should eq 2
-    end
 
     it "has a color method that returns the correct color of the piece" do
-      expect (piece.color).to_eq(black)
-      expect (white_piece.color).to_eq(white)
+      expect (piece.color).should eq('black')
+      expect (white_piece.color).should eq('white')
     end
 
 
     it "has a captured_status method that returns the correct capture status of the piece" do
       expect (piece.captured).should eq(false)
     end
-  end
+  # end
 
-  # describe 'King'
+  describe 'King'
 
-  #   let(:king) {King.new([5,3], black, false)}
+    let(:king) {King.new([5,3])}
+    let(:white_king) {King.new([5,3]),'white',true)}
 
-  #   # it 'should have an arity of 2' do
-  #   #   expect (king.arity)to_eq(2)
-  #   # end
+    it "should accept (arguments) as parameters" do
+      expect {King.new([5,3])}.to_not raise_error
+    end
 
-  #   it "has a moves method that returns an array of all potential moves possible from its current position on an empty board." do
-  #     expect (king.moves).to_eq([[4, 3], [4, 4], [5, 2], [5, 4], [6, 2], [6, 3]])
-  #   end
+    it "has a moves method that returns an array of all potential moves possible from its current position on an empty board." do
+      expect (king.moves).should eq([[4, 3], [4, 4], [5, 2], [5, 4], [6, 2], [6, 3]])
+    end
 
-  # describe 'Queen'
-
-  #   let(:queen) {Queen.new([4,3], black, false)}
-
-  #   # it 'should have an arity of 2' do
-  #   #   expect (queen.arity)to_eq(2)
-  #   # end
-
-  #   it "has a moves method that returns an array of all potential moves possible from its current position on an empty board." do
-  #     expect (queen.moves).to_eq([[[5, 4], [6, 5], [7, 6]], [[5, 2], [6, 1], [7, 0]], [[3, 4], [2, 5], [1, 6], [0, 7]], [[3, 2], [2, 1], [1, 0]], [[5, 3], [6, 3], [7, 3], [8, 3]], [[3, 3], [2, 3], [1, 3], [0, 3]], [[4, 4], [4, 5], [4, 6], [4, 7], [4, 8]], [[4, 2], [4, 1], [4, 0]]])
-  #   end
-
-  # describe 'Rook'
-
-  #   let(:rook) {Rook.new([4,3], black, false)}
-
-  #   # it 'should have an arity of 2' do
-  #   #   expect (rook.arity)to_eq(2)
-  #   # end
-
-  #   it "has a moves method that returns an array of all potential moves possible from its current position on an empty board." do
-  #     expect (rook.moves).to_eq([[[5, 3], [6, 3], [7, 3], [8, 3]], [[3, 3], [2, 3], [1, 3], [0, 3]], [[4, 4], [4, 5], [4, 6], [4, 7], [4, 8]], [[4, 2], [4, 1], [4, 0]]])
-  #   end
-
-  # describe ''
+    it "has a color method that returns the correct color of the king" do
+      expect (king.color).should eq('black')
+    end
 
 
-# end
+    it "has a captured_status method that returns the correct capture status of the king" do
+      expect (king.captured).should eq(false)
+    end
+
+  describe 'Queen'
+
+    let(:queen) {Queen.new([4,3])}
+
+    it "should accept (arguments) as parameters" do
+      expect {Queen.new([4,3])}.to_not raise_error
+    end
+
+    it "has a moves method that returns an array of all potential moves possible from its current position on an empty board." do
+      expect (queen.moves).should eq([[[5, 4], [6, 5], [7, 6]], [[5, 2], [6, 1], [7, 0]], [[3, 4], [2, 5], [1, 6], [0, 7]], [[3, 2], [2, 1], [1, 0]], [[5, 3], [6, 3], [7, 3], [8, 3]], [[3, 3], [2, 3], [1, 3], [0, 3]], [[4, 4], [4, 5], [4, 6], [4, 7], [4, 8]], [[4, 2], [4, 1], [4, 0]]])
+    end
+
+    it "has a color method that returns the correct color of the queen" do
+      expect (queen.color).should eq('black')
+    end
+
+
+    it "has a captured_status method that returns the correct capture status of the queen" do
+      expect (queen.captured).should eq(false)
+    end
+
+  describe 'Rook'
+
+    let(:rook) {Rook.new([4,3])}
+
+    it "should accept (arguments) as parameters" do
+      expect {Rook.new([4,3])}.to_not raise_error
+    end
+
+    it "has a moves method that returns an array of all potential moves possible from its current position on an empty board." do
+      expect (rook.moves).should eq([[[5, 3], [6, 3], [7, 3], [8, 3]], [[3, 3], [2, 3], [1, 3], [0, 3]], [[4, 4], [4, 5], [4, 6], [4, 7], [4, 8]], [[4, 2], [4, 1], [4, 0]]])
+    end
+
+    it "has a color method that returns the correct color of the rook" do
+      expect (rook.color).should eq('black')
+    end
+
+
+    it "has a captured_status method that returns the correct capture status of the rook" do
+      expect (rook.captured).should eq(false)
+    end
+
+ describe 'Bishop'
+
+    let(:bishop) {Bishop.new([4,3])}
+
+    it "should accept (arguments) as parameters" do
+      expect {Bishop.new([4,3])}.to_not raise_error
+    end
+
+    it "has a moves method that returns an array of all potential moves possible from its current position on an empty board." do
+      expect (bishop.moves).should eq([[[5, 4], [6, 5], [7, 6]], [[5, 2], [6, 1], [7, 0]], [[3, 4], [2, 5], [1, 6], [0, 7]], [[3, 2], [2, 1], [1, 0]]])
+    end
+
+    it "has a color method that returns the correct color of the bishop" do
+      expect (bishop.color).should eq('black')
+    end
+
+
+    it "has a captured_status method that returns the correct capture status of the bishop" do
+      expect (bishop.captured).should eq(false)
+    end
+
+    describe 'Knight'
+
+    let(:knight) {Knight.new([5,3])}
+
+    it "should accept (arguments) as parameters" do
+      expect {Knight.new([5,3])}.to_not raise_error
+    end
+
+    it "has a moves method that returns an array of all potential moves possible from its current position on an empty board." do
+      expect (knight.moves).should eq([[6, 5], [6, 1], [4, 5], [4, 1], [7, 4], [7, 2], [3, 2], [3, 4]])
+    end
+
+    it "has a color method that returns the correct color of the knight" do
+      expect (knight.color).should eq('black')
+    end
+
+
+    it "has a captured_status method that returns the correct capture status of the knight" do
+      expect (knight.captured).should eq(false)
+    end
+
+    describe 'Pawn'
+
+    let(:pawn) {Pawn.new([5,3])}
+
+    it "should accept (arguments) as parameters" do
+      expect {Pawn.new([5,3])}.to_not raise_error
+    end
+
+    it "has a moves method that returns an array of all potential moves possible from its current position on an empty board." do
+      expect (pawn.moves).should eq([[6, 3], [6, 4], [4, 4]])
+    end
+
+    it "has a color method that returns the correct color of the pawn" do
+      expect (pawn.color).should eq('black')
+    end
+
+
+    it "has a captured_status method that returns the correct capture status of the pawn" do
+      expect (pawn.captured).should eq(false)
+    end
+
+
+end
 
 
 =begin
@@ -105,7 +191,7 @@ KING
 BOARD
 
  - initialize with an 8x8 board, no pieces on the board
- - In our view, row 0 and row 1 are black territory.
+ - In our view, row 0 and row 1 are 'black' territory.
       Row 0: [[Rook.new], [Knight.new], [Bishop.new], [King.new], [Q], [B], [K], [R]]
       Row 1: array of 8 subarrays of Pawn objects
  In our view, row 6 and 7 are white territory.
