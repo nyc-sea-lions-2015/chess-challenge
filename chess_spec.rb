@@ -21,25 +21,25 @@ describe 'Piece'
   let(:white_piece) {Piece.new([1,0], 'white')}
 
     it "should accept (starting position, color_status, captured_status) as parameters" do
-      expect {piece(starting position, color_status, captured_position)}.to_not raise_error
+      expect (piece(starting position, color_status, captured_position)).to_not raise_error
     end
 
     it "has a color method that returns the correct color of the piece" do
-      expect {piece.color}.to_eq(black)
-      expect {white_piece.color}.to_eq(white)
+      expect (piece.color).to_eq(black)
+      expect (white_piece.color).to_eq(white)
     end
     end
 
     it "has a captured_status method that returns the correct capture status of the piece" do
-      expect {piece.captured_status}.to_eq(false)
+      expect (piece.captured_status).to_eq(false)
     end
 
     it "has a moves method that returns an array of all potential moves possible from its current position on an empty board." do
-      expect {piece.moves}.to_eq........
+      expect (piece.moves).to_eq........
     end
 
     it "it sorts the moves-array by direction so that you have separate arrays" do
-      expect {piece.moves}.to_eq.......
+      expect (piece.moves).to_eq.......
     end
 
 end
