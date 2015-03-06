@@ -59,11 +59,11 @@ class Board
     @poss_moves.clear
 
     # piece.moves.each do |coordinate|
-    @board.each_with_index do |row, row_i|
+    @board.each do |row|
       row.each_with_index do |square, square_i|
         piece.moves.each do |coordinate_set|
           coordinate_set.each do |x,y|
-            puts "hello: [#{x},#{y}]"
+            # puts "hello: [#{x},#{y}]"
             next if x.nil? || y.nil?
             @poss_moves << [square_i, row_i] if x==square_i && y == row_i && square.empty?
           end
