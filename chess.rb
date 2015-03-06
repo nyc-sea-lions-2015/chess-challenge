@@ -579,14 +579,14 @@ class ChessBoard
 
   end
 
-  def select_piece(array)
+  def select_piece(array, player_color)
     col = array[0]
     row = array[1]
     #User inputs coordinates of piece they want to move
     #gets information about piece in this position
     #Board grabs movement(array[row, col]) from PIECE class
     # returns an array of coordinates
-    if @board[col][row] != "-"
+    if @board[col][row] != "-" && @board[col][row].color == player_color
       @board[col][row].movement(@board)
     else
       nil
@@ -617,17 +617,19 @@ class Game
   def initialize
     @new_game = ChessBoard.new
     @player = true
-
+    @player_color = "white"
   end
 
   def turn
     if @player == true
       white_turn
       @player = false
+      @player_color = "black"
     else
       #next player's turn
       black_turn
       @player = true
+      @player_color = "white"
     end
 
   end
@@ -687,7 +689,7 @@ class Game
 
   def piece_select
     p @user_piece
-    p @valid_moves = @new_game.select_piece(@user_piece)
+    p @valid_moves = @new_game.select_piece(@user_piece, @player_color)
     #What piece?
     #@current_piece = gets.chomp (row, col) convert to array
     #select_piece(array[row, col])
