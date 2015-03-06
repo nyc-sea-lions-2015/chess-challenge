@@ -1,8 +1,8 @@
-require 'chess'
+require_relative 'chess'
 
-describe 'Board'
+describe 'let' do
 
-let(:board) {Board.new}
+  let(:board) {Board.new}
 
   it "has a width and height of 8 rows and columns" do
     expect(board.width).to_eq(8)
@@ -17,11 +17,15 @@ let(:board) {Board.new}
 #   it "has 32 pieces"
 describe 'Piece'
 
-  let(:piece) {Piece.new([5,4],'black',false)}
-  let(:white_piece) {Piece.new([5,3],'white',false)}
+  let(:piece) {Piece.new([5,4],'black', false)}
+  let(:white_piece) {Piece.new([5,3],'white', false)}
 
-    it "should accept (starting_position, color_status, captured_status) as parameters" do
-      expect (piece(starting_position, color_status, captured_status)).to_not raise_error
+    it "should accept (arguments, color, captured) as parameters" do
+      expect (piece(arguments, color, captured)).to_not raise_error
+    end
+
+    it 'should have an arity of 2' do
+      expect piece.arity.should eq 2
     end
 
     it "has a color method that returns the correct color of the piece" do
@@ -31,21 +35,50 @@ describe 'Piece'
 
 
     it "has a captured_status method that returns the correct capture status of the piece" do
-      expect (piece.captured.to_eq(false)
+      expect (piece.captured).should eq(false)
     end
   end
 
-  describe
+  # describe 'King'
 
-    it "has a moves method that returns an array of all potential moves possible from its current position on an empty board." do
-      expect (piece.moves).to_eq........
-    end
+  #   let(:king) {King.new([5,3], black, false)}
 
-    it "it sorts the moves-array by direction so that you have separate arrays" do
-      expect (piece.moves).to_eq.......
-    end
+  #   # it 'should have an arity of 2' do
+  #   #   expect (king.arity)to_eq(2)
+  #   # end
 
-end
+  #   it "has a moves method that returns an array of all potential moves possible from its current position on an empty board." do
+  #     expect (king.moves).to_eq([[4, 3], [4, 4], [5, 2], [5, 4], [6, 2], [6, 3]])
+  #   end
+
+  # describe 'Queen'
+
+  #   let(:queen) {Queen.new([4,3], black, false)}
+
+  #   # it 'should have an arity of 2' do
+  #   #   expect (queen.arity)to_eq(2)
+  #   # end
+
+  #   it "has a moves method that returns an array of all potential moves possible from its current position on an empty board." do
+  #     expect (queen.moves).to_eq([[[5, 4], [6, 5], [7, 6]], [[5, 2], [6, 1], [7, 0]], [[3, 4], [2, 5], [1, 6], [0, 7]], [[3, 2], [2, 1], [1, 0]], [[5, 3], [6, 3], [7, 3], [8, 3]], [[3, 3], [2, 3], [1, 3], [0, 3]], [[4, 4], [4, 5], [4, 6], [4, 7], [4, 8]], [[4, 2], [4, 1], [4, 0]]])
+  #   end
+
+  # describe 'Rook'
+
+  #   let(:rook) {Rook.new([4,3], black, false)}
+
+  #   # it 'should have an arity of 2' do
+  #   #   expect (rook.arity)to_eq(2)
+  #   # end
+
+  #   it "has a moves method that returns an array of all potential moves possible from its current position on an empty board." do
+  #     expect (rook.moves).to_eq([[[5, 3], [6, 3], [7, 3], [8, 3]], [[3, 3], [2, 3], [1, 3], [0, 3]], [[4, 4], [4, 5], [4, 6], [4, 7], [4, 8]], [[4, 2], [4, 1], [4, 0]]])
+  #   end
+
+  # describe ''
+
+
+# end
 
 
 =begin
