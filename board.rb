@@ -10,15 +10,12 @@ class Board
   end
 
   def start
-    #TODO: place pawns in appropriate places
-
     @board.map.with_index do |row, row_i|
       if row_i== 1 || row_i == 6
         row.map.with_index do |square, square_i|
           square << Pawn.new([row_i, square_i])
         end
-      end
-      if row_i == 0 || row_i == WIDTH-1
+      elsif row_i == 0 || row_i == WIDTH-1
         row.map.with_index do |square,square_i|
           if square_i == 0 || square_i == WIDTH-1
             square << Rook.new([row_i, square_i])
@@ -33,8 +30,19 @@ class Board
           end
         end
       end
-    # end
+
+##changing pieces (black) to white when on rows 6 & 7
+
+##PROBLEM: because square is in an array containing the piece, we have to use #first to access the piece itself.
+# If *not* in an array, can directly access.
+      if row_i == WIDTH-2 || row_i == WIDTH-1
+        row.map do |square|
+          square.first.color = "white"
+        end
+      end
     end
+
+
     @board
   end
 
