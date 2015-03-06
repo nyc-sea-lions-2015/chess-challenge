@@ -57,7 +57,7 @@ class Piece
 end
 
 class King < Piece
-  attr_reader :possible_moves, :color
+  attr_accessor :possible_moves, :color
   def initialize(color, position)
     super
     @possible_moves = []
@@ -78,8 +78,8 @@ class King < Piece
 end
 
 class Pawn < Piece
-  attr_reader :possible_moves, :color
-  attr_accessor :move_counter
+  attr_reader :color
+  attr_accessor :move_counter, :possible_moves
   def initialize(color, position)
     super
     @possible_moves = []
@@ -94,6 +94,7 @@ class Pawn < Piece
           p y_pos
           if board[y_pos][position[1]] == "-"
             @possible_moves << [y_pos, position[1]]
+            @move_counter += 1
           else
             break
           end
@@ -102,6 +103,7 @@ class Pawn < Piece
         y_pos = @position[0]-1
         if board[y_pos][position[1]] == "-"
           @possible_moves << [y_pos, position[1]]
+          @move_counter += 1
         end
       end
       [[-1,-1],[-1,1]].each do |dy, dx|
@@ -118,6 +120,7 @@ class Pawn < Piece
           p y_pos
           if board[y_pos][position[1]] == "-"
             @possible_moves << [y_pos, position[1]]
+            @move_counter += 1
           else
             break
           end
@@ -126,6 +129,7 @@ class Pawn < Piece
         y_pos = @position[0]+1
         if board[y_pos][position[1]] == "-"
           @possible_moves << [y_pos, position[1]]
+          @move_counter += 1
         end
       end
       [[1,1],[1,-1]].each do |dy, dx|
@@ -141,7 +145,7 @@ class Pawn < Piece
 end
 
 class Rook < Piece
-  attr_reader :possible_moves, :color
+  attr_accessor :possible_moves, :color
   def initialize(color, position)
     super
     @possible_moves = []
@@ -231,7 +235,7 @@ class Rook < Piece
 end
 
 class Bishop < Piece
-  attr_reader :possible_moves, :color
+  attr_accessor :possible_moves, :color
   def initialize(color, position)
     super
     @possible_moves = []
@@ -338,7 +342,7 @@ class Bishop < Piece
 end
 
 class Queen < Piece
-  attr_reader :possible_moves, :color
+  attr_accessor :possible_moves, :color
   def initialize(color, position)
     super
     @possible_moves = []
@@ -541,7 +545,7 @@ class Queen < Piece
 end
 
 class Knight < Piece
-  attr_reader :possible_moves, :color
+  attr_accessor :possible_moves, :color
   def initialize(color, position)
     super
     @possible_moves = []
@@ -600,11 +604,15 @@ class ChessBoard
     # returns a boolean.
   end
 
-  # def make_move
-  #   # if valid move?
-  #   #    - deletes selected Piece from current coordinate and writes it in new spot
-  #   #
-  # end
+  def make_move(new_spot, old_spot)
+    new_col, new_row = new_spot[0], new_spot[1]
+    old_col, old_row = old_spot[0], old_spot[1]
+    @board[new_col][new_row] = @board[old_col][old_row]
+    @board[old_col][old_row] = "-"
+    @board[new_col][new_row].position = [new_col, new_row]
+    @board[new_col][new_row].possible_moves = []
+    p @board
+  end
 
   # def to_s
   #   # Display the current state of the board by iterating through it.
@@ -658,6 +666,7 @@ class Game
         puts "Invalid move"
       end
     end
+    @new_game.make_move(@user_move, @user_piece)
   end
 
   def black_turn
