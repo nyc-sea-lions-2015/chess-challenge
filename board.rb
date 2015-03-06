@@ -57,12 +57,13 @@ class Board
   def to_s
     @board.each_with_index.map do |row, i|
       # puts "#{8-i} #{row}"
-      puts "#{i}"
+      print "#{i}  "
       row.each_with_index do |square, square_i|
         next if square.empty?
-        puts "#{square.first.name}"
+        print "#{square.first.name} "
       end
-    end.join
+      puts
+    end#.join(" \n")
     "   " + [*"a".."h"].join("   ")
   end
 end
@@ -213,4 +214,4 @@ end
 board = Board.new
 # puts board
 board.start
-puts board
+puts board.to_s
