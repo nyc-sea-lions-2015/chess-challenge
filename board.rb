@@ -70,7 +70,7 @@ class Board
         end
       end
     end
-    @poss_moves
+    @poss_moves.uniq
   end
 
 
@@ -246,4 +246,4 @@ board = Board.new
 # board.start
 puts board.to_s
 
-puts board.move_valid(Knight.new([1,7]))
+print board.move_valid(Knight.new([1,7]))
