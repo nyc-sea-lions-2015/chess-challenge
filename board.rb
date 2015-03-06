@@ -3,6 +3,7 @@ class Board
   def initialize
     @board = Array.new(WIDTH) {WIDTH.times.map{[]}}
     @removed = []
+    @poss_moves = []
   end
 
   def clear
@@ -10,15 +11,12 @@ class Board
   end
 
   def start
-    #TODO: place pawns in appropriate places
-
     @board.map.with_index do |row, row_i|
-      if i== 1 || i == 6
+      if row_i== 1 || row_i == 6
         row.map.with_index do |square, square_i|
           square << Pawn.new([row_i, square_i])
         end
-      end
-      if i == 0 || i == WIDTH-1
+      elsif row_i == 0 || row_i == WIDTH-1
         row.map.with_index do |square,square_i|
           if square_i == 0 || square_i == WIDTH-1
             square << Rook.new([row_i, square_i])
@@ -33,25 +31,60 @@ class Board
           end
         end
       end
-    # end
+
+##changing pieces (black) to white when on rows 6 & 7
+
+##PROBLEM: because square is in an array containing the piece, we have to use #first to access the piece itself.
+# If *not* in an array, can directly access.
+      if row_i == WIDTH-2 || row_i == WIDTH-1
+        row.map do |square|
+          square.first.color = "white"
+        end
+      end
     end
+
+
     @board
   end
 
-   def remove
-    #TODO: remove pieces if piece.captured == true
-    #stores removed pieces in removed array.
-    @board.map.with_index |row, row_i|
-      row.map.with_index
-    end
+  #  def remove
+  #   #TODO: remove pieces if piece.captured == true
+  #   #stores removed pieces in removed array.
+  #   @board.map.with_index |row, row_i|
+  #     row.map.with_index
+  #   end
+  # end
+
+  def move_valid(piece)
+    @poss_moves.clear
+
+    # piece.moves.each do |coordinate|
+    # @board.each_with_index do |row, row_i|
+    #   row.each_with_index do |square, square_i|
+        piece.moves.each do |coordinate_set|
+          coordinate_set.each do |x,y|
+              puts "hello: [#{x},#{y}]"
+            # next if x.nil? || y.nil?
+            @poss_moves << [x, y] if @board[x][y].empty?
+          # if coordinate.include?([square_i, row_i])
+            end
+          end
+      #   end
+      # end
+      @poss_moves.uniq
   end
+
 
   def to_s
     @board.each_with_index.map do |row, i|
       # puts "#{8-i} #{row}"
-      puts "#{i} #{row}"
-
-    end
+      print "#{i}  "
+      row.each_with_index do |square, square_i|
+        next if square.empty?
+        print "#{square.first.name} "
+      end
+      puts
+    end#.join(" \n")
     "   " + [*"a".."h"].join("   ")
   end
 end
@@ -69,35 +102,57 @@ class Piece
   def captured!
     @captured = !@captured
   end
-end
 
-class King < Piece
-  def moves
-    [*-1..1].permutation(2).to_a.each do |dx,dy|
-      next if dx == 0 && dy == 0
-      @moves << [@x+dx, @y+dy]
-    end
-      @moves
+  def to_s
+    "#{@color.upcase} #{self.name} moves: #{@moves.flatten(1)}"
   end
 end
 
+class King < Piece
+<<<<<<< HEAD
+=======
+  attr_reader :name
+  def initialize(arguments)
+    super(arguments, color)
+    @name = "KING"
+    moves
+  end
+
+>>>>>>> 06cda9d17fafc49102704ff6cd5de360b202687c
+  def moves
+    [*-1..1].permutation(2).to_a.each do |dx,dy|
+      next if dx == 0 && dy == 0
+      @moves << [[@x+dx, @y+dy]] unless x+dx > WIDTH-1 || @x+dx < 0 || @y+dy > WIDTH-1 || @y+dy < 0
+    end
+      @moves
+  end
+
+end
+
 class Knight < Piece
+  attr_reader :name
   def initialize(arguments)
     super(arguments)
+    @name = "KNIGHT"
+    moves
   end
 
   def moves
     [[1, 2], [1, -2], [-1, 2], [-1, -2], [2, 1], [2, -1], [-2, -1], [-2, 1]].each do |dx, dy|
-      @moves << [@x+dx, @y+dy]
+      @moves << [[@x+dx, @y+dy]] unless @x+dx > WIDTH-1 || @x+dx < 0 || @y+dy > WIDTH-1 || @y+dy < 0
     end
     @moves
   end
+
 end
 
 class Rook < Piece
+  attr_reader :name
   def initialize(arguments)
     super(arguments)
     @moves = Array.new(4){[]}
+    @name = "ROOK"
+    moves
   end
 
   def moves
@@ -118,8 +173,11 @@ class Rook < Piece
 end
 
 class Bishop < Piece
+  attr_reader :name
   def initialize(arguments)
-    super(arguments)
+    super(arguments, color)
+    @name = "BISHOP"
+    moves
   end
 
   def moves
@@ -143,41 +201,53 @@ class Bishop < Piece
     end
     @moves
   end
+
 end
 
 class Queen < Piece
+  attr_reader :name
   def initialize(arguments)
     super(arguments)
+    @name = "QUEEN"
+    moves
   end
 
   def moves
     arr1 = Bishop.new([@x, @y]).moves
     arr2 = Rook.new([@x, @y]).moves
-    return arr1+arr2
+    @moves = arr1+arr2
   end
+
 end
 
 class Pawn < Piece
+  attr_reader :name
   def initialize(arguments, capture = false, status = false)
     super(arguments)
+    @name = "PAWN"
     @status = status
     @capture = capture
+    moves
   end
 
   def moves
-    @moves << [@x, @y+2] if @status
-    @moves << [@x+1, @y]
+    @moves << [[@x, @y+2]] if @status
+    @moves << [[@x+1, @y]]
     capture? if @capture
   end
 
   def capture?
-    @moves << [@x+1, @y+1]
-    @moves << [@x-1, @y+1]
+    @moves << [[@x+1, @y+1]]
+    @moves << [[@x-1, @y+1]]
   end
 
 end
 
+
 board = Board.new
-# puts board
-board.start
-puts board
+# knight = Knight.new([1,7])
+
+# board.start
+puts board.to_s
+
+print board.move_valid(Knight.new([1,7]))

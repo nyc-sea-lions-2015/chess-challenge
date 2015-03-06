@@ -197,9 +197,7 @@ BOARD
  In our view, row 6 and 7 are white territory.
       Row 6: array of 8 subarrays of Pawn objects
       Row 7: [[Rook.new], [Knight.new], [Bishop.new], [King.new], [Q], [B], [K], [R]]
- - no parameters
- - clear method: clears the board. no pieces.
- - reset method: sets a new Board.new
+
  - to_s method: translates the user input to useful input for us.
  - clear method: clears the board. no pieces.
  - start method: sets the board with 32 pieces in correct orientation.

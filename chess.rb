@@ -10,23 +10,28 @@
 WIDTH = 8
 
 class Piece
-
   attr_reader :captured
   attr_accessor :color
-  def initialize(arguments, color = "black", captured = false)
+  def initialize(coordinates, color = "black", captured = false)
     @captured, @color = captured, color
-    @x, @y = arguments[0], arguments[1]
+    @x, @y = coordinates[0], coordinates[1]
     @moves = []
   end
 
   def captured!
     @captured = !@captured
   end
+
+  def to_s
+    "#{@color.upcase} #{self.name} moves: #{@moves.flatten(1)}"
+  end
 end
 
 class King < Piece
-  def initialize(arguments)
-    super(arguments)
+  attr_reader :name
+  def initialize(coordinates)
+    super(coordinates)
+    @name = "KING"
   end
 
   def moves
@@ -36,11 +41,14 @@ class King < Piece
     end
       @moves
   end
+
 end
 
 class Knight < Piece
-  def initialize(arguments)
-    super(arguments)
+  attr_reader :name
+  def initialize(coordinates)
+    super(coordinates)
+    @name = "KNIGHT"
   end
 
   def moves
@@ -49,12 +57,15 @@ class Knight < Piece
     end
     @moves
   end
+
 end
 
 class Rook < Piece
-  def initialize(arguments)
-    super(arguments)
+  attr_reader :name
+  def initialize(coordinates)
+    super(coordinates,)
     @moves = Array.new(4){[]}
+    @name = "ROOK"
   end
 
   def moves
@@ -75,8 +86,10 @@ class Rook < Piece
 end
 
 class Bishop < Piece
-  def initialize(arguments)
-    super(arguments)
+  attr_reader
+  def initialize(coordinates)
+    super(coordinates, color)
+    @name = "BISHOP"
   end
 
   def moves
@@ -100,23 +113,27 @@ class Bishop < Piece
     end
     @moves
   end
+
 end
 
 class Queen < Piece
-  def initialize(arguments)
-    super(arguments)
+  attr_reader :name
+  def initialize(coordinates)
+    super(coordinates)
+    @name = "QUEEN"
   end
 
   def moves
     arr1 = Bishop.new([@x, @y]).moves
     arr2 = Rook.new([@x, @y]).moves
-    return arr1+arr2
+    @moves = arr1+arr2
   end
+
 end
 
 class Pawn < Piece
-  def initialize(arguments, capture = false, status = false)
-    super(arguments)
+  def initialize(coordinates, capture = false, status = false)
+    super(coordinates)
     @status = status
     @capture = capture
   end
@@ -133,28 +150,20 @@ class Pawn < Piece
   end
 
 end
-puts "King:"
-king = King.new([5,3])
-p king.moves
 
-puts "knight"
-knight = Knight.new([5,3])
-p knight.moves
-puts "rook:"
-rook = Rook.new([4,3])
-p rook.moves
+pawn = Pawn.new([5,3])
+pawn.moves
+puts pawn
 
-puts "bishop:"
-bishop = Bishop.new([4,3])
-p bishop.moves
+# bishop = Bishop.new([5,3])
+# bishop.moves
+# puts bishop
 
-puts "queen:"
-queen = Queen.new([4,3])
-p queen.moves
-
-puts "pawn:"
-pawn = Pawn.new([5,3], true)
-p pawn.moves
-
-
+# rook = Rook.new([5,3])
+# rook.moves
+# puts rook
+puts
+queen = Queen.new([5,3])
+queen.moves
+puts queen
 
