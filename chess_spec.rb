@@ -17,8 +17,8 @@ let(:board) {Board.new}
 #   it "has 32 pieces"
 describe 'Piece'
 
-  let(:piece) {Piece.new}
-  let(:white_piece) {Piece.new([5,3],'white')}
+  let(:piece) {Piece.new([5,4],'black',false)}
+  let(:white_piece) {Piece.new([5,3],'white',false)}
 
     it "should accept (starting_position, color_status, captured_status) as parameters" do
       expect (piece(starting_position, color_status, captured_status)).to_not raise_error
@@ -28,11 +28,14 @@ describe 'Piece'
       expect (piece.color).to_eq(black)
       expect (white_piece.color).to_eq(white)
     end
-    end
+
 
     it "has a captured_status method that returns the correct capture status of the piece" do
-      expect (piece.captured_status).to_eq(false)
+      expect (piece.captured.to_eq(false)
     end
+  end
+
+  describe
 
     it "has a moves method that returns an array of all potential moves possible from its current position on an empty board." do
       expect (piece.moves).to_eq........
@@ -53,7 +56,7 @@ PIECE
  - piece should sort the moves-array by direction so that you have separate arrays. (easier for board to stop and return out if move is blocked.)
  - the method "moves" should return an array of all potential moves possible from the current position. whether or not this move-spot is occupied or legal.
  - checks if user-generated move is included in the potential moves(array). if not, piece should know inherently that it can't move to that spot (before board is involved and filters based on other pieces' positions)
- 
+
 
 ALL PIECE TYPES
  - takes one parameter, its position, an array of coordinates
