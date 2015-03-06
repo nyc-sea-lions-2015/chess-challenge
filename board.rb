@@ -84,7 +84,9 @@ class Board
           print "_ "
           next
         end
-        print "#{square.first.name} "
+        print "#{square.first.class.to_s[0]} " if square.first.color == "black"
+        print "#{square.first.class.to_s[0].downcase} " if square.first.color == "white"
+
       end
       puts
     end#.join(" \n")
@@ -96,15 +98,10 @@ end
 class Piece
   attr_reader :captured
   attr_accessor :color
-<<<<<<< HEAD
-  def initialize(opts={})
-    @captured, @color = captured, color
-    @x, @y = opts[:pos]
-=======
+
   def initialize(arguments, color = "black", captured = false)
     @captured, @color = captured, color
     @x, @y = arguments[0], arguments[1]
->>>>>>> d2a9305b6cfc2b1dcf103952af4267f26cb25f3c
     @moves = []
   end
 
@@ -120,7 +117,7 @@ end
 class King < Piece
   attr_reader :name
   def initialize(arguments)
-    super(arguments, color)
+    super(arguments)
     @name = "K"
     moves
   end
@@ -181,7 +178,7 @@ end
 class Bishop < Piece
   attr_reader :name
   def initialize(arguments)
-    super(arguments, color)
+    super(arguments)
     @name = "B"
     moves
   end
