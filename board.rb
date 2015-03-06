@@ -84,7 +84,7 @@ class Board
           print "_ "
           next
         end
-        print "#{square.first.name} "
+        print "#{square.first.class.to_s[0]} "
       end
       puts
     end#.join(" \n")
