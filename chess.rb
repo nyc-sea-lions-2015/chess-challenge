@@ -10,6 +10,7 @@
 WIDTH = 8
 
 class Piece
+  attr_accessor :color, :captured
   def initialize(arguments, color="black", captured = false)
     @captured, @color = captured#, color
     # @color = ... for the purpose of whether or not a piece can be captured.
@@ -112,28 +113,29 @@ class Queen < Piece
   end
 end
 
-class Pawn < Piece
-  def initialize(arguments, capture = false, status = false)
-    super(arguments)
-    @status = status
-    @capture = capture
-  end
+# class Pawn < Piece
+#   def initialize(arguments, capture = false, status = false)
+#     super(arguments)
+#     @status = status
+#     @capture = capture
+#   end
 
-  def moves
-    @moves << [@x, @y+2] if status
-    @moves << [@x+1, @y]
-    capture? if @capture
-  end
+#   def moves
+#     @moves << [@x, @y+2] if status
+#     @moves << [@x+1, @y]
+#     capture? if @capture
+#   end
 
-  def capture?
-    @moves << [@x+1, @y+1], [@x-1, @y+1]
-  end
+#   def capture?
+#     @moves << [@x+1, @y+1], [@x-1, @y+1]
+#   end
 
-end
-
+# end
+puts "king"
 king = King.new([5,3])
 p king.moves
 
+puts "knight"
 knight = Knight.new([5,3])
 p knight.moves
 puts "rook:"
