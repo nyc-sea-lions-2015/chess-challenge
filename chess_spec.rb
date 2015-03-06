@@ -18,10 +18,10 @@ let(:board) {Board.new}
 describe 'Piece'
 
   let(:piece) {Piece.new}
-  let(:white_piece) {Piece.new([1,0], 'white')}
+  let(:white_piece) {Piece.new([5,3],'white')}
 
-    it "should accept (starting position, color_status, captured_status) as parameters" do
-      expect (piece(starting position, color_status, captured_position)).to_not raise_error
+    it "should accept (starting_position, color_status, captured_status) as parameters" do
+      expect (piece(starting_position, color_status, captured_status)).to_not raise_error
     end
 
     it "has a color method that returns the correct color of the piece" do
