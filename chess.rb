@@ -12,9 +12,9 @@ WIDTH = 8
 class Piece
   attr_reader :captured
   attr_accessor :color
-  def initialize(arguments, color = "black", captured = false)
+  def initialize(coordinates, color = "black", captured = false)
     @captured, @color = captured, color
-    @x, @y = arguments[0], arguments[1]
+    @x, @y = coordinates[0], coordinates[1]
     @moves = []
   end
 
@@ -29,8 +29,8 @@ end
 
 class King < Piece
   attr_reader :name
-  def initialize(arguments)
-    super(arguments, color)
+  def initialize(coordinates)
+    super(coordinates)
     @name = "KING"
   end
 
@@ -46,8 +46,8 @@ end
 
 class Knight < Piece
   attr_reader :name
-  def initialize(arguments)
-    super(arguments)
+  def initialize(coordinates)
+    super(coordinates)
     @name = "KNIGHT"
   end
 
@@ -62,8 +62,8 @@ end
 
 class Rook < Piece
   attr_reader :name
-  def initialize(arguments)
-    super(arguments,)
+  def initialize(coordinates)
+    super(coordinates,)
     @moves = Array.new(4){[]}
     @name = "ROOK"
   end
@@ -87,8 +87,8 @@ end
 
 class Bishop < Piece
   attr_reader
-  def initialize(arguments)
-    super(arguments, color)
+  def initialize(coordinates)
+    super(coordinates, color)
     @name = "BISHOP"
   end
 
@@ -118,8 +118,8 @@ end
 
 class Queen < Piece
   attr_reader :name
-  def initialize(arguments)
-    super(arguments)
+  def initialize(coordinates)
+    super(coordinates)
     @name = "QUEEN"
   end
 
@@ -132,8 +132,8 @@ class Queen < Piece
 end
 
 class Pawn < Piece
-  def initialize(arguments, capture = false, status = false)
-    super(arguments)
+  def initialize(coordinates, capture = false, status = false)
+    super(coordinates)
     @status = status
     @capture = capture
   end
