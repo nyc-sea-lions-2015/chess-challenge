@@ -109,6 +109,12 @@ class Piece
     @moves = []
   end
 
+  def remove_nil
+    @moves.each do |x|
+      @moves.delete(x) if x.empty?
+    end
+  end
+
   def captured!
     @captured = !@captured
   end
@@ -129,6 +135,7 @@ class King < Piece
       next if dx == 0 && dy == 0
       @moves << [[@x+dx, @y+dy]] unless @x+dx > WIDTH-1 || @x+dx < 0 || @y+dy > WIDTH-1 || @y+dy < 0
     end
+    remove_nil
       @moves
   end
 
@@ -144,6 +151,7 @@ class Knight < Piece
     [[1, 2], [1, -2], [-1, 2], [-1, -2], [2, 1], [2, -1], [-2, -1], [-2, 1]].each do |dx, dy|
       @moves << [[@x+dx, @y+dy]] unless @x+dx > WIDTH-1 || @x+dx < 0 || @y+dy > WIDTH-1 || @y+dy < 0
     end
+    remove_nil
     @moves
   end
 
@@ -169,10 +177,7 @@ class Rook < Piece
 
     1.upto(@y) {|dy| @moves[3] << [@x, @y-dy] unless @y-dy > WIDTH-1 || @y-dy < 0}
 
-    @moves.each do |x|
-      @moves.delete(x) if x.empty?
-    end
-
+    remove_nil
     return @moves
   end
 
@@ -204,6 +209,7 @@ class Bishop < Piece
         end
       end
     end
+    remove_nil
     @moves
   end
 
@@ -222,6 +228,8 @@ class Queen < Piece
     arr1 = Bishop.new([@x, @y]).moves
     arr2 = Rook.new([@x, @y]).moves
     @moves = arr1 + arr2
+    remove_nil
+    return @moves
   end
 
 end
@@ -238,6 +246,8 @@ class Pawn < Piece
     @moves << [[@x, @y+2]] if @status
     @moves << [[@x+1, @y]]
     capture? if @capture
+    remove_nil
+    return @moves
   end
 
   def capture?
