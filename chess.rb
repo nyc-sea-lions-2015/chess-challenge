@@ -122,6 +122,88 @@ class Bishop < Piece
     @possible_moves = []
   end
   def movement(board)
+    top_board = []
+    bottom_board = []
+    #checks diagnol from bottom right to top left
+    (-7..7).each do |num|
+      pos = position[0] - num
+      if pos.between?(0,7)
+
+        if (pos + pos) > (position[0] + position[1])
+          p "pos = #{pos}"
+          p "posiblemoves = #{@possible_moves}"
+          if board[pos][pos] != '-'
+            bottom_board << @possible_moves.each {|x| x} #bottom board taking all @possible values????
+          end
+        else
+          if board[pos][pos] != '-'
+            top_board << [pos,pos]
+          end
+        end
+
+        if board[pos][pos] == "-" || board[pos][pos].color != self.color
+          @possible_moves << [pos, pos]
+        end
+      else
+        next
+      end
+    end
+    p bottom_board
+    p top_board
+    @possible_moves = @possible_moves - (bottom_board + top_board)
+    #checks diagnol from bottom left to top right
+    (-7..7).each do |dy|
+      (-7..7).each do |dx|
+        y_pos = position[0] - dy
+        x_pos = position[1] - dx
+        if y_pos.between?(0,7) && x_pos.between?(0,7)
+          if (y_pos + x_pos) == (position[0] + position[1])
+            # if board[pos][pos].color != self.color || board[pos][pos].color == self.color
+            #   bottom_board = @possible_moves
+            # end
+            if board[y_pos][x_pos] == "-" || board[y_pos][x_pos].color != self.color
+              @possible_moves << [y_pos, x_pos]
+            end
+          end
+        else
+          next
+        end
+      end
+    end
+      @possible_moves
+  end
+end
+
+class Queen < Piece
+  attr_reader :possible_moves, :color
+  def initialize(color, position)
+    super
+    @possible_moves = []
+  end
+
+  def movement(board)
+    #horizontal
+    (-7..7).each do |dy|
+      y_pos = position[0] - dy
+      # puts y_pos
+      if y_pos.between?(0,7)
+        if board[y_pos][position[1]] == "-" || board[y_pos][position[1]].color != self.color
+          @possible_moves << [y_pos, position[1]]
+        end
+      end
+    end
+
+    #vertical
+    (-7..7).each do |dx|
+      x_pos = position[1] - dx
+      # puts y_pos
+      if x_pos.between?(0,7)
+        if board[position[0]][x_pos] == "-" || board[position[0]][x_pos].color != self.color
+          @possible_moves << [position[1], x_pos]
+        end
+      end
+    end
+
     #checks diagnol from top left to bottom right
     (-7..7).each do |num|
       pos = position[0] - num
@@ -133,6 +215,7 @@ class Bishop < Piece
         next
       end
     end
+
     #checks diagnol from bottom left to top right
     (-7..7).each do |dy|
       (-7..7).each do |dx|
@@ -149,34 +232,10 @@ class Bishop < Piece
         end
       end
     end
-      @possible_moves
+    @possible_moves
   end
+
 end
-
-# class Queen < Piece
-#   attr_reader :possible_moves, :color
-#   def initialize(color, position)
-#     super
-#     @possible_moves = []
-#   end
-
-#   def movement(board)
-#     (-8..8).each do |dy|
-#       (-8..8).each do |dx|
-#         y_pos = position[0] - dy
-#         x_pos = position[1] - dx
-#         if y_pos < 0 || y_pos > 7 || x_pos < 0 || x_pos > 7
-#           next
-#         else
-#           if board[y_pos][x_pos] == "-" || board[y_pos][x_pos].color != self.color
-#             @possible_moves << [y_pos, x_pos]
-#           end
-#         end
-#       end
-#     end
-#     @possible_moves
-#   end
-# end
 
 class Knight < Piece
   attr_reader :possible_moves, :color
@@ -206,7 +265,9 @@ class ChessBoard
   def initialize
     # Populate new board by creating a 2D array with rows (0..7)
     @board = Array.new(8) {["-","-","-","-","-","-","-","-"]}
-    @board[4][4] = King.new("black", [4,4])
+    # @board[4][4] = King.new("black", [4,4])
+    @board[4][4] = Queen.new("black", [4,4])
+    @board[3][3] = Bishop.new("black", [3,3])
 
   end
 
