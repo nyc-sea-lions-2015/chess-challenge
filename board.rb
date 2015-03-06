@@ -96,9 +96,9 @@ end
 class Piece
   attr_reader :captured
   attr_accessor :color
-  def initialize(arguments, color = "black", captured = false)
-    @captured, @color = captured, color
-    @x, @y = arguments[0], arguments[1]
+  def initialize(opts={})
+    @captured, @color = opts[:captured], opts[:color]
+    @x, @y = opts[:pos]
     @moves = []
   end
 
@@ -112,6 +112,8 @@ class Piece
 end
 
 class King < Piece
+<<<<<<< HEAD
+=======
   attr_reader :name
   def initialize(arguments)
     super(arguments, color)
@@ -119,6 +121,7 @@ class King < Piece
     moves
   end
 
+>>>>>>> 06cda9d17fafc49102704ff6cd5de360b202687c
   def moves
     [*-1..1].permutation(2).to_a.each do |dx,dy|
       next if dx == 0 && dy == 0
