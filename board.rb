@@ -3,6 +3,7 @@ class Board
   def initialize
     @board = Array.new(WIDTH) {WIDTH.times.map{[]}}
     @removed = []
+    @poss_moves = []
   end
 
   def clear
@@ -53,6 +54,26 @@ class Board
   #     row.map.with_index
   #   end
   # end
+
+  def move_valid(piece)
+    @poss_moves.clear
+
+    # piece.moves.each do |coordinate|
+    @board.each_with_index do |row, row_i|
+      row.each_with_index do |square, square_i|
+        piece.moves.each do |coordinate_set|
+          coordinate_set.each do |x,y|
+              puts "hello: [#{x},#{y}]"
+            next if x.nil? || y.nil?
+            @poss_moves << [square_i, row_i] if x==square_i && y == row_i && square.empty?
+          # if coordinate.include?([square_i, row_i])
+            end
+          end
+        end
+      end
+      @poss_moves
+  end
+
 
   def to_s
     @board.each_with_index.map do |row, i|
@@ -149,7 +170,7 @@ class Rook < Piece
 end
 
 class Bishop < Piece
-  attr_reader
+  attr_reader :name
   def initialize(arguments)
     super(arguments, color)
     @name = "BISHOP"
@@ -197,8 +218,10 @@ class Queen < Piece
 end
 
 class Pawn < Piece
+  attr_reader :name
   def initialize(arguments, capture = false, status = false)
     super(arguments)
+    @name = "PAWN"
     @status = status
     @capture = capture
     moves
@@ -219,6 +242,9 @@ end
 
 
 board = Board.new
-# puts board
-board.start
+# knight = Knight.new([1,7])
+
+# board.start
 puts board.to_s
+
+puts board.move_valid(Knight.new([1,7]))
