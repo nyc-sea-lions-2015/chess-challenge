@@ -78,14 +78,17 @@ class Board
   def to_s
     @board.each_with_index.map do |row, i|
       # puts "#{8-i} #{row}"
-      print "#{i}  "
+      print "#{8-i}  "
       row.each_with_index do |square, square_i|
-        next if square.empty?
+        if square.empty?
+          print "_ "
+          next
+        end
         print "#{square.first.name} "
       end
       puts
     end#.join(" \n")
-    "   " + [*"a".."h"].join("   ")
+    "   " + [*"a".."h"].join(" ")
   end
 end
 
@@ -104,7 +107,7 @@ class Piece
   end
 
   def to_s
-    "#{@color.upcase} #{self.name} moves: #{@moves.flatten(1)}"
+    "#{@color.upcase} #{(self.color == "black" ? self.name : self.name.downcase)} moves: #{@moves.flatten(1)}"
   end
 end
 
@@ -112,14 +115,14 @@ class King < Piece
   attr_reader :name
   def initialize(arguments)
     super(arguments, color)
-    @name = "KING"
+    @name = "K"
     moves
   end
 
   def moves
     [*-1..1].permutation(2).to_a.each do |dx,dy|
       next if dx == 0 && dy == 0
-      @moves << [[@x+dx, @y+dy]] unless x+dx > WIDTH-1 || @x+dx < 0 || @y+dy > WIDTH-1 || @y+dy < 0
+      @moves << [[@x+dx, @y+dy]] unless @x+dx > WIDTH-1 || @x+dx < 0 || @y+dy > WIDTH-1 || @y+dy < 0
     end
       @moves
   end
@@ -130,7 +133,7 @@ class Knight < Piece
   attr_reader :name
   def initialize(arguments)
     super(arguments)
-    @name = "KNIGHT"
+    @name = "N"
     moves
   end
 
@@ -148,7 +151,7 @@ class Rook < Piece
   def initialize(arguments)
     super(arguments)
     @moves = Array.new(4){[]}
-    @name = "ROOK"
+    @name = "R"
     moves
   end
 
@@ -173,7 +176,7 @@ class Bishop < Piece
   attr_reader :name
   def initialize(arguments)
     super(arguments, color)
-    @name = "BISHOP"
+    @name = "B"
     moves
   end
 
@@ -205,7 +208,7 @@ class Queen < Piece
   attr_reader :name
   def initialize(arguments)
     super(arguments)
-    @name = "QUEEN"
+    @name = "Q"
     moves
   end
 
@@ -221,7 +224,7 @@ class Pawn < Piece
   attr_reader :name
   def initialize(arguments, capture = false, status = false)
     super(arguments)
-    @name = "PAWN"
+    @name = "P"
     @status = status
     @capture = capture
     moves
@@ -242,9 +245,11 @@ end
 
 
 board = Board.new
+pawn = Pawn.new([2,3], "white", true)
+puts pawn
 # knight = Knight.new([1,7])
 
-# board.start
+board.start
 puts board.to_s
 
 print board.move_valid(Knight.new([1,7]))
