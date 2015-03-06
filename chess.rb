@@ -79,8 +79,8 @@ class King < Piece
 end
 
 class Pawn < Piece
-  attr_reader :color
-  attr_accessor :move_counter, :possible_moves, :symbol
+  # attr_reader
+  attr_accessor :move_counter, :possible_moves, :symbol, :color
   def initialize(color, position)
     super
     @possible_moves = []
@@ -93,7 +93,6 @@ class Pawn < Piece
       if @move_counter == 0
         (1..2).each do |y|
           y_pos = @position[0] - y
-          p y_pos
           if board[y_pos][position[1]] == "-"
             @possible_moves << [y_pos, position[1]]
             @move_counter += 1
@@ -111,15 +110,16 @@ class Pawn < Piece
       [[-1,-1],[-1,1]].each do |dy, dx|
         y_pos = position[0] + dy
         x_pos = position[1] + dx
-        if board[y_pos][x_pos] != "-"
-          @possible_moves << [y_pos, x_pos] if board[y_pos][x_pos].color != @color
-        end
+        # if y_pos <= 7 || y_pos >= 0 || x_pos <= 7 || x_pos >= 0
+          if board[y_pos][x_pos] != "-"
+            @possible_moves << [y_pos, x_pos] if board[y_pos][x_pos].color != @color
+          end
+        # end
       end
     else #black
       if @move_counter == 0
         (1..2).each do |y|
           y_pos = @position[0] + y
-          p y_pos
           if board[y_pos][position[1]] == "-"
             @possible_moves << [y_pos, position[1]]
             @move_counter += 1
@@ -137,8 +137,10 @@ class Pawn < Piece
       [[1,1],[1,-1]].each do |dy, dx|
         y_pos = position[0] + dy
         x_pos = position[1] + dx
-        if board[y_pos][x_pos] != "-"
-          @possible_moves << [y_pos, x_pos] if board[y_pos][x_pos].color != @color
+        if y_pos < 7 || y_pos > 0 || x_pos < 7 || x_pos > 0
+          if board[y_pos][x_pos] != "-"
+            @possible_moves << [y_pos, x_pos] if board[y_pos][x_pos].color != @color
+          end
         end
       end
     end
@@ -579,14 +581,41 @@ class ChessBoard
     # Populate new board by creating a 2D array with rows (0..7)
     @board = Array.new(8) {["-","-","-","-","-","-","-","-"]}
     # @board[4][4] = King.new("black", [4,4])
-    @board[4][4] = Queen.new("black", [4,4])
-    @board[3][3] = Bishop.new("black", [3,3])
-    @board[1][1] = Bishop.new("black", [1,1])
-    @board[5][2] = Bishop.new("black", [5,2])
-    @board[6][1] = Pawn.new("white", [6,1])
-    @board[1][5] = Pawn.new("black", [1,5])
-    @board[2][4] = Pawn.new("white", [2,4])
+    @board[7] = [ Rook.new("white", [7,0]),
+                  Knight.new("white", [7,1]),
+                  Bishop.new("white", [7,2]),
+                  Queen.new("white", [7,3]),
+                  King.new("white", [7,4]),
+                  Bishop.new("white", [7,5]),
+                  Knight.new("white", [7,6]),
+                  Rook.new("white", [7,7]) ]
 
+    @board[0] = [ Rook.new("black", [0,0]),
+                  Knight.new("black", [0,1]),
+                  Bishop.new("black", [0,2]),
+                  Queen.new("black", [0,3]),
+                  King.new("black", [0,4]),
+                  Bishop.new("black", [0,5]),
+                  Knight.new("black", [0,6]),
+                  Rook.new("black", [0,7]) ]
+
+    @board[1] = [Pawn.new("black", [1,0]),
+            Pawn.new("black", [1,1]),
+            Pawn.new("black", [1,2]),
+            Pawn.new("black", [1,3]),
+            Pawn.new("black", [1,4]),
+            Pawn.new("black", [1,5]),
+            Pawn.new("black", [1,6]),
+            Pawn.new("black", [1,7])]
+
+    @board[6] = [Pawn.new("white", [6,0]),
+            Pawn.new("white", [6,1]),
+            Pawn.new("white", [6,2]),
+            Pawn.new("white", [6,3]),
+            Pawn.new("white", [6,4]),
+            Pawn.new("white", [6,5]),
+            Pawn.new("white", [6,6]),
+            Pawn.new("white", [6,7])]
   end
 
   def select_piece(array, player_color)
@@ -599,6 +628,7 @@ class ChessBoard
     if @board[col][row] != "-" && @board[col][row].color == player_color
       @board[col][row].movement(@board)
     else
+      p "Pawn Error found!"
       nil
     end
   end
@@ -617,7 +647,6 @@ class ChessBoard
     @board[old_col][old_row] = "-"
     @board[new_col][new_row].position = [new_col, new_row]
     @board[new_col][new_row].possible_moves = []
-    p @board
   end
 
   def to_s
@@ -639,16 +668,19 @@ class Game
     @new_game = ChessBoard.new
     @player = true
     @player_color = "white"
+    puts @new_game
   end
 
   def turn
     if @player == true
       white_turn
+      puts @new_game
       @player = false
       @player_color = "black"
     else
       #next player's turn
       black_turn
+      puts @new_game
       @player = true
       @player_color = "white"
     end
@@ -711,31 +743,17 @@ class Game
   end
 
   def piece_select
-    p @user_piece
+    # @user_piece
+    puts "possible moves"
     p @valid_moves = @new_game.select_piece(@user_piece, @player_color)
-    #What piece?
-    #@current_piece = gets.chomp (row, col) convert to array
-    #select_piece(array[row, col])
   end
-
-#   def select_move
-#     p @user_move
-#     if @new_game.valid_move?(@valid_moves, @user_move)
-#       puts valid = true
-#     else
-#       puts "Invalid move"
-# #     #What position
-# #     #@destination = gets.chomp (row, col) convert to array
-# #     #make_move if valid_move?(array[row, col]) == true
-#     end
-#   end
 
 end
 
 test = Game.new
-puts test.new_game
-# test.turn
-# test.turn
-# test.turn
-# test.turn
+
+test.turn
+test.turn
+test.turn
+test.turn
 
