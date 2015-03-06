@@ -65,7 +65,7 @@ class Board
           coordinate_set.each do |x,y|
             @poss_moves << [x, y] if @board[x][y].empty?
             if @board[x][y].empty? == false
-              break
+              p "there are no items"
             end
           end
         end
