@@ -63,15 +63,14 @@ class Board
       row.each_with_index do |square, square_i|
         piece.moves.each do |coordinate_set|
           coordinate_set.each do |x,y|
-              puts "hello: [#{x},#{y}]"
+            puts "hello: [#{x},#{y}]"
             next if x.nil? || y.nil?
             @poss_moves << [square_i, row_i] if x==square_i && y == row_i && square.empty?
-          # if coordinate.include?([square_i, row_i])
-            end
           end
         end
       end
-      @poss_moves
+    end
+    @poss_moves
   end
 
 
@@ -120,7 +119,6 @@ class King < Piece
     [*-1..1].permutation(2).to_a.each do |dx,dy|
       next if dx == 0 && dy == 0
       @moves << [[@x+dx, @y+dy]] unless x+dx > WIDTH-1 || @x+dx < 0 || @y+dy > WIDTH-1 || @y+dy < 0
-    end
     end
       @moves
   end
