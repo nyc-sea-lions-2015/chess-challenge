@@ -517,6 +517,10 @@ class ChessBoard
     @board[1][1] = Bishop.new("black", [1,1])
     @board[1][5] = Bishop.new("black", [1,5])
     @board[5][1] = Bishop.new("white", [5,1])
+    @board[4][2] = Bishop.new("white", [4,2])
+    @board[4][6] = Bishop.new("white", [4,6])
+    @board[2][4] = Bishop.new("white", [2,4])
+    @board[6][4] = Bishop.new("white", [6,4])
   end
 
   def select_piece(array)
