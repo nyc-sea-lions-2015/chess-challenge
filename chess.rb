@@ -10,9 +10,10 @@
 WIDTH = 8
 
 class Piece
-  def initialize(arguments, color="black", captured = false)
-    @captured, @color = captured#, color
-    # @color = ... for the purpose of whether or not a piece can be captured.
+  attr_reader :captured
+  attr_accessor :color
+  def initialize(arguments, color = "black", captured = false)
+    @captured, @color = captured, color
     @x, @y = arguments[0], arguments[1]
     @moves = []
   end
@@ -108,7 +109,7 @@ class Queen < Piece
   def moves
     arr1 = Bishop.new([@x, @y]).moves
     arr2 = Rook.new([@x, @y]).moves
-    return arr1.concat(arr2)
+    return arr1+arr2
   end
 end
 
@@ -120,17 +121,18 @@ class Pawn < Piece
   end
 
   def moves
-    @moves << [@x, @y+2] if status
+    @moves << [@x, @y+2] if @status
     @moves << [@x+1, @y]
     capture? if @capture
   end
 
   def capture?
-    @moves << [@x+1, @y+1], [@x-1, @y+1]
+    @moves << [@x+1, @y+1]
+    @moves << [@x-1, @y+1]
   end
 
 end
-
+puts "King:"
 king = King.new([5,3])
 p king.moves
 
@@ -148,7 +150,9 @@ puts "queen:"
 queen = Queen.new([4,3])
 p queen.moves
 
-
+puts "pawn:"
+pawn = Pawn.new([5,3], true)
+p pawn.moves
 
 
 
