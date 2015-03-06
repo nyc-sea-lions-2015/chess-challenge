@@ -118,8 +118,6 @@ class King < Piece
   attr_reader :name
   def initialize(arguments)
     super(arguments)
-    @name = "K"
-    moves
   end
 
   def moves
@@ -136,8 +134,6 @@ class Knight < Piece
   attr_reader :name
   def initialize(arguments)
     super(arguments)
-    @name = "N"
-    moves
   end
 
   def moves
@@ -154,8 +150,6 @@ class Rook < Piece
   def initialize(arguments)
     super(arguments)
     @moves = Array.new(4){[]}
-    @name = "R"
-    moves
   end
 
   def moves
@@ -179,7 +173,6 @@ class Bishop < Piece
   attr_reader :name
   def initialize(arguments)
     super(arguments)
-    @name = "B"
     moves
   end
 
@@ -187,7 +180,7 @@ class Bishop < Piece
     arr = [1, 1, -1, -1].permutation(2).to_a.uniq
     empty = [[@x, @y]]
     array_temp = Array.new
-    i = 0
+
     arr.each do |dx, dy|
       empty.each do |cx, cy|
         WIDTH.times do |num|
@@ -211,8 +204,6 @@ class Queen < Piece
   attr_reader :name
   def initialize(arguments)
     super(arguments)
-    @name = "Q"
-    moves
   end
 
   def moves
@@ -227,10 +218,8 @@ class Pawn < Piece
   attr_reader :name
   def initialize(arguments, capture = false, status = false)
     super(arguments)
-    @name = "P"
     @status = status
     @capture = capture
-    moves
   end
 
   def moves
