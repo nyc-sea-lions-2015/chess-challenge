@@ -1,6 +1,8 @@
+WIDTH = 8
 class Board
   def initialize
-    @board = Array.new(8) {8.times.map{[]}}
+    @board = Array.new(WIDTH) {WIDTH.times.map{[]}}
+    @removed = []
   end
 
   def clear
@@ -9,25 +11,177 @@ class Board
 
   def start
     #TODO: place pawns in appropriate places
+
+    @board.map.with_index do |row, row_i|
+      if i== 1 || i == 6
+        row.map.with_index do |square, square_i|
+          square << Pawn.new([row_i, square_i])
+        end
+      end
+      if i == 0 || i == WIDTH-1
+        row.map.with_index do |square,square_i|
+          if square_i == 0 || square_i == WIDTH-1
+            square << Rook.new([row_i, square_i])
+          elsif square_i == 1 || square_i == WIDTH-2
+            square << Knight.new([row_i, square_i])
+          elsif square_i ==2 || square_i == WIDTH-3
+            square << Bishop.new([row_i, square_i])
+          elsif square_i == 3
+            square << Queen.new([row_i, square_i])
+          else
+            square << King.new([row_i, square_i])
+          end
+        end
+      end
+    # end
+    end
+    @board
   end
 
-  def place(piece, position)
-    #assume piece = some instance of a piece-type class
-    #assume position is an array [x,y]
-    piece.arguments = position
-  end
-
-  def removed
-
+   def remove
+    #TODO: remove pieces if piece.captured == true
+    #stores removed pieces in removed array.
+    @board.map.with_index |row, row_i|
+      row.map.with_index
+    end
   end
 
   def to_s
     @board.each_with_index.map do |row, i|
-      puts "#{8-i} #{row}"
+      # puts "#{8-i} #{row}"
+      puts "#{i} #{row}"
+
     end
     "   " + [*"a".."h"].join("   ")
   end
 end
 
+
+class Piece
+  attr_reader :captured
+  attr_accessor :color
+  def initialize(arguments, color = "black", captured = false)
+    @captured, @color = captured, color
+    @x, @y = arguments[0], arguments[1]
+    @moves = []
+  end
+
+  def captured!
+    @captured = !@captured
+  end
+end
+
+class King < Piece
+  def initialize(arguments)
+    super(arguments)
+  end
+
+  def moves
+    [*-1..1].permutation(2).to_a.each do |dx,dy|
+      next if dx == 0 && dy == 0
+      @moves << [@x+dx, @y+dy]
+    end
+      @moves
+  end
+end
+
+class Knight < Piece
+  def initialize(arguments)
+    super(arguments)
+  end
+
+  def moves
+    [[1, 2], [1, -2], [-1, 2], [-1, -2], [2, 1], [2, -1], [-2, -1], [-2, 1]].each do |dx, dy|
+      @moves << [@x+dx, @y+dy]
+    end
+    @moves
+  end
+end
+
+class Rook < Piece
+  def initialize(arguments)
+    super(arguments)
+    @moves = Array.new(4){[]}
+  end
+
+  def moves
+    [*@x..WIDTH-1].each_index do |dx|
+      @moves[0] << [@x+(dx+1), @y]
+    end
+
+    1.upto(@x) {|dx| @moves[1] << [@x-dx, @y]}
+
+    [*@y..WIDTH-1].each_index do |dy|
+      @moves[2] << [@x, @y+(dy+1)]
+    end
+
+    1.upto(@y) {|dy| @moves[3] << [@x, @y-dy]}
+    return @moves
+  end
+
+end
+
+class Bishop < Piece
+  def initialize(arguments)
+    super(arguments)
+  end
+
+  def moves
+    arr = [1, 1, -1, -1].permutation(2).to_a.uniq
+    empty = [[@x, @y]]
+    array_temp = Array.new
+    i = 0
+    arr.each do |dx, dy|
+      empty.each do |cx, cy|
+        WIDTH.times do |num|
+          cx += dx
+          cy += dy
+          if cx > WIDTH-1 || cx < 0 || cy > WIDTH-1 || cy < 0
+            @moves << array_temp.compact unless array_temp.empty?
+            array_temp.clear
+            next
+          end
+          array_temp << [cx, cy]
+        end
+      end
+    end
+    @moves
+  end
+end
+
+class Queen < Piece
+  def initialize(arguments)
+    super(arguments)
+  end
+
+  def moves
+    arr1 = Bishop.new([@x, @y]).moves
+    arr2 = Rook.new([@x, @y]).moves
+    return arr1+arr2
+  end
+end
+
+class Pawn < Piece
+  def initialize(arguments, capture = false, status = false)
+    super(arguments)
+    @status = status
+    @capture = capture
+  end
+
+  def moves
+    @moves << [@x, @y+2] if @status
+    @moves << [@x+1, @y]
+    capture? if @capture
+  end
+
+  def capture?
+    @moves << [@x+1, @y+1]
+    @moves << [@x-1, @y+1]
+  end
+
+end
+
 board = Board.new
+# puts board
+board.start
 puts board
