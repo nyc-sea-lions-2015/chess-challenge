@@ -10,7 +10,6 @@
 WIDTH = 8
 
 class Piece
-
   attr_reader :captured
   attr_accessor :color
   def initialize(arguments, color = "black", captured = false)
@@ -22,11 +21,15 @@ class Piece
   def captured!
     @captured = !@captured
   end
+
+  def to_s
+    "HELLO color: #{@color} moves: #{@moves.flatten(1)}"
+  end
 end
 
 class King < Piece
   def initialize(arguments)
-    super(arguments)
+    super(arguments, color)
   end
 
   def moves
@@ -35,6 +38,10 @@ class King < Piece
       @moves << [@x+dx, @y+dy]
     end
       @moves
+  end
+
+  def to_s
+    "KING color: #{@color} moves: #{@moves}"
   end
 end
 
@@ -49,11 +56,16 @@ class Knight < Piece
     end
     @moves
   end
+
+  def to_s
+    "KNIGHT color: #{@color} moves: #{@moves.flatten}"
+  end
+
 end
 
 class Rook < Piece
   def initialize(arguments)
-    super(arguments)
+    super(arguments,)
     @moves = Array.new(4){[]}
   end
 
@@ -72,11 +84,14 @@ class Rook < Piece
     return @moves
   end
 
+  def to_s
+    "ROOK color: #{@color} moves: #{@moves.flatten(1)}"
+  end
 end
 
 class Bishop < Piece
   def initialize(arguments)
-    super(arguments)
+    super(arguments, color)
   end
 
   def moves
@@ -100,6 +115,10 @@ class Bishop < Piece
     end
     @moves
   end
+
+  def to_s
+    "BISHOP color: #{@color} moves: #{@moves.flatten(1)}"
+  end
 end
 
 class Queen < Piece
@@ -110,7 +129,11 @@ class Queen < Piece
   def moves
     arr1 = Bishop.new([@x, @y]).moves
     arr2 = Rook.new([@x, @y]).moves
-    return arr1+arr2
+    @moves = arr1+arr2
+  end
+
+  def to_s
+    "QUEEN color: #{@color} moves: #{@moves.flatten(1)}"
   end
 end
 
@@ -132,29 +155,24 @@ class Pawn < Piece
     @moves << [@x-1, @y+1]
   end
 
+  def to_s
+    "PAWN color: #{@color} moves: #{@moves.flatten}"
+  end
 end
-puts "King:"
-king = King.new([5,3])
-p king.moves
 
-puts "knight"
-knight = Knight.new([5,3])
-p knight.moves
-puts "rook:"
-rook = Rook.new([4,3])
-p rook.moves
+pawn = Pawn.new([5,3])
+pawn.moves
+puts pawn
 
-puts "bishop:"
-bishop = Bishop.new([4,3])
-p bishop.moves
+# bishop = Bishop.new([5,3])
+# bishop.moves
+# puts bishop
 
-puts "queen:"
-queen = Queen.new([4,3])
-p queen.moves
-
-puts "pawn:"
-pawn = Pawn.new([5,3], true)
-p pawn.moves
-
-
+# rook = Rook.new([5,3])
+# rook.moves
+# puts rook
+puts
+queen = Queen.new([5,3])
+queen.moves
+puts queen
 
