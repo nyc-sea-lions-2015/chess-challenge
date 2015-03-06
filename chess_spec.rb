@@ -18,16 +18,19 @@ let(:board) {Board.new}
 describe 'Piece'
 
   let(:piece) {Piece.new}
+  let(:white_piece) {Piece.new([1,0], 'white')}
 
-    it "should accept (captured_status, color_status, starting_position) as parameters" do
-      expect {piece(captured_status, color_status, starting_position)}.to_not raise_error
+    it "should accept (starting position, color_status, captured_status) as parameters" do
+      expect {piece(starting position, color_status, captured_position)}.to_not raise_error
     end
 
     it "has a color method that returns the correct color of the piece" do
-      expect {piece.color}.to_eq.....
+      expect {piece.color}.to_eq(black)
+      expect {white_piece.color}.to_eq(white)
+    end
     end
 
-    it " dohas a captured_status method that returns the correct capture status of the piece" do
+    it "has a captured_status method that returns the correct capture status of the piece" do
       expect {piece.captured_status}.to_eq(false)
     end
 
