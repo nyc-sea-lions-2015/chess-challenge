@@ -57,10 +57,11 @@ class Piece
 end
 
 class King < Piece
-  attr_accessor :possible_moves, :color
+  attr_accessor :possible_moves, :color, :symbol
   def initialize(color, position)
     super
     @possible_moves = []
+    @color == "white" ? @symbol = "♔": @symbol = "♚"
   end
 
   def movement(board)
@@ -79,11 +80,12 @@ end
 
 class Pawn < Piece
   attr_reader :color
-  attr_accessor :move_counter, :possible_moves
+  attr_accessor :move_counter, :possible_moves, :symbol
   def initialize(color, position)
     super
     @possible_moves = []
     @move_counter = 0
+    @color == "white" ? @symbol = "♙": @symbol = "♟"
   end
 
   def movement(board)
@@ -145,10 +147,11 @@ class Pawn < Piece
 end
 
 class Rook < Piece
-  attr_accessor :possible_moves, :color
+  attr_accessor :possible_moves, :color, :symbol
   def initialize(color, position)
     super
     @possible_moves = []
+    @color == "white" ? @symbol = "♖": @symbol = "♜"
   end
 
   def movement(board)
@@ -235,10 +238,11 @@ class Rook < Piece
 end
 
 class Bishop < Piece
-  attr_accessor :possible_moves, :color
+  attr_accessor :possible_moves, :color, :symbol
   def initialize(color, position)
     super
     @possible_moves = []
+    @color == "white" ? @symbol = "♗": @symbol = "♝"
   end
 
   def movement(board)
@@ -342,10 +346,11 @@ class Bishop < Piece
 end
 
 class Queen < Piece
-  attr_accessor :possible_moves, :color
+  attr_accessor :possible_moves, :color, :symbol
   def initialize(color, position)
     super
     @possible_moves = []
+    @color == "white" ? @symbol = "♕": @symbol = "♛"
   end
 
   def movement(board)
@@ -545,10 +550,11 @@ class Queen < Piece
 end
 
 class Knight < Piece
-  attr_accessor :possible_moves, :color
+  attr_accessor :possible_moves, :color, :symbol
   def initialize(color, position)
     super
     @possible_moves = []
+    @color == "white" ? @symbol = "♘": @symbol = "♞"
   end
 
   def movement(board)
@@ -614,9 +620,16 @@ class ChessBoard
     p @board
   end
 
-  # def to_s
-  #   # Display the current state of the board by iterating through it.
-  # end
+  def to_s
+    board_str= ""
+    @board.each_with_index do |row, r_index|
+      row.each_with_index do |col, c_index|
+        col != "-" ? board_str += "  "+col.symbol : board_str += "  ◽"
+      end
+      board_str += "\n"
+    end
+    return board_str
+  end
 
 end
 
@@ -694,6 +707,7 @@ class Game
         puts "Invalid move"
       end
     end
+    @new_game.make_move(@user_move, @user_piece)
   end
 
   def piece_select
@@ -719,8 +733,9 @@ class Game
 end
 
 test = Game.new
-test.turn
-test.turn
-test.turn
-test.turn
+puts test.new_game
+# test.turn
+# test.turn
+# test.turn
+# test.turn
 
