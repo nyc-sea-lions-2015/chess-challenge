@@ -57,9 +57,12 @@ class Board
   def to_s
     @board.each_with_index.map do |row, i|
       # puts "#{8-i} #{row}"
-      puts "#{i} #{row}"
-
-    end
+      puts "#{i}"
+      row.each_with_index do |square, square_i|
+        next if square.empty?
+        puts "#{square.first.name}"
+      end
+    end.join
     "   " + [*"a".."h"].join("   ")
   end
 end
@@ -79,7 +82,7 @@ class Piece
   end
 
   def to_s
-    "#{@color.upcase} #{self.name} moves: #{@moves.flatten(1)}"
+    "#{@color} #{self.name} moves: #{@moves.flatten(1)}"
   end
 end
 
@@ -141,7 +144,7 @@ class Rook < Piece
 end
 
 class Bishop < Piece
-  attr_reader
+  attr_reader :name
   def initialize(arguments)
     super(arguments, color)
     @name = "BISHOP"
@@ -186,10 +189,12 @@ class Queen < Piece
 end
 
 class Pawn < Piece
+  attr_reader :name
   def initialize(arguments, capture = false, status = false)
     super(arguments)
     @status = status
     @capture = capture
+    @name = "PAWN"
   end
 
   def moves
