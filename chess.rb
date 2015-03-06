@@ -91,27 +91,85 @@ class Rook < Piece
   end
 
   def movement(board)
-    #horizontal
-    (-7..7).each do |dy|
+    #up
+    -1.downto(-7) do |dy|
       y_pos = position[0] - dy
       # puts y_pos
       if y_pos.between?(0,7)
-        if board[y_pos][position[1]] == "-" || board[y_pos][position[1]].color != self.color
+        if board[y_pos][position[1]] == "-"
           @possible_moves << [y_pos, position[1]]
+        else
+          # puts "Original: #{@color}"
+          # puts "Obstruction: #{board[y_pos][position[1]].color}"
+          if board[y_pos][position[1]].color != @color
+            @possible_moves << [y_pos, position[1]]
+            break
+          else
+            # @possible_moves << [y_pos, position[1]]
+            break
+          end
         end
       end
     end
-    #vertical
-    (-7..7).each do |dx|
+
+    #down
+    1.upto(7) do |dy|
+      y_pos = position[0] - dy
+      if y_pos.between?(0,7)
+        if board[y_pos][position[1]] == "-"
+          @possible_moves << [y_pos, position[1]]
+        else
+          # puts "Original: #{@color}"
+          # puts "Obstruction: #{board[y_pos][position[1]].color}"
+          if board[y_pos][position[1]].color != @color
+            @possible_moves << [y_pos, position[1]]
+            break
+          else
+            # @possible_moves << [y_pos, position[1]]
+            break
+          end
+        end
+      end
+    end
+
+    #left
+    -1.downto(-7) do |dx|
       x_pos = position[1] - dx
       # puts y_pos
       if x_pos.between?(0,7)
-        if board[position[0]][x_pos] == "-" || board[position[0]][x_pos].color != self.color
-          @possible_moves << [position[1], x_pos]
+        if board[position[0]][x_pos] == "-"
+          @possible_moves << [position[0], x_pos]
+        else
+          if board[position[0]][x_pos].color == @color
+            # @possible_moves << [y_pos, position[1]]
+            break
+          else
+            @possible_moves << [position[0], x_pos]
+            break
+          end
         end
       end
     end
-    @possible_moves
+
+    # #right
+    1.upto(7) do |dx|
+      x_pos = position[1] - dx
+      # puts y_pos
+      if x_pos.between?(0,7)
+        if board[position[0]][x_pos] == "-"
+          @possible_moves << [position[0], x_pos]
+        else
+          if board[position[0]][x_pos].color == @color
+            # @possible_moves << [y_pos, position[1]]
+            break
+          else
+            @possible_moves << [position[0], x_pos]
+            break
+          end
+        end
+      end
+    end
+  @possible_moves
   end
 end
 
@@ -121,52 +179,102 @@ class Bishop < Piece
     super
     @possible_moves = []
   end
+
   def movement(board)
-    top_board = []
-    bottom_board = []
-    #checks diagnol from bottom right to top left
-    (-7..7).each do |num|
-      pos = position[0] - num
-      if pos.between?(0,7)
-
-        if (pos + pos) > (position[0] + position[1])
-          if board[pos][pos] != '-'
-            bottom_board << @possible_moves.each {|x| x} #bottom board taking all @possible values????
-          end
-        else
-          if board[pos][pos] != '-'
-            top_board << [pos,pos]
-          end
-        end
-
-        if board[pos][pos] == "-" || board[pos][pos].color != self.color
-          @possible_moves << [pos, pos]
-        end
-      else
+    movement_top_left(board)
+    movement_bottom_right(board)
+    movement_top_right(board)
+    movement_bottom_left(board)
+  end
+  #checks diagnol from piece to top left
+  def movement_top_left(board)
+    (1..7).each do |num|
+      dy, dx = num, num
+      y_pos = position[0] - dy
+      x_pos = position[1] - dx
+      if y_pos < 0 || x_pos < 0
         next
+      else
+        if board[y_pos][x_pos] == "-"
+          @possible_moves << [y_pos, x_pos]
+        else
+          if board[y_pos][x_pos].color != @color
+            @possible_moves << [y_pos, x_pos]
+            return @possible_moves
+          else
+            return @possible_moves
+          end
+        end
       end
     end
-    p bottom_board
-    p top_board
-    @possible_moves = @possible_moves - (bottom_board + top_board)
-    #checks diagnol from bottom left to top right
-    (-7..7).each do |dy|
-      (-7..7).each do |dx|
-        y_pos = position[0] - dy
-        x_pos = position[1] - dx
-        if y_pos.between?(0,7) && x_pos.between?(0,7)
-          if (y_pos + x_pos) == (position[0] + position[1])
-            # if board[pos][pos].color != self.color || board[pos][pos].color == self.color
-            #   bottom_board = @possible_moves
-            # end
-            if board[y_pos][x_pos] == "-" || board[y_pos][x_pos].color != self.color
-              @possible_moves << [y_pos, x_pos]
-            end
-          end
+    @possible_moves
+  end
+    #checks diagnol from piece to bottom_left
+  def movement_bottom_right(board)
+    (1..7).each do |num|
+      dy, dx = num, num
+      y_pos = position[0] + dy
+      x_pos = position[1] + dx
+      if y_pos > 7 || x_pos > 7
+        next
+      else
+        if board[y_pos][x_pos] == "-"
+          @possible_moves << [y_pos, x_pos]
         else
-          next
+          if board[y_pos][x_pos].color != @color
+            @possible_moves << [y_pos, x_pos]
+            return @possible_moves
+          else
+            return @possible_moves
+          end
         end
       end
+    end
+    @possible_moves
+  end
+  #checks diagnol from piece to top_right
+  def movement_top_right(board)
+    (1..7).each do |num|
+      dy, dx = num, num
+      y_pos = position[0] - dy
+      x_pos = position[1] + dx
+      if y_pos < 0 || x_pos > 7
+        next
+      else
+        if board[y_pos][x_pos] == "-"
+          @possible_moves << [y_pos, x_pos]
+        else
+          if board[y_pos][x_pos].color != @color
+            @possible_moves << [y_pos, x_pos]
+            return @possible_moves
+          else
+            return @possible_moves
+          end
+        end
+      end
+    end
+    @possible_moves
+  end
+    #checks diagnol from piece to bottom_left
+  def movement_bottom_left(board)
+    (1..7).each do |num|
+        dy, dx = num, num
+        y_pos = position[0] + dy
+        x_pos = position[1] - dx
+        if y_pos > 7 || x_pos < 0
+          next
+        else
+          if board[y_pos][x_pos] == "-"
+            @possible_moves << [y_pos, x_pos]
+          else
+            if board[y_pos][x_pos].color != @color
+              @possible_moves << [y_pos, x_pos]
+              return @possible_moves
+            else
+              return @possible_moves
+            end
+          end
+        end
     end
     @possible_moves
   end
@@ -180,60 +288,199 @@ class Queen < Piece
   end
 
   def movement(board)
-    #horizontal
-    (-7..7).each do |dy|
+    movement_top_left(board)
+    movement_bottom_right(board)
+    movement_top_right(board)
+    movement_bottom_left(board)
+    movement_up(board)
+    movement_down(board)
+    movement_right(board)
+    movement_left(board)
+  end
+  #checks diagnol from piece to top left
+  def movement_top_left(board)
+    (1..7).each do |num|
+      dy, dx = num, num
       y_pos = position[0] - dy
-      # puts y_pos
-      if y_pos.between?(0,7)
-        if board[y_pos][position[1]] == "-" || board[y_pos][position[1]].color != self.color
-          @possible_moves << [y_pos, position[1]]
+      x_pos = position[1] - dx
+      if y_pos < 0 || x_pos < 0
+        next
+      else
+        if board[y_pos][x_pos] == "-"
+          @possible_moves << [y_pos, x_pos]
+        else
+          if board[y_pos][x_pos].color != @color
+            @possible_moves << [y_pos, x_pos]
+            return @possible_moves
+          else
+            return @possible_moves
+          end
+        end
+      end
+    end
+    @possible_moves
+  end
+    #up
+    def movement_up(board)
+      -1.downto(-7) do |dy|
+        y_pos = position[0] - dy
+        # puts y_pos
+        if y_pos.between?(0,7)
+          if board[y_pos][position[1]] == "-"
+            @possible_moves << [y_pos, position[1]]
+          else
+            # puts "Original: #{@color}"
+            # puts "Obstruction: #{board[y_pos][position[1]].color}"
+            if board[y_pos][position[1]].color != @color
+              @possible_moves << [y_pos, position[1]]
+              break
+            else
+              # @possible_moves << [y_pos, position[1]]
+              break
+            end
+          end
         end
       end
       @possible_moves
     end
 
-    #vertical
-    (-7..7).each do |dx|
-      x_pos = position[1] - dx
-      # puts y_pos
-      if x_pos.between?(0,7)
-        if board[position[0]][x_pos] == "-" || board[position[0]][x_pos].color != self.color
-          @possible_moves << [position[1], x_pos]
-        end
-      end
-    end
-
-    #checks diagnol from top left to bottom right
-    (-7..7).each do |num|
-      pos = position[0] - num
-      if pos.between?(0,7)
-        if board[pos][pos] == "-" || board[pos][pos].color != self.color
-          @possible_moves << [pos, pos]
-        end
-      else
-        next
-      end
-    end
-
-    #checks diagnol from bottom left to top right
-    (-7..7).each do |dy|
-      (-7..7).each do |dx|
+    #down
+    def movement_down(board)
+      1.upto(7) do |dy|
         y_pos = position[0] - dy
-        x_pos = position[1] - dx
-        if y_pos.between?(0,7) && x_pos.between?(0,7)
-          if (y_pos + x_pos) == (position[0] + position[1])
-            if board[y_pos][x_pos] == "-" || board[y_pos][x_pos].color != self.color
-              @possible_moves << [y_pos, x_pos]
+        if y_pos.between?(0,7)
+          if board[y_pos][position[1]] == "-"
+            @possible_moves << [y_pos, position[1]]
+          else
+            # puts "Original: #{@color}"
+            # puts "Obstruction: #{board[y_pos][position[1]].color}"
+            if board[y_pos][position[1]].color != @color
+              @possible_moves << [y_pos, position[1]]
+              break
+            else
+              # @possible_moves << [y_pos, position[1]]
+              break
+
             end
           end
+        end
+      end
+      @possible_moves
+    end
+  #checks diagnol from piece to bottom_left
+  def movement_bottom_right(board)
+    (1..7).each do |num|
+      dy, dx = num, num
+      y_pos = position[0] + dy
+      x_pos = position[1] + dx
+      if y_pos > 7 || x_pos > 7
+        next
+      else
+        if board[y_pos][x_pos] == "-"
+          @possible_moves << [y_pos, x_pos]
         else
-          next
+          if board[y_pos][x_pos].color != @color
+            @possible_moves << [y_pos, x_pos]
+            return @possible_moves
+          else
+            return @possible_moves
+          end
         end
       end
     end
     @possible_moves
   end
 
+
+    #left
+    def movement_left(board)
+      -1.downto(-7) do |dx|
+        x_pos = position[1] - dx
+        # puts y_pos
+        if x_pos.between?(0,7)
+          if board[position[0]][x_pos] == "-"
+            @possible_moves << [position[0], x_pos]
+          else
+            if board[position[0]][x_pos].color == @color
+              # @possible_moves << [y_pos, position[1]]
+              break
+            else
+              @possible_moves << [position[0], x_pos]
+              break
+            end
+          end
+        end
+      end
+      @possible_moves
+    end
+
+    # #right
+    def movement_right(board)
+      1.upto(7) do |dx|
+        x_pos = position[1] - dx
+        # puts y_pos
+        if x_pos.between?(0,7)
+          if board[position[0]][x_pos] == "-"
+            @possible_moves << [position[0], x_pos]
+          else
+            if board[position[0]][x_pos].color == @color
+              # @possible_moves << [y_pos, position[1]]
+              break
+            else
+              @possible_moves << [position[0], x_pos]
+              break
+            end
+          end
+        end
+      end
+      @possible_moves
+    end
+  #checks diagnol from piece to top_right
+  def movement_top_right(board)
+    (1..7).each do |num|
+      dy, dx = num, num
+      y_pos = position[0] - dy
+      x_pos = position[1] + dx
+      if y_pos < 0 || x_pos > 7
+        next
+      else
+        if board[y_pos][x_pos] == "-"
+          @possible_moves << [y_pos, x_pos]
+        else
+          if board[y_pos][x_pos].color != @color
+            @possible_moves << [y_pos, x_pos]
+            return @possible_moves
+          else
+            return @possible_moves
+          end
+        end
+      end
+    end
+    @possible_moves
+  end
+  #checks diagnol from piece to bottom_left
+  def movement_bottom_left(board)
+    (1..7).each do |num|
+        dy, dx = num, num
+        y_pos = position[0] + dy
+        x_pos = position[1] - dx
+        if y_pos > 7 || x_pos < 0
+          next
+        else
+          if board[y_pos][x_pos] == "-"
+            @possible_moves << [y_pos, x_pos]
+          else
+            if board[y_pos][x_pos].color != @color
+              @possible_moves << [y_pos, x_pos]
+              return @possible_moves
+            else
+              return @possible_moves
+            end
+          end
+        end
+    end
+    @possible_moves
+  end
 end
 
 class Knight < Piece
@@ -267,7 +514,13 @@ class ChessBoard
     # @board[4][4] = King.new("black", [4,4])
     @board[4][4] = Queen.new("black", [4,4])
     @board[3][3] = Bishop.new("black", [3,3])
-
+    @board[1][1] = Bishop.new("black", [1,1])
+    @board[1][5] = Bishop.new("black", [1,5])
+    @board[5][1] = Bishop.new("white", [5,1])
+    @board[4][2] = Bishop.new("white", [4,2])
+    @board[4][6] = Bishop.new("white", [4,6])
+    @board[2][4] = Bishop.new("white", [2,4])
+    @board[6][4] = Bishop.new("white", [6,4])
   end
 
   def select_piece(array)
@@ -315,7 +568,6 @@ end
 #   end
 
 # end
-
 
 
 
