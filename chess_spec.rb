@@ -53,14 +53,7 @@ PIECE
  - piece should sort the moves-array by direction so that you have separate arrays. (easier for board to stop and return out if move is blocked.)
  - the method "moves" should return an array of all potential moves possible from the current position. whether or not this move-spot is occupied or legal.
  - checks if user-generated move is included in the potential moves(array). if not, piece should know inherently that it can't move to that spot (before board is involved and filters based on other pieces' positions)
-<<<<<<< HEAD
- -
-
-BOARD
-
- - initialize with an 8x8 board, with Piece objects in correct starting position.
- - to_s method: converts coordinates --> position[0] = ["A".."H"] and position[1] = WIDTH - our row_number
- -
+ 
 
 ALL PIECE TYPES
  - takes one parameter, its position, an array of coordinates
