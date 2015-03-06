@@ -12,9 +12,9 @@ class Board
   def start
     #TODO: place pawns in appropriate places
     @board.map.with_index do |row, i|
-      if i== 1 || i == 6
+      if i== 1 || i == WIDTH -2
         row.map do |square|
-          square << "PIECE"
+          square << "PAWN"
         end
       end
       if i == 0 || i == WIDTH-1
@@ -37,16 +37,12 @@ class Board
     @board
   end
 
-  def place(piece, position)
-    #assume piece = some instance of a piece-type class
-    #assume position is an array [x,y]
-    # piece = Pawn.new(position)
-    # piece.arguments = position
-  end
-
-  def remove
+   def remove
     #TODO: remove pieces if piece.captured == true
     #stores removed pieces in removed array.
+    @board.map.with_index |row, row_i|
+      row.map.with_index
+    end
   end
 
   def to_s
