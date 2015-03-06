@@ -63,10 +63,15 @@ class Board
     #   row.each_with_index do |square, square_i|
         piece.moves.each do |coordinate_set|
           coordinate_set.each do |x,y|
-            @poss_moves << [x, y] if @board[x][y].empty?
-            if @board[x][y].empty? == false
-              p "there are no items"
+            if !@board[x][y].empty?
+              if piece.color != @board[x][y][0].color
+                @poss_moves << [x, y]
+                break
+              else
+                break
+              end
             end
+            @poss_moves << [x, y] if @board[x][y].empty?
           end
         end
       return @poss_moves
@@ -222,7 +227,7 @@ class Queen < Piece
     arr2 = Rook.new([@x, @y]).moves
     @moves = arr1 + arr2
     remove_nil
-    return @moves
+    return @moves.uniq
   end
 
 end
@@ -256,7 +261,7 @@ board = Board.new
 
 board.start
 puts board
-p board.move_valid(Queen.new([1,7]))
+p board.move_valid(Queen.new([4,3]))
 puts board
 # rook = Queen.new([1,7])
 # p rook.moves
