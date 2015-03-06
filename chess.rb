@@ -589,10 +589,11 @@ class ChessBoard
     @board[col][row].movement(@board)
   end
 
-  # def valid_move?("array[row, col]")
-  #   #takes move coordinates from user, compares it to piece class(possible moves)
-  #   # returns a boolean.
-  # end
+  def valid_move?(optional_moves, move)
+   return true if optional_moves.include?(move)
+    #takes move coordinates from user, compares it to piece class(possible moves)
+    # returns a boolean.
+  end
 
   # def make_move
   #   # if valid move?
@@ -606,24 +607,91 @@ class ChessBoard
 
 end
 
-# class Game
-#   def initialize
-#     #creates new game(Board.new)
+class Game
+  attr_reader :user_piece, :user_move, :new_game, :valid_moves
+  def initialize
+    @new_game = ChessBoard.new
+    @player = true
+
+  end
+
+  def turn
+    if @player == true
+      white_turn
+      @player = false
+    else
+      #next player's turn
+      black_turn
+      @player = true
+    end
+
+  end
+
+  def white_turn
+    puts "Player White select piece to move: "
+    @user_piece = gets.chomp.split("") #get number ex: 75 02 33
+    @user_piece[0], @user_piece[1] = @user_piece[0].to_i, @user_piece[1].to_i
+    piece_select
+
+    valid = false
+    until valid
+      puts "Choose spot to move: "
+      @user_move = gets.chomp.split("")
+      @user_move[0], @user_move[1] = @user_move[0].to_i, @user_move[1].to_i
+      if @new_game.valid_move?(@valid_moves, @user_move)
+        valid = true
+        puts "Valid Move"
+      else
+        puts "Invalid move"
+      end
+    end
+  end
+
+  def black_turn
+    puts "Player Black select piece to move: "
+    @user_piece = gets.chomp.split("") #get number ex: 75 02 33
+    @user_piece[0], @user_piece[1] = @user_piece[0].to_i, @user_piece[1].to_i
+    piece_select
+
+    valid = false
+    until valid
+      puts "Choose spot to move: "
+      @user_move = gets.chomp.split("")
+      @user_move[0], @user_move[1] = @user_move[0].to_i, @user_move[1].to_i
+      if @new_game.valid_move?(@valid_moves, @user_move)
+        valid = true
+        puts "Valid Move"
+      else
+        puts "Invalid move"
+      end
+    end
+  end
+
+  def piece_select
+    p @user_piece
+    p @valid_moves = @new_game.select_piece(@user_piece)
+    #What piece?
+    #@current_piece = gets.chomp (row, col) convert to array
+    #select_piece(array[row, col])
+  end
+
+#   def select_move
+#     p @user_move
+#     if @new_game.valid_move?(@valid_moves, @user_move)
+#       puts valid = true
+#     else
+#       puts "Invalid move"
+# #     #What position
+# #     #@destination = gets.chomp (row, col) convert to array
+# #     #make_move if valid_move?(array[row, col]) == true
+#     end
 #   end
 
-#   def piece_select(user_input)
-#     #What piece?
-#     #@current_piece = gets.chomp (row, col) convert to array
-#     #select_piece(array[row, col])
-#   end
+end
 
-#   def select_move(user_input)
-#     #What position
-#     #@destination = gets.chomp (row, col) convert to array
-#     #make_move if valid_move?(array[row, col]) == true
-#   end
-
-# end
-
-
+test = Game.new
+test.turn
+test.turn
+test.turn
+test.turn
 
