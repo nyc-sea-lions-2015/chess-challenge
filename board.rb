@@ -98,7 +98,7 @@ class King < Piece
   def moves
     [*-1..1].permutation(2).to_a.each do |dx,dy|
       next if dx == 0 && dy == 0
-      @moves << [@x+dx, @y+dy]
+      @moves << [[@x+dx, @y+dy]]
     end
       @moves
   end
@@ -115,7 +115,7 @@ class Knight < Piece
 
   def moves
     [[1, 2], [1, -2], [-1, 2], [-1, -2], [2, 1], [2, -1], [-2, -1], [-2, 1]].each do |dx, dy|
-      @moves << [@x+dx, @y+dy]
+      @moves << [[@x+dx, @y+dy]]
     end
     @moves
   end
@@ -207,14 +207,14 @@ class Pawn < Piece
   end
 
   def moves
-    @moves << [@x, @y+2] if @status
-    @moves << [@x+1, @y]
+    @moves << [[@x, @y+2]] if @status
+    @moves << [[@x+1, @y]]
     capture? if @capture
   end
 
   def capture?
-    @moves << [@x+1, @y+1]
-    @moves << [@x-1, @y+1]
+    @moves << [[@x+1, @y+1]]
+    @moves << [[@x-1, @y+1]]
   end
 
 end
