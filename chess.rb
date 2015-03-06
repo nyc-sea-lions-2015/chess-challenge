@@ -23,13 +23,15 @@ class Piece
   end
 
   def to_s
-    "HELLO color: #{@color} moves: #{@moves.flatten(1)}"
+    "#{@color.upcase} #{self.name} moves: #{@moves.flatten(1)}"
   end
 end
 
 class King < Piece
+  attr_reader :name
   def initialize(arguments)
     super(arguments, color)
+    @name = "KING"
   end
 
   def moves
@@ -40,14 +42,13 @@ class King < Piece
       @moves
   end
 
-  def to_s
-    "KING color: #{@color} moves: #{@moves}"
-  end
 end
 
 class Knight < Piece
+  attr_reader :name
   def initialize(arguments)
     super(arguments)
+    @name = "KNIGHT"
   end
 
   def moves
@@ -57,16 +58,14 @@ class Knight < Piece
     @moves
   end
 
-  def to_s
-    "KNIGHT color: #{@color} moves: #{@moves.flatten}"
-  end
-
 end
 
 class Rook < Piece
+  attr_reader :name
   def initialize(arguments)
     super(arguments,)
     @moves = Array.new(4){[]}
+    @name = "ROOK"
   end
 
   def moves
@@ -84,14 +83,13 @@ class Rook < Piece
     return @moves
   end
 
-  def to_s
-    "ROOK color: #{@color} moves: #{@moves.flatten(1)}"
-  end
 end
 
 class Bishop < Piece
+  attr_reader
   def initialize(arguments)
     super(arguments, color)
+    @name = "BISHOP"
   end
 
   def moves
@@ -116,14 +114,13 @@ class Bishop < Piece
     @moves
   end
 
-  def to_s
-    "BISHOP color: #{@color} moves: #{@moves.flatten(1)}"
-  end
 end
 
 class Queen < Piece
+  attr_reader :name
   def initialize(arguments)
     super(arguments)
+    @name = "QUEEN"
   end
 
   def moves
@@ -132,9 +129,6 @@ class Queen < Piece
     @moves = arr1+arr2
   end
 
-  def to_s
-    "QUEEN color: #{@color} moves: #{@moves.flatten(1)}"
-  end
 end
 
 class Pawn < Piece
@@ -155,9 +149,6 @@ class Pawn < Piece
     @moves << [@x-1, @y+1]
   end
 
-  def to_s
-    "PAWN color: #{@color} moves: #{@moves.flatten}"
-  end
 end
 
 pawn = Pawn.new([5,3])
