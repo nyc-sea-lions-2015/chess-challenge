@@ -71,7 +71,7 @@ class Board
           end
         end
       end
-      @poss_moves
+      @poss_moves.uniq
   end
 
 
@@ -120,7 +120,6 @@ class King < Piece
     [*-1..1].permutation(2).to_a.each do |dx,dy|
       next if dx == 0 && dy == 0
       @moves << [[@x+dx, @y+dy]] unless x+dx > WIDTH-1 || @x+dx < 0 || @y+dy > WIDTH-1 || @y+dy < 0
-    end
     end
       @moves
   end
@@ -248,4 +247,4 @@ board = Board.new
 # board.start
 puts board.to_s
 
-puts board.move_valid(Knight.new([1,7]))
+print board.move_valid(Knight.new([1,7]))
