@@ -83,7 +83,7 @@ class Piece
   end
 
   def to_s
-    "#{@color} #{self.name} moves: #{@moves.flatten(1)}"
+    "#{@color.upcase} #{self.name} moves: #{@moves.flatten(1)}"
   end
 end
 
@@ -92,6 +92,7 @@ class King < Piece
   def initialize(arguments)
     super(arguments, color)
     @name = "KING"
+    moves
   end
 
   def moves
@@ -109,6 +110,7 @@ class Knight < Piece
   def initialize(arguments)
     super(arguments)
     @name = "KNIGHT"
+    moves
   end
 
   def moves
@@ -123,9 +125,10 @@ end
 class Rook < Piece
   attr_reader :name
   def initialize(arguments)
-    super(arguments,)
+    super(arguments)
     @moves = Array.new(4){[]}
     @name = "ROOK"
+    moves
   end
 
   def moves
@@ -142,13 +145,15 @@ class Rook < Piece
     1.upto(@y) {|dy| @moves[3] << [@x, @y-dy]}
     return @moves
   end
+
 end
 
 class Bishop < Piece
-  attr_reader :name
+  attr_reader
   def initialize(arguments)
     super(arguments, color)
     @name = "BISHOP"
+    moves
   end
 
   def moves
@@ -180,6 +185,7 @@ class Queen < Piece
   def initialize(arguments)
     super(arguments)
     @name = "QUEEN"
+    moves
   end
 
   def moves
@@ -187,15 +193,15 @@ class Queen < Piece
     arr2 = Rook.new([@x, @y]).moves
     @moves = arr1+arr2
   end
+
 end
 
 class Pawn < Piece
-  attr_reader :name
   def initialize(arguments, capture = false, status = false)
     super(arguments)
     @status = status
     @capture = capture
-    @name = "PAWN"
+    moves
   end
 
   def moves
@@ -208,6 +214,7 @@ class Pawn < Piece
     @moves << [@x+1, @y+1]
     @moves << [@x-1, @y+1]
   end
+
 end
 
 
