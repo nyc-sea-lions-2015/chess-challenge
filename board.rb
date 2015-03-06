@@ -149,7 +149,7 @@ class Rook < Piece
 end
 
 class Bishop < Piece
-  attr_reader
+  attr_reader :name
   def initialize(coordinates)
     super(coordinates, color)
     @name = "BISHOP"
@@ -197,6 +197,7 @@ class Queen < Piece
 end
 
 class Pawn < Piece
+  attr_reader :name
   def initialize(coordinates, capture = false, status = false)
     super(coordinates)
     @status = status
