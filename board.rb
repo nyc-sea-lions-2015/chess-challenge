@@ -202,6 +202,7 @@ class Pawn < Piece
     super(coordinates)
     @status = status
     @capture = capture
+    @name = "PAWN"
     moves
   end
 
