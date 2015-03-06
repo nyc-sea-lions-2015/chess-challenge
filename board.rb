@@ -76,15 +76,14 @@ class Board
   def to_s
     @board.each_with_index.map do |row, i|
       # puts "#{8-i} #{row}"
-      print "#{8-i}  "
+      print "#{7-i}  "
       row.each_with_index do |square, square_i|
         if square.empty?
           print "_ "
           next
         end
-        print "#{square.first.class.to_s[0]} " if square.first.color == "black"
-        print "#{square.first.class.to_s[0].downcase} " if square.first.color == "white"
-
+        print "#{square.first.class.to_s == "Knight" ? "N" : square.first.class.to_s[0]} " if square.first.color == "black"
+        print "#{square.first.class.to_s == "Knight" ? "n" : square.first.class.to_s[0].downcase} " if square.first.color == "white"
       end
       puts
     end#.join(" \n")
