@@ -111,7 +111,7 @@ class Rook < Piece
         end
       end
     end
-
+    @possible_moves
   end
 end
 
@@ -130,8 +130,6 @@ class Bishop < Piece
       if pos.between?(0,7)
 
         if (pos + pos) > (position[0] + position[1])
-          p "pos = #{pos}"
-          p "posiblemoves = #{@possible_moves}"
           if board[pos][pos] != '-'
             bottom_board << @possible_moves.each {|x| x} #bottom board taking all @possible values????
           end
@@ -170,7 +168,7 @@ class Bishop < Piece
         end
       end
     end
-      @possible_moves
+    @possible_moves
   end
 end
 
@@ -191,6 +189,7 @@ class Queen < Piece
           @possible_moves << [y_pos, position[1]]
         end
       end
+      @possible_moves
     end
 
     #vertical
