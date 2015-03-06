@@ -68,7 +68,7 @@ class King < Piece
       (-1..1).each do |dx|
         y_pos = position[0] - dy
         x_pos = position[1] - dx
-        if board[y_pos][x_pos] == "-" || board[y_pos][x_pos].color != self.color
+        if board[y_pos][x_pos] == "-" || board[y_pos][x_pos].color != @color
           @possible_moves << [y_pos,x_pos]
         end
       end
@@ -77,13 +77,70 @@ class King < Piece
   end
 end
 
+class Pawn < Piece
+  attr_reader :possible_moves, :color
+  attr_accessor :move_counter
+  def initialize(color, position)
+    super
+    @possible_moves = []
+    @move_counter = 0
+  end
 
-# I want to start at the position and move only one coordinate until I hit the end of the board.
-# Needs a left-right movement
-# Needs a up-down movement
-# Needs to stop if position is greater than 7 or less than 0
+  def movement(board)
+    if @color == "white"
+      if @move_counter == 0
+        (1..2).each do |y|
+          y_pos = @position[0] - y
+          p y_pos
+          if board[y_pos][position[1]] == "-"
+            @possible_moves << [y_pos, position[1]]
+          else
+            break
+          end
+        end
+      else
+        y_pos = @position[0]-1
+        if board[y_pos][position[1]] == "-"
+          @possible_moves << [y_pos, position[1]]
+        end
+      end
+      [[-1,-1],[-1,1]].each do |dy, dx|
+        y_pos = position[0] + dy
+        x_pos = position[1] + dx
+        if board[y_pos][x_pos] != "-"
+          @possible_moves << [y_pos, x_pos] if board[y_pos][x_pos].color != @color
+        end
+      end
+    else #black
+      if @move_counter == 0
+        (1..2).each do |y|
+          y_pos = @position[0] + y
+          p y_pos
+          if board[y_pos][position[1]] == "-"
+            @possible_moves << [y_pos, position[1]]
+          else
+            break
+          end
+        end
+      else
+        y_pos = @position[0]+1
+        if board[y_pos][position[1]] == "-"
+          @possible_moves << [y_pos, position[1]]
+        end
+      end
+      [[1,1],[1,-1]].each do |dy, dx|
+        y_pos = position[0] + dy
+        x_pos = position[1] + dx
+        if board[y_pos][x_pos] != "-"
+          @possible_moves << [y_pos, x_pos] if board[y_pos][x_pos].color != @color
+        end
+      end
+    end
+    @possible_moves
+  end
+end
+
 class Rook < Piece
-
   attr_reader :possible_moves, :color
   def initialize(color, position)
     super
@@ -515,12 +572,11 @@ class ChessBoard
     @board[4][4] = Queen.new("black", [4,4])
     @board[3][3] = Bishop.new("black", [3,3])
     @board[1][1] = Bishop.new("black", [1,1])
-    @board[1][5] = Bishop.new("black", [1,5])
-    @board[5][1] = Bishop.new("white", [5,1])
-    @board[4][2] = Bishop.new("white", [4,2])
-    @board[4][6] = Bishop.new("white", [4,6])
-    @board[2][4] = Bishop.new("white", [2,4])
-    @board[6][4] = Bishop.new("white", [6,4])
+    @board[5][2] = Bishop.new("black", [5,2])
+    @board[6][1] = Pawn.new("white", [6,1])
+    @board[1][5] = Pawn.new("black", [1,5])
+    @board[2][4] = Pawn.new("white", [2,4])
+
   end
 
   def select_piece(array)
