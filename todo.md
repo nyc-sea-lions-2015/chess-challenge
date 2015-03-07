@@ -1,9 +1,8 @@
-[ ] In Board class, initialize creation of board with respective piece objects
-[ ] Making the Board#clear_path? method
-[ ] creating virtual player class with counter and UNTIL loop in Game class (Dan, Tara, Sam)
-[ ] remove logic from move method and put into Game#turn method
-[ ] complete and refactor Game#turn method
-[ ] complete Game#check and Game#check_mate methods
- - we would do this by determining opposing player's king location
- - call Game#turn as if king location were desired location parameter
- [ ]
+1. [ ] In Board class, initialize creation of board with respective piece objects
+2. [ ] Making the Board#clear_path? method
+3. [ ] creating virtual player class with counter and UNTIL loop in Game class (Dan, Tara, Sam)
+3. [ ] remove logic from move method and put into Game#turn method
+4. [ ] complete and refactor Game#turn method
+5. [ ] complete Game#check and Game#check_mate methods
+ ..* we would do this by determining opposing player's king location
+ ..* call Game#turn as if king location were desired location parameter
