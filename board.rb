@@ -88,7 +88,9 @@ class Board
             @poss_moves << [x, y] if @board[x][y].empty?
           end
         end
-      return @poss_moves
+      end
+    end
+      # return @poss_moves
   end
 
   # def make_move(piece)
@@ -312,6 +314,7 @@ board = Board.new
 
 board.start
 puts board
+
 p board.move_valid(["A", 7])
 puts board
 # rook = Queen.new([1,7])
