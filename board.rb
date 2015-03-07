@@ -259,12 +259,12 @@ class Pawn < Piece #white pieces need to be able to go "up" only (each piece has
   end
 
   def moves
-    if color == "black"
-      @moves << [[@x+2, @y]] if @status
-      @moves << [[@x+1, @y]]
-    else
+    if @color == "white"
       @moves << [[@x-2, @y]] if @status
       @moves << [[@x-1, @y]]
+    else
+      @moves << [[@x+2, @y]] if @status
+      @moves << [[@x+1, @y]]
     end
     capture? if @capture
     remove_nil
@@ -272,12 +272,12 @@ class Pawn < Piece #white pieces need to be able to go "up" only (each piece has
   end
 
   def capture?
-    if color == "black"
-      @moves << [[@x+1, @y+1]]
-      @moves << [[@x-1, @y+1]]
-    else
+    if color == "white"
       @moves << [[@x+1, @y-1]]
       @moves << [[@x-1, @y-1]]
+    else
+      @moves << [[@x+1, @y+1]]
+      @moves << [[@x-1, @y+1]]
     end
   end
 
