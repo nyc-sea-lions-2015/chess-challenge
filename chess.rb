@@ -69,8 +69,10 @@ class King < Piece
       (-1..1).each do |dx|
         y_pos = position[0] - dy
         x_pos = position[1] - dx
-        if board[y_pos][x_pos] == "-" || board[y_pos][x_pos].color != @color
-          @possible_moves << [y_pos,x_pos]
+        if y_pos <= 7 && y_pos >= 0 && x_pos <= 7 && x_pos >= 0
+          if board[y_pos][x_pos] == "-" || board[y_pos][x_pos].color != @color
+            @possible_moves << [y_pos,x_pos]
+          end
         end
       end
     end
@@ -110,11 +112,11 @@ class Pawn < Piece
       [[-1,-1],[-1,1]].each do |dy, dx|
         y_pos = position[0] + dy
         x_pos = position[1] + dx
-        # if y_pos <= 7 || y_pos >= 0 || x_pos <= 7 || x_pos >= 0
+        if y_pos <= 7 && y_pos >= 0 && x_pos <= 7 && x_pos >= 0
           if board[y_pos][x_pos] != "-"
             @possible_moves << [y_pos, x_pos] if board[y_pos][x_pos].color != @color
           end
-        # end
+        end
       end
     else #black
       if @move_counter == 0
@@ -137,7 +139,7 @@ class Pawn < Piece
       [[1,1],[1,-1]].each do |dy, dx|
         y_pos = position[0] + dy
         x_pos = position[1] + dx
-        if y_pos < 7 || y_pos > 0 || x_pos < 7 || x_pos > 0
+        if y_pos <= 7 && y_pos >= 0 && x_pos <= 7 && x_pos >= 0
           if board[y_pos][x_pos] != "-"
             @possible_moves << [y_pos, x_pos] if board[y_pos][x_pos].color != @color
           end
@@ -594,10 +596,12 @@ class ChessBoard
                   Knight.new("black", [0,1]),
                   Bishop.new("black", [0,2]),
                   Queen.new("black", [0,3]),
-                  King.new("black", [0,4]),
+                  Pawn.new("black", [0,4]),
                   Bishop.new("black", [0,5]),
                   Knight.new("black", [0,6]),
                   Rook.new("black", [0,7]) ]
+
+    @board[5][4] = King.new("black", [5,4])
 
     @board[1] = [Pawn.new("black", [1,0]),
             Pawn.new("black", [1,1]),
@@ -628,7 +632,6 @@ class ChessBoard
     if @board[col][row] != "-" && @board[col][row].color == player_color
       @board[col][row].movement(@board)
     else
-      p "Pawn Error found!"
       nil
     end
   end
@@ -647,6 +650,39 @@ class ChessBoard
     @board[old_col][old_row] = "-"
     @board[new_col][new_row].position = [new_col, new_row]
     @board[new_col][new_row].possible_moves = []
+  end
+
+  def move_collector
+    white_collector = []
+    black_collector = []
+    white_king = ""
+    black_king = ""
+    @board.each_with_index do |row, r_index|
+      row.each_with_index do |col, c_index|
+        if @board[r_index][c_index] != "-"
+          if @board[r_index][c_index].color == "white"
+            if @board[r_index][c_index].instance_of?(King)
+              white_king = @board[r_index][c_index].position
+            else
+              white_buckets = @board[r_index][c_index].movement(@board)
+              white_buckets.each do |bucket|
+                white_collector << bucket
+              end
+            end
+          else
+            if @board[r_index][c_index].instance_of?(King)
+              black_king = @board[r_index][c_index].position
+            else
+              black_buckets = @board[r_index][c_index].movement(@board)
+              black_buckets.each do |bucket|
+                black_collector << bucket
+              end
+            end
+          end
+        end
+      end
+    end
+    return white_collector, black_collector, white_king, black_king
   end
 
   def to_s
@@ -669,20 +705,27 @@ class Game
     @player = true
     @player_color = "white"
     puts @new_game
+    turn
   end
 
   def turn
-    if @player == true
-      white_turn
-      puts @new_game
-      @player = false
-      @player_color = "black"
-    else
-      #next player's turn
-      black_turn
-      puts @new_game
-      @player = true
-      @player_color = "white"
+    @end_game = false
+
+    until @end_game
+      if @player == true
+        white_turn
+        puts @new_game
+        @player = false
+        @player_color = "black"
+        p "check!" if check?
+      else
+        #next player's turn
+        black_turn
+        puts @new_game
+        @player = true
+        @player_color = "white"
+        p "check!" if check?
+      end
     end
 
   end
@@ -720,7 +763,6 @@ class Game
       puts "Player Black select piece to move: "
       @user_piece = gets.chomp.split("") #get number ex: 75 02 33
       @user_piece[0], @user_piece[1] = @user_piece[0].to_i, @user_piece[1].to_i
-      piece_select
       if piece_select
         valid_piece = true
       else
@@ -748,12 +790,19 @@ class Game
     p @valid_moves = @new_game.select_piece(@user_piece, @player_color)
   end
 
+  def check?
+    # Make two variables
+    # Run move_collector on these variables
+    white_check, black_check, white_king, black_king = @new_game.move_collector
+    if @player_color == "white"
+      return true if white_check.include?(black_king)
+    else
+      return true if black_check.include?(white_king)
+    end
+  end
+
 end
 
 test = Game.new
 
-test.turn
-test.turn
-test.turn
-test.turn
 
