@@ -1,3 +1,12 @@
+LETTER = {"A" => 0,
+            "B" => 1,
+            "C" => 2,
+            "D" => 3,
+            "E" => 4,
+            "F" => 5,
+            "G" => 6,
+            "H" => 7 }
+
 class Game
   def initialize()
     @board = Board.new.start.to_s
@@ -6,14 +15,12 @@ class Game
 
   def translate(turn)
     current = turn.chars
-    return [LETTER[current[0]],8-[current[1].to_i]]
+    return [8-current[1].to_i], LETTER[current[0]]
   end
 
   def translate_back(turns)
-    turns.map do |coor_set|
-      coor_set.map do |x,y|
-        [LETTER.key(x),y].join
-      end
+    turns.map do |x, y|
+        [LETTER.key(y),8-x].join
     end
   end
 
