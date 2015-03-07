@@ -50,8 +50,6 @@ class Board
         end
       end
     end
-
-
     @board
   end
 
@@ -75,22 +73,19 @@ class Board
     # piece.moves.each do |coordinate|
     # @board.each_with_index do |row, row_i|
     #   row.each_with_index do |square, square_i|
-        piece.moves.each do |coordinate_set|
-          coordinate_set.each do |x,y|
-            if !@board[x][y].empty?
-              if piece.color != @board[x][y][0].color
-                @poss_moves << [x, y]
-                break
-              else
-                break
-              end
-            end
-            @poss_moves << [x, y] if @board[x][y].empty?
+    piece.moves.each do |coordinate_set|
+      coordinate_set.each do |x,y|
+        if !@board[x][y].empty?
+          if piece.color != @board[x][y][0].color
+            @poss_moves << [x, y]
+            break
+          else
+            break
           end
         end
+        @poss_moves << [x, y] if @board[x][y].empty?
       end
     end
-      # return @poss_moves
   end
 
   # def make_move(piece)
