@@ -69,15 +69,12 @@ class Game
   #creates new board object in initialize
   def initialize
     #needs a data structure to hold player_1 and player_2
-    #@board = Board.new
   end
   #prints board after every move
   #to_s expects the board object to have a #board attr_reader
   def to_s
-    @board.board.map do |row|
-      "#{row}"
-    end.join("\n")
   end
+
   #strips user input [col, row] into row, col format
   #expects a move array with 2 elements
   def strip_move(move)
@@ -100,24 +97,41 @@ class Game
 
   #checks to see if there is a check
   def check(player)
-
+    #will return boolean
   end
 
   def check_mate(player)
-
+    #will return boolean
   end
 
-  def turn(move)
-    # determine piece-type
-    # ask piece if move is valid for piece-type
-    # ask board if cell is empty
-    # if board is empty AND move is valid, move piece
-    # if cell filled by piece, ask if piece is capturable
-    # if YES, capture and move
-    # if NO, return "invalid move"
+  def turn(current_location, desired_location)
+    # isolate current col and row values
+    current_row = current_location[0]
+    current_col = current_location[1]
+    #strip desired_location array:
+    stripped = strip_move(desired_location) # should return a 2-element array
+    #isolate desired location col and row values
+    desired_row = stripped[0]
+    desired_col =  stripped[1]
+    # determine piece-type:
+    piece = @board[current_row][current_col] #returns piece object
+    # Is player's desired moved a valid move for that piece type?
+    move_validity = piece.valid_move?(stripped) #returns a bool
+    if move_validity == true
+      if @board.cell_empty?(stripped) == false
+        desired_cell_piece = @board[desired_row][desired_col]
+        if victim_capturable(desired_cell_piece)
+          #capture victim
+        else
+          #return invalid move
+        end
+      else
+        #move piece to desired cell
+      end
+    else
+      "invalid move"
+    end
   end
-end
-
 
 # ----------------------------------------------------------------------------------
 
