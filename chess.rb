@@ -99,7 +99,23 @@ class Board
 
 end
 
+module Movement
+  def vertical(dy)
+    self.start_y += dy
+  end
+
+  def horizontal(dx)
+
+  end
+
+  def diagonal(dx, dy)
+
+  end
+end
+
+
 class Piece
+  include Movement
   attr_reader :board
   def initialize(board)
     #@available_paths(@type)
@@ -111,7 +127,7 @@ end
 
 # add module or to class the coordinate comparison
 class Rook < Piece
-  attr_reader :position, :color
+  attr_accessor :position, :start_x, :start_y, :color
   def initialize(position, color)
     @color = color
     @position = position
@@ -132,7 +148,7 @@ class Rook < Piece
 end
 
 class Knight < Piece
-  attr_reader :position, :color
+  attr_accessor :position, :start_x, :start_y, :color
   def initialize(position, color)
     @color = color
     @position = position
@@ -152,7 +168,7 @@ class Knight < Piece
 end
 
 class Bishop < Piece
-  attr_reader :position, :color
+  attr_accessor :position, :start_x, :start_y, :color
   def initialize(position, color)
     @color = color
     @position = position
@@ -172,7 +188,7 @@ class Bishop < Piece
 end
 
 class Queen < Piece
-  attr_reader :position, :color
+  attr_accessor :position, :start_x, :start_y, :color
   def initialize(position, color)
     @color = color
     @position = position
@@ -192,7 +208,7 @@ class Queen < Piece
 end
 
 class King < Piece
-  attr_reader :position, :color
+  attr_accessor :position, :start_x, :start_y, :color
   def initialize(position, color)
     @color = color
     @position = position
@@ -212,7 +228,7 @@ class King < Piece
 end
 
 class Pawn < Piece
-  attr_reader :position, :color
+  attr_accessor :position, :start_x, :start_y, :color
   def initialize(position, color)
     @color = color
     @position = position
@@ -248,6 +264,6 @@ end
 
 board = Board.new
 piece = Piece.new(board.board)
-p piece.board
+p board.board[{0=>7}].vertical(-3)
 
 
