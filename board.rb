@@ -1,4 +1,12 @@
 WIDTH = 8
+LETTER = {"A" => 0,
+            "B" => 1,
+            "C" => 2,
+            "D" => 3,
+            "E" => 4,
+            "F" => 5,
+            "G" => 6,
+            "H" => 7 }
 class Board
   def initialize
     @board = Array.new(WIDTH) {WIDTH.times.map{[]}}
@@ -55,9 +63,15 @@ class Board
   #   end
   # end
 
-  def move_valid(piece)
+  def move_valid(coordinate)
     @poss_moves.clear
-
+    square = @board[8-coordinate[1]][LETTER[coordinate[0]]]
+    if square.empty?
+      puts "This is empty!"
+    else
+      piece = square.first
+    end
+    p piece
     # piece.moves.each do |coordinate|
     # @board.each_with_index do |row, row_i|
     #   row.each_with_index do |square, square_i|
@@ -81,7 +95,7 @@ class Board
   def to_s
     @board.each_with_index.map do |row, i|
       # puts "#{8-i} #{row}"
-      print "#{7-i}  "
+      print "#{8-i}  "
       row.each_with_index do |square, square_i|
         if square.empty?
           print "_ "
@@ -217,7 +231,6 @@ class Queen < Piece
   attr_reader :name
   def initialize(arguments)
     super(arguments)
-    moves
   end
 
   def moves
@@ -232,25 +245,40 @@ class Queen < Piece
 
 end
 
-class Pawn < Piece
+class Pawn < Piece #white pieces need to be able to go "up" only (each piece has its own one direction)
   attr_reader :name
-  def initialize(arguments, capture = false, status = false)
+  def initialize(arguments, capture = false, status = true)
     super(arguments)
     @status = status
     @capture = capture
+    moves
+  end
+
+  def made_move
+    @status = false
   end
 
   def moves
-    @moves << [[@x, @y+2]] if @status
-    @moves << [[@x+1, @y]]
+    if color == "black"
+      @moves << [[@x+2, @y]] if @status
+      @moves << [[@x+1, @y]]
+    else
+      @moves << [[@x-2, @y]] if @status
+      @moves << [[@x-1, @y]]
+    end
     capture? if @capture
     remove_nil
-    return @moves
+    return @moves.uniq
   end
 
   def capture?
-    @moves << [[@x+1, @y+1]]
-    @moves << [[@x-1, @y+1]]
+    if color == "black"
+      @moves << [[@x+1, @y+1]]
+      @moves << [[@x-1, @y+1]]
+    else
+      @moves << [[@x+1, @y-1]]
+      @moves << [[@x-1, @y-1]]
+    end
   end
 
 end
@@ -261,7 +289,7 @@ board = Board.new
 
 board.start
 puts board
-p board.move_valid(Queen.new([4,3]))
+p board.move_valid(["A", 7])
 puts board
 # rook = Queen.new([1,7])
 # p rook.moves
