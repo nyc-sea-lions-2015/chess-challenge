@@ -55,28 +55,33 @@ class Board
   #   end
   # end
 
-  def move_valid(piece)
+  def move_valid(coordinate)
     @poss_moves.clear
+    #coordinate = [row,col]
+    piece = (@board[8 - coordinate[0]][coordinate[1]])
+    if piece.empty?
+      return "PICK ANOTHER PIECE"
+    else
+      piece = piece.first
+    end
+    p piece
 
-    # piece.moves.each do |coordinate|
-    # @board.each_with_index do |row, row_i|
-    #   row.each_with_index do |square, square_i|
-        piece.moves.each do |coordinate_set|
-          coordinate_set.each do |x,y|
-            @poss_moves << [x, y] if @board[x][y].empty?
-            if @board[x][y].empty? == false
-              p "there are no items"
-            end
-          end
+    piece.moves.each do |coordinate_set|
+      coordinate_set.each do |x,y|
+        @poss_moves << [x, y] if @board[x][y].empty?
+        if @board[x][y].empty? == false
+          p "there are no items"
         end
-      return @poss_moves
+      end
+    end
+      # return @poss_moves
   end
 
 
   def to_s
     @board.each_with_index.map do |row, i|
       # puts "#{8-i} #{row}"
-      print "#{7-i}  "
+      print "#{8-i}  "
       row.each_with_index do |square, square_i|
         if square.empty?
           print "_ "
@@ -256,7 +261,9 @@ board = Board.new
 
 board.start
 puts board
-p board.move_valid(Queen.new([1,7]))
+p board.move_valid([7, 0])
+p board.move_valid([5, 2])
+
 puts board
 # rook = Queen.new([1,7])
 # p rook.moves
