@@ -43,7 +43,15 @@ class Game
     end
     unless @finished
       puts "Black player's turn"
-      turn2 = gets.chomp
+      puts "Black, what's your move? #{turn2 = gets.chomp}"
+      turn2 = translate(turn2)
+      p turn2
+      puts "Select from your possible moves: #{translate_back(@board.move_valid(turn)).join(" ")}"
+      puts "Your piece has moved to #{move_to = gets.chomp}"
+      move_to = translate(move_to)
+      p move_to
+      @board.place_piece(turn2, move_to)
+      puts @board
     end
   end
 
@@ -154,12 +162,24 @@ class Board
   #   => place piece (piece, coordinate)
   #   move the piece to cooresponding coordinate
   def place_piece(current_coord,new_coord)
+
     piece = @board[current_coord[0]][current_coord[1]].first
     piece.x = new_coord[1]
     piece.y = new_coord[0]
     p piece
-    @board[current_coord[0]][current_coord[1]].clear
-    @board[new_coord[0]][new_coord[1]] << piece
+    puts "#{current_coord[0]} #{current_coord[1]}"
+    # @board.map.with_index do |row,row_i|
+    #   if row_i == current_coord[0]
+    #     row.map.with_index do |square,square_i|
+    #       if square_i == (current_coord[1])
+    #         square.delete_at(square_i)
+    #       end
+    #     end
+    #   end
+    # end
+    @board[new_coord[1]][new_coord[0]] = [piece]
+
+    @board
     # @board[new_coord[0]][new_coord[1]]<< piece if @board[new_coord[0]][new_coord[1]] == "- "
   end
 
@@ -350,7 +370,6 @@ class Pawn < Piece #white pieces need to be able to go "up" only (each piece has
       @moves << [[@x+2, @y]] if @status
       @moves << [[@x+1, @y]]
     end
-    make_move
     capture? if @capture
     remove_nil
     return @moves.uniq
