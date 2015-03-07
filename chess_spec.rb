@@ -1,6 +1,6 @@
 require_relative 'chess'
 
-describe 'let' do
+# describe 'let' do
 
   # let(:board) {Board.new}
 
@@ -39,7 +39,7 @@ describe 'Piece'
   describe 'King'
 
     let(:king) {King.new([5,3])}
-    let(:white_king) {King.new([5,3]),'white',true)}
+    let(:white_king) {King.new([5,3],'white',true)}
 
     it "should accept (arguments) as parameters" do
       expect {King.new([5,3])}.to_not raise_error
@@ -51,11 +51,12 @@ describe 'Piece'
 
     it "has a color method that returns the correct color of the king" do
       expect (king.color).should eq('black')
+      expect (white_king.color).should eq('white')
     end
-
 
     it "has a captured_status method that returns the correct capture status of the king" do
       expect (king.captured).should eq(false)
+      expect (white_king.captured).should eq(true)
     end
 
   describe 'Queen'
@@ -144,27 +145,27 @@ describe 'Piece'
 
     describe 'Pawn'
 
-    let(:pawn) {Pawn.new([5,3])}
+    # let(:pawn) {Pawn.new([5,3])}
 
-    it "should accept (arguments) as parameters" do
-      expect {Pawn.new([5,3])}.to_not raise_error
-    end
+    # it "should accept (arguments) as parameters" do
+    #   expect {Pawn.new([5,3])}.to_not raise_error
+    # end
 
-    it "has a moves method that returns an array of all potential moves possible from its current position on an empty board." do
-      expect (pawn.moves).should eq([[6, 3], [6, 4], [4, 4]])
-    end
+    # it "has a moves method that returns an array of all potential moves possible from its current position on an empty board." do
+    #   expect (pawn.moves).should eq([[6, 3], [6, 4], [4, 4]])
+    # end
 
-    it "has a color method that returns the correct color of the pawn" do
-      expect (pawn.color).should eq('black')
-    end
-
-
-    it "has a captured_status method that returns the correct capture status of the pawn" do
-      expect (pawn.captured).should eq(false)
-    end
+    # it "has a color method that returns the correct color of the pawn" do
+    #   expect (pawn.color).should eq('black')
+    # end
 
 
-end
+    # it "has a captured_status method that returns the correct capture status of the pawn" do
+    #   expect (pawn.captured).should eq(false)
+    # end
+
+
+# end
 
 
 =begin
@@ -197,7 +198,9 @@ BOARD
  In our view, row 6 and 7 are white territory.
       Row 6: array of 8 subarrays of Pawn objects
       Row 7: [[Rook.new], [Knight.new], [Bishop.new], [King.new], [Q], [B], [K], [R]]
-
+ - no parameters
+ - clear method: clears the board. no pieces.
+ - reset method: sets a new Board.new
  - to_s method: translates the user input to useful input for us.
  - clear method: clears the board. no pieces.
  - start method: sets the board with 32 pieces in correct orientation.
