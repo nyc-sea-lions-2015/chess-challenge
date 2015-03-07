@@ -14,7 +14,7 @@ class Piece
   def valid_move?(row,col)
     @move_pattern == [@location[0] - row, @location[1] - col].map { |el| el.abs}
   end
-# board move may return to/call update_board, place_on_cell, and/or remove
+  # board move may return to/call update_board, place_on_cell, and/or remove
   def move(row,col)
     if valid_move?(row,col)
       if @board.cell_empty?(row,col)
@@ -152,4 +152,41 @@ attr_accessor :board, :captured_pieces
     #scans every piece's new location and updates on board
   end
 
+  def path_clear?(original_coordinate, desired_coordinate, piece)
+    # if piece can jump return true
+    return true if piece.can_jump
+
+    # negative means going up, positive means going down
+    diff_column = desired_coordinate[0] - original_coordinate[0]
+    column_step = diff_column / diff_column.abs
+    # negative means going left, positive means going right
+    diff_row = desired_coordinate[1] - original_coordinate[1]
+    row_step = diff_row / diff_row.abs
+
+    new_column = original_coordinate[0]
+    new_row = original_coordinate[1]
+
+    # if moving diagonal
+    if(diff_column.abs == diff_row.abs)
+      (1..diff_column.abs).each do |step|
+        new_column += column_step
+        new_row += row_step
+        return false if cell_empty?(new_column, new_row) 
+      end
+    # if moving vertically
+    elsif diff_row == 0
+      (1..diff_column.abs).each do |step|
+        new_column += column_step
+        return false if cell_empty?(new_column, new_row) 
+      end
+    # if moving horizontally
+    elsif diff_row == 0
+      (1..diff_column.abs).each do |step|
+        new_row += row_step
+        return false if cell_empty?(new_column, new_row) 
+      end
+    end
+      
+    return true
+  end
 end
