@@ -1,14 +1,17 @@
 module Movement
+
   def vertical(dy)
-    dy
+    self.y += dy
+
   end
 
   def horizontal(dx)
-
+    self.x += dx
   end
 
   def diagonal(z)
-
+    self.x += z
+    self.y += z
   end
 
 end
@@ -17,9 +20,11 @@ end
 # they want to move it to move_position for move_x, move_y
 class Rook
   include Movement
-  attr_reader :color, :coordinates
+  attr_accessor :color, :x, :y
   def initialize(color, coordinates) #add x_location, y_location
     @color = color
+    @x = coordinates[0]
+    @y = coordinates[1]
   end
 
   def valid_move?(dx, dy)
@@ -31,9 +36,11 @@ end
 # they want to move it to move_position for move_x, move_y
 class Knight
   include Movement
-  attr_reader :color, :coordinates
+  attr_accessor :color, :x, :y
   def initialize(color, coordinates) #add x_location, y_location
     @color = color
+    @x = coordinates[0]
+    @y = coordinates[1]
    # possible_moves from [y][x]= [y+1][x-2], [y-1][x-2], [y+1][x+2], [y-1][x+2], [y+2][x-1], [y-2][x-1], [y+2][x+1], [y-2][x+1]
   end
 
@@ -46,9 +53,11 @@ end
 # they want to move it to move_position for move_x, move_y
 class Bishop
   include Movement
-  attr_reader :color, :coordinates
+  attr_accessor :color, :x, :y
   def initialize(color, coordinates) #add x_location, y_location
     @color = color
+    @x = coordinates[0]
+    @y = coordinates[1]
   end
 
   def valid_move?(dx, dy)
@@ -60,10 +69,11 @@ end
 # they want to move it to move_position for move_x, move_y
 class Queen
   include Movement
-  attr_reader :color, :coordinates
+  attr_accessor :color, :x, :y
   def initialize(color, coordinates) #add x_location, y_location
     @color = color
-
+    @x = coordinates[0]
+    @y = coordinates[1]
   end
 
   def valid_move?(dx, dy)
@@ -75,9 +85,11 @@ end
 # they want to move it to move_position for move_x, move_y
 class King
   include Movement
-  attr_reader :color, :coordinates
+  attr_accessor :color, :x, :y
   def initialize(color, coordinates) #add x_location, y_location
     @color = color
+    @x = coordinates[0]
+    @y = coordinates[1]
   end
 
   def valid_move?(dx, dy)
@@ -89,9 +101,11 @@ end
 # they want to move it to move_position for move_x, move_y
 class Pawn
   include Movement
-  attr_reader :color, :coordinates
+  attr_accessor :color, :x, :y
   def initialize(color, coordinates) #add x_location, y_location
     @color = color
+    @x = coordinates[0]
+    @y = coordinates[1]
   end
 
   def valid_move?(dx, dy)
@@ -133,34 +147,33 @@ end
 class Board
   attr_reader :board
 
-  def initialize(height = 8, width = 8)
-    @height, @width = height, width
-    @board = Array.new(height) {Array.new(width)}
+  def initialize
+    @board = []
 
     #fill the board using [y][x]
     #y is the row and x is the column
-    (0..7).each do |x|
-      @board[x][1] = Pawn.new("black", [x, 1]) #add x_location, y_location
-      @board[x][6] = Pawn.new("white", [x, 6]) #add x_location, y_location
-    end
+    
+    
 
-    @board[0][0] = Rook.new("black", [0, 0]) #add x_location, y_location
-    @board[1][0] = Knight.new("black", [1, 0]) #add x_location, y_location
-    @board[2][0] = Bishop.new("black", [2, 0]) #add x_location, y_location
-    @board[3][0] = Queen.new("black", [3, 0]) #add x_location, y_location
-    @board[4][0] = King.new("black", [4, 0]) #add x_location, y_location
-    @board[5][0] = Bishop.new("black", [5, 0]) #add x_location, y_location
-    @board[6][0] = Knight.new("black", [6, 0]) #add x_location, y_location
-    @board[7][0] = Rook.new("black", [7, 0]) #add x_location, y_location
+    @board << Rook.new("black", [0, 7]) 
+    @board << Knight.new("black", [1, 7]) 
+    @board << Bishop.new("black", [2, 7]) 
+    @board << Queen.new("black", [3, 7]) 
+    @board << King.new("black", [4, 7]) 
+    @board << Bishop.new("black", [5, 7]) 
+    @board << Knight.new("black", [6, 7]) 
+    @board << Rook.new("black", [7, 7]) 
+    [*0..7].each { |x| @board << Pawn.new("black", [x, 6]) }
 
-    @board[0][7] = Rook.new("white", [0, 7]) #add x_location, y_location
-    @board[1][7] = Knight.new("white", [1, 7]) #add x_location, y_location
-    @board[2][7] = Bishop.new("white", [2, 7]) #add x_location, y_location
-    @board[3][7] = King.new("white", [3, 7]) #add x_location, y_location
-    @board[4][7] = Queen.new("white", [4, 7]) #add x_location, y_location
-    @board[5][7] = Bishop.new("white", [5, 7]) #add x_location, y_location
-    @board[6][7] = Knight.new("white", [6, 7]) #add x_location, y_location
-    @board[7][7] = Rook.new("white", [7, 7]) #add x_location, y_location
+    [*0..7].each { |x| @board << Pawn.new("white", [x, 1]) }
+    @board << Rook.new("white", [0, 0]) 
+    @board << Knight.new("white", [1, 0]) 
+    @board << Bishop.new("white", [2, 0]) 
+    @board << King.new("white", [3, 0]) 
+    @board << Queen.new("white", [4, 0]) 
+    @board << Bishop.new("white", [5, 0]) 
+    @board << Knight.new("white", [6, 0]) 
+    @board << Rook.new("white", [7, 0]) 
   end
 
     #set a width(8) and a height(8)
@@ -200,8 +213,11 @@ end
 
 class Game
   def initialize
+
   end
 end
 
 game = Board.new
-p game.board[0][0].vertical(3)
+# p game.board
+game.board
+
