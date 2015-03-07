@@ -83,7 +83,8 @@ class Board
             break
           end
         end
-        @poss_moves << [x, y] if @board[x][y].empty?
+        @poss_moves 5
+        << [x, y] if @board[x][y].empty?
       end
     end
   end
