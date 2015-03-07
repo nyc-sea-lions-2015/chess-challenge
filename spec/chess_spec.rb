@@ -1,4 +1,4 @@
-require_relative 'chess'
+require_relative '../chess'
 
 # describe 'let' do
 
@@ -39,7 +39,7 @@ describe 'Piece'
   describe 'King'
 
     let(:king) {King.new([5,3])}
-    let(:white_king) {King.new([5,3],'white',true)}
+    let(:white_king) {King.new(pos: [5,3], color:'white', captured:true)}
 
     it "should accept (arguments) as parameters" do
       expect {King.new([5,3])}.to_not raise_error

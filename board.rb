@@ -1,4 +1,12 @@
 WIDTH = 8
+LETTER = {"A" => 0,
+            "B" => 1,
+            "C" => 2,
+            "D" => 3,
+            "E" => 4,
+            "F" => 5,
+            "G" => 6,
+            "H" => 7 }
 class Board
   def initialize
     @board = Array.new(WIDTH) {WIDTH.times.map{[]}}
@@ -57,20 +65,28 @@ class Board
 
   def move_valid(coordinate)
     @poss_moves.clear
-    #coordinate = [row,col]
-    piece = (@board[8 - coordinate[0]][coordinate[1]])
-    if piece.empty?
-      return "PICK ANOTHER PIECE"
+    square = @board[8-coordinate[1]][LETTER[coordinate[0]]]
+    if square.empty?
+      puts "This is empty!"
     else
-      piece = piece.first
+      piece = square.first
     end
     p piece
-
-    piece.moves.each do |coordinate_set|
-      coordinate_set.each do |x,y|
-        @poss_moves << [x, y] if @board[x][y].empty?
-        if @board[x][y].empty? == false
-          p "there are no items"
+    # piece.moves.each do |coordinate|
+    # @board.each_with_index do |row, row_i|
+    #   row.each_with_index do |square, square_i|
+        piece.moves.each do |coordinate_set|
+          coordinate_set.each do |x,y|
+            if !@board[x][y].empty?
+              if piece.color != @board[x][y][0].color
+                @poss_moves << [x, y]
+                break
+              else
+                break
+              end
+            end
+            @poss_moves << [x, y] if @board[x][y].empty?
+          end
         end
       end
     end
@@ -217,7 +233,6 @@ class Queen < Piece
   attr_reader :name
   def initialize(arguments)
     super(arguments)
-    moves
   end
 
   def moves
@@ -227,30 +242,45 @@ class Queen < Piece
     arr2 = Rook.new([@x, @y]).moves
     @moves = arr1 + arr2
     remove_nil
-    return @moves
+    return @moves.uniq
   end
 
 end
 
-class Pawn < Piece
+class Pawn < Piece #white pieces need to be able to go "up" only (each piece has its own one direction)
   attr_reader :name
-  def initialize(arguments, capture = false, status = false)
+  def initialize(arguments, capture = false, status = true)
     super(arguments)
     @status = status
     @capture = capture
+    moves
+  end
+
+  def made_move
+    @status = false
   end
 
   def moves
-    @moves << [[@x, @y+2]] if @status
-    @moves << [[@x+1, @y]]
+    if @color == "white"
+      @moves << [[@x-2, @y]] if @status
+      @moves << [[@x-1, @y]]
+    else
+      @moves << [[@x+2, @y]] if @status
+      @moves << [[@x+1, @y]]
+    end
     capture? if @capture
     remove_nil
-    return @moves
+    return @moves.uniq
   end
 
   def capture?
-    @moves << [[@x+1, @y+1]]
-    @moves << [[@x-1, @y+1]]
+    if color == "white"
+      @moves << [[@x+1, @y-1]]
+      @moves << [[@x-1, @y-1]]
+    else
+      @moves << [[@x+1, @y+1]]
+      @moves << [[@x-1, @y+1]]
+    end
   end
 
 end
@@ -261,9 +291,8 @@ board = Board.new
 
 board.start
 puts board
-p board.move_valid([7, 0])
-p board.move_valid([5, 2])
 
+p board.move_valid(["A", 7])
 puts board
 # rook = Queen.new([1,7])
 # p rook.moves
