@@ -91,6 +91,23 @@ class Board
       return @poss_moves
   end
 
+  # def make_move(piece)
+  #   piece => find possible moves (give coordinates to user)
+  #   they will give us coordinate they want to move to
+  #   => place piece (piece, coordinate)
+  #   move the piece to cooresponding coordinate
+  def place_piece(piece, new_square)
+
+
+  end
+
+  def translate(input)
+
+  end
+
+  def remove
+
+  end
 
   def to_s
     @board.each_with_index.map do |row, i|
@@ -140,6 +157,7 @@ class King < Piece
   attr_reader :name
   def initialize(arguments)
     super(arguments)
+    @name = "KING"
   end
 
   def moves
@@ -157,6 +175,7 @@ class Knight < Piece
   attr_reader :name
   def initialize(arguments)
     super(arguments)
+    @name = "KNIGHT"
   end
 
   def moves
@@ -174,6 +193,7 @@ class Rook < Piece
   def initialize(arguments)
     super(arguments)
     @moves = Array.new(4){[]}
+    @name = "ROOK"
   end
 
   def moves
@@ -200,6 +220,7 @@ class Bishop < Piece
   def initialize(arguments)
     super(arguments)
     moves
+    @name = "BISHOP"
   end
 
   def moves
@@ -231,6 +252,7 @@ class Queen < Piece
   attr_reader :name
   def initialize(arguments)
     super(arguments)
+    name = "QUEEN"
   end
 
   def moves
@@ -252,6 +274,7 @@ class Pawn < Piece #white pieces need to be able to go "up" only (each piece has
     @status = status
     @capture = capture
     moves
+    name = "PAWN"
   end
 
   def made_move
