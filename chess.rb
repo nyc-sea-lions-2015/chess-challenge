@@ -120,7 +120,7 @@ class Game
     if move_validity == true
       if @board.cell_empty?(stripped) == false
         desired_cell_piece = @board[desired_row][desired_col]
-        if victim_capturable(desired_cell_piece)
+        if piece.victim_capturable(desired_cell_piece.state)
           #capture victim
         else
           #return invalid move
@@ -148,6 +148,14 @@ attr_accessor :board, :captured_pieces
     ["♙"*8],
     ["♖""♘""♗""♕""♔""♗""♘""♖"]].split("")
     @captured_pieces = []
+  end
+
+  def clear_path?
+     # check between current location and desired location
+     rows_to_check = piece.current_location[0]..
+     #
+     #piece.move_pattern
+     # for other piece object
   end
 
   def cell_empty?(y,x)
