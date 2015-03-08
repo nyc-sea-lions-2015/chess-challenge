@@ -1,3 +1,7 @@
+require 'colorize'
+
+
+
 WIDTH = 8
 LETTER = {"A" => 0,
             "B" => 1,
@@ -85,10 +89,11 @@ class Board
   end
 
   def clear
-    @board.clear
+    puts "\e[H\e[2J"
   end
 
   def current_board
+
     @board.each_with_index.map do |row, i|
       # puts "#{8-i} #{row}"
       print "#{8-i}  "
