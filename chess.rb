@@ -82,11 +82,13 @@ p board.check_path([0,0], [0,7])
 board.inspect_path
 queen = Queen.new(:white)
 p queen.move_possibilities([3, 3])
-# bishop = Bishop.new(:black)
-# p bishop.move_possibilities([3, 3])
+bishop = Bishop.new(:black)
+p bishop.move_possibilities([3, 3])
 rook = Rook.new(:black)
 p rook.move_possibilities([3, 3])
-
+pawn = Pawn.new(:white)
+pawn.move_counter= 1
+p pawn.move_possibilities([3,3])
 
 
 

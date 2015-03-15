@@ -88,12 +88,12 @@ class Rook < Piece
             # moves << [dx, dy]
             new_x = coordinates[0] + dx
             new_y = coordinates[1] + dy
-            if ((new_x >= 0 && new_x <= 7) && (new_y >= 0 && new_y <= 7)) && (dx == 0 && dy.abs <= 7) || (dy == 0 && dx.abs <= 7)
+            if ((new_x >= 0 && new_x <= 7) && (new_y >= 0 && new_y <= 7)) && ((dx == 0 && dy.abs <= 7) || (dy == 0 && dx.abs <= 7) && (dx != 0 && dy != 0))
               moves << [new_x, new_y]
             end
           end
         end
-        return moves
+      return moves
   end
 
 
@@ -124,7 +124,7 @@ class Knight < Piece
         end
         return moves
 
-    end
+      end
 
   #  (subclass of Piece) Check if dx, dy is valid in terms of signature moves
   #  (subclass of Piece) Will return that move is valid to Board
@@ -147,7 +147,7 @@ class Bishop < Piece
           # moves << [dx, dy]
           new_x = coordinates[0] + dx
           new_y = coordinates[1] + dy
-          if (dx.abs == dy.abs) && (new_x <= 7 && new_y <= 7) && (new_x >=0 && new_y >= 0)
+          if (dx.abs == dy.abs) && (new_x <= 7 && new_y <= 7) && (new_x >=0 && new_y >= 0) && (dx != 0 && dy != 0)
             moves << [new_x, new_y]
           end
         end
@@ -175,7 +175,7 @@ class Queen < Piece
           # moves << [dx, dy]
           new_x = coordinates[0] + dx
           new_y = coordinates[1] + dy
-          if (new_x >= 0 && new_y >= 0 && new_x <= 7 && new_y <= 7) && ((dx.abs == dy.abs) || (dx.abs == 0 && dy.abs <= 7) || (dy.abs == 0 && dx.abs <= 7))
+          if (new_x >= 0 && new_y >= 0 && new_x <= 7 && new_y <= 7) && ((dx.abs == dy.abs) || (dx.abs == 0 && dy.abs <= 7) || (dy.abs == 0 && dx.abs <= 7) && (dx != 0 && dy != 0))
             moves << [new_x, new_y]
           end
         end
@@ -204,7 +204,9 @@ class King < Piece
           # moves << [dx, dy]
           new_x = coordinates[0] + dx
           new_y = coordinates[1] + dy
-          moves << [new_x, new_y]
+          if (dx != 0 && dy != 0)
+            moves << [new_x, new_y]
+          end
         end
       end
       return moves
@@ -217,15 +219,41 @@ end
 
 class Pawn < Piece
   attr_reader :color
+  attr_accessor :move_counter
 
   symbols white: '♙', black: '♟'
 
   def initialize(color)
     @color = color
+    @move_counter = 0
   end
 
-  def move_possibilities
-
+  def move_possibilities(coordinates)
+    if @move_counter == 0
+      moves = []
+      (-1..1).each do |dx|
+        (0..2).each do |dy|
+          new_x = coordinates[0] + dx
+          new_y = coordinates[1] + dy
+          if ((dx.abs == dy.abs) || (dx == 0)) && (dx != 0 && dy != 0)
+            moves << [new_x, new_y]
+          end
+        end
+      end
+      return moves
+    elsif @move_counter == 1
+      moves = []
+      (-1..1).each do |dx|
+        (0..1).each do |dy|
+          new_x = coordinates[0] + dx
+          new_y = coordinates[1] + dy
+          if ((dx.abs == dy.abs) || (dx == 0)) && (dx != 0 && dy != 0)
+            moves << [new_x, new_y]
+          end
+        end
+      end
+      return moves
+    end
   end
 
   #  (subclass of Piece) Check if dx, dy is valid in terms of signature moves

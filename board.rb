@@ -129,7 +129,7 @@ class Square
   end
 
   def valid?
-    row > 0 && row < board.height && col > 0 && col < board.width
+    row > 0 && row <= board.height && col > 0 && col <= board.width
   end
 
   def piece
