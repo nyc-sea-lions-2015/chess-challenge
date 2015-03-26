@@ -1,18 +1,44 @@
+# require "byebug"
 
-class Board(args)
+class Board
+  attr_reader :board
   def initialize
-    @board = [Array.new(8) { Array.new(nil) }]
-    @first_row = [Rook.new, Knight.new, Bishop.new, Queen.new, King.new, Bishop.new, Knight.new, Rook.new]
-    @second_row = Array.new(8) {Pawns.new}
-    @board[0], @board[7] = @first_row, @first_row.reverse.map! { |piece| piece.color = "black"}
-    @board[1], @board[6] = @second_row, @second_row.map! { |piece| piece.color = "black"}
+    # @board = [Array.new(8) { Array.new(nil) }]
+    # @first_row = [Rook.new, Knight.new, Bishop.new, Queen.new, King.new, Bishop.new, Knight.new, Rook.new]
+    # @second_row = Array.new(8) {Pawns.new}
+    # @board[0], @board[7] = @first_row, @first_row.reverse.map! { |piece| piece.color = "black"}
+    # @board[1], @board[6] = @second_row, @second_row.map! { |piece| piece.color = "black"}
+    @board = [[" ♜ " , " ♞ ",  " ♝ ", " ♛ ",  " ♚ ",  " ♝ ",  " ♞ ",  " ♜ "], [ " ♟ ",  " ♟ ",  " ♟ ",  " ♟ ",  " ♟ ",  " ♟ ",  " ♟ ", " ♟ "], [nil, " ♙ ",nil,nil,nil,nil,nil,nil], [nil,nil,nil,nil,nil, " ♙ ",nil,nil], [nil,nil,nil,nil,nil,nil,nil,nil],[" ♙ ",  " ♙ ",  " ♙ ", " ♙ ",  " ♙ ",nil ,  " ♙ "], [" ♖ ",  " ♘ ",  " ♗ ",  " ♕ ",  " ♔ ", " ♗ ",  " ♘ ",  " ♖ "]]
+    @display_board = @board
+    @col_letters = [" a ", " b ", " c "," d "," e "," f "," g "," h "]
+    @whitespace = "  "
   end
 
 
-  def valid_moves(piece)
+  # # turns display_board into icons and nils into spaces
+  # def to_icons
+  #   @display_board.each do |row|
+  #     row.each do |square|
+  #       # if square equals piece, square = piece.value, else square = whitespace ("   ")
+  #     end
+  #   end
+  # end
+  # need this to not puts 0 to last row
+  def display
+    row_num = 8
+    board_string = ""
+    @display_board << @col_letters
+    @display_board = @display_board
+    @display_board.each do |col|
+      # if value is a piece, turn into ascii
+      # if value is nil, turn into " "
+      board_string += "#{row_num}   " + col.join(" ") + "\n"
+      row_num -= 1
+    end
+    puts board_string
+  end
 
-    valid_moves = []
-    possibilities = []
+end
 
    x_location = piece.location[0]
    y_location = piece.location[1]
@@ -33,6 +59,15 @@ class Board(args)
       else
         valid_moves << coordinate
 
+b = Board.new
+# p b.board
+
+b.display
+
+#   # @board = 8 subarrays, as columns, starting at bottom left. piece objects
+
+
+#   def valid_moves(piece)
 
     # move to 0,2 and check a bunch
     #
@@ -41,33 +76,30 @@ class Board(args)
     (x < 0 || y < 0 || x > 7 || y > 7)
   end
 
-  def find_piece(location_string)
-      index = string_to_index(location_string
-      piece = @board[index[0]][index[1]]
-      piece.location = [index[0], index[1]]
-      valid_moves(piece)
-    end
-   end
+#     valid_moves = []
+#     possibilities = []
 
-  def move_piece
+#     x_location = piece.location[0]
+#     y_location = piece.location[1]
 
-  end
 
-  def capture
+#     (piece.moves).each do |vectors_array|
 
-  end
+#       x_location += vectors_array[0]
+#       y_location += vectors_array[1]
+#       #filtered for out_of_bounds
+#       next if out_of_bounds?(x_location,y_location)
+#       possibilities << [x_location, y_location]
 
-  def string_to_index(location_string)
-    # a5
-    col_string, row_index = location_string.split("")
-    row_index = row_index.to_i
-    col_index = col_string.downcase.ord - 97
-    [col_index, row_index]
-  end
-end
+#     end
 
-class Player #?
-end
+#     possibilities.each do
+
+
+#       valid_moves <<
+#         end
+
+
 
 class Piece
   attr_accessor :color, :moves, :location
@@ -80,8 +112,21 @@ class Piece
     @display_options = display[color]
   end
 
+#     # filter for out of bounds. out of bounds if x or y < 0 || x or y > 7
+#     def out_of_bounds?(x,y)
+#       (x < 0 || y < 0 || x > 7 || y > 7)
+#     end
+#     #mathmatical possibilities
+#     #check against piece.location
 
-end
+
+#     possibilites.each do |coordinate|
+#       # if collision with white piece, return false
+#       if @board[coordinate[0]][coordinate[1]]
+
+#       else
+#         valid_moves << coordinate
+
 
 class Pawn < Piece
   attr_accessor :moves

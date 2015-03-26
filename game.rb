@@ -9,6 +9,10 @@ def play
   # if !game_over
   players.each do |player|
     turns(player)
+    # clear screen
+    # display_board
+    # ask for user input
+    # 
   end
   # end
 end
@@ -19,11 +23,11 @@ def turns(player)
   board.find_piece(view.choose_piece)
 end
 
-def find_piece(input)
-end
-
-
 class view
+
+  def display_board
+
+  end
 
   def turn_message(player)
     message(player_turn_message)
