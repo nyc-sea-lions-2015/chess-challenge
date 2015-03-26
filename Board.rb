@@ -4,8 +4,8 @@ class Board(args)
     @board = [Array.new(8) { Array.new(nil) }]
     @first_row = [Rook.new, Knight.new, Bishop.new, Queen.new, King.new, Bishop.new, Knight.new, Rook.new]
     @second_row = Array.new(8) {Pawns.new}
-    @board[0], @board[7] = @first_row, @first_row.reverse.map { |piece| piece.color = "black"}
-    @board[1], @board[6] = @second_row, @second_row.map { |piece| piece.color = "black"}
+    @board[0], @board[7] = @first_row, @first_row.reverse.map! { |piece| piece.color = "black"}
+    @board[1], @board[6] = @second_row, @second_row.map! { |piece| piece.color = "black"}
   end
 
 
@@ -84,21 +84,25 @@ class Piece
 end
 
 class Pawn < Piece
+  attr_accessor :moves
   def initialize(color = "white")
     color == "white" ? @icon = "♟" : @icon = '♙'
-     self.moves = [0,1]
-    # pawn can only move forward.
-    # pawn can only move 1 space, unless it's current position is the starting col.
-    # pawn can move to left front or right front diagonal
-    # if opposing piece occupies that space
-    # stretch: en empasse move condition
-    # stretch: promotion
+    @moves = [0, 1]
   end
+
+  # def moves(x, y)
+  #     x += @moves[0]
+  #     y += @moves[1]
+  # end
+
+end
 
   # TODO: deal with possible_moves method
   class Rook < Piece
+    attr_accessor :moves
     def initialize(color = "white")
       color == "white" ? @icon = "♜" : @icon = '♖'
+      @moves = [[0,1], [1,0], [-1,0], [0, -1]]
     end
 
   end
@@ -120,6 +124,7 @@ class Pawn < Piece
   class Queen < Piece
     def initialize(color = "white")
       color == "white" ? @icon = "♛" : @icon = '♕'
+      @moves = [[1, 0], [1,1], [1, -1], [0, -1], [0, 1], [-1, 0], [-1, 1], [-1, -1]]
     end
 
   end
@@ -127,11 +132,13 @@ class Pawn < Piece
   class Bishop < Piece
     def initialize(color = "white")
       color == "white" ? @icon = "♝" : @icon = '♗'
+      @moves = [[1, 1], [1, -1], [-1, 1], [-1, -1]]
     end
   end
 
   class Knight < Piece
     def initialize(color = "white")
       color == "white" ? @icon = "♞" : @icon = '♘'
+      @moves = [[1, 2], [1, -2], [2, 1], [2, -1], [-1, 2], [-1, -2], [-2, 1], [-2, -1]]
     end
   end
