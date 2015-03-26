@@ -19,11 +19,19 @@ def turns(player)
   board.find_piece(view.choose_piece)
 end
 
-def find_piece(input)
-end
+# black chars
+♜  ♞  ♝  ♛  ♚  ♝  ♞  ♜
+♟  ♟  ♟  ♟  ♟  ♟  ♟  ♟
 
+# white chars
+ ♙  ♙  ♙  ♙  ♙  ♙  ♙  ♙
+♖  ♘  ♗  ♕  ♔  ♗  ♘  ♖
 
 class view
+
+  def display_board
+
+  end
 
   def turn_message(player)
     message(player_turn_message)
