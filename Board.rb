@@ -36,16 +36,6 @@ class Board(args)
   end
 
   def find_piece(location_string)
-    # find the piece in the board array. (convert string to index)
-    index = string_to_index(location_string)
-    piece = @board[index[0]][index[1]]
-    location_col, location_row = index[0], index[1]
-    valid_moves(piece)
-    # run valid_moves(piece)
-    # return a piece object, and it's moves
-  end
-
-  def find_piece(location_string)
       index = string_to_index(location_string
       piece = @board[index[0]][index[1]]
       piece.location = [index[0], index[1]]
@@ -99,6 +89,7 @@ class Pawn < Piece
   # TODO: deal with possible_moves method
   class Rook < Piece
   end
+<<<<<<< HEAD
 
 
 class King < Piece
@@ -109,9 +100,17 @@ end
 class Queen < Piece
 
 end
+=======
 
-class Bishop < Piece
-end
+  class King < Piece
+  end
 
-class Knight < Piece
-end
+  class Queen < Piece
+  end
+>>>>>>> 6d730b1fe19c176e220e9f00edbe550a699293ce
+
+  class Bishop < Piece
+  end
+
+  class Knight < Piece
+  end
