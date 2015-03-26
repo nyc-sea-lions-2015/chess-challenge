@@ -44,9 +44,12 @@ class Rook < Piece
 end
 
 class King < Piece
+  moves = [[0, 1],[0, -1],[1,0],[-1,0],[1,1],[-1,1],[1,-1],[-1,-1]]
+  possibilities = []
 end
 
 class Queen < Piece
+
 end
 
 class Bishop < Piece
