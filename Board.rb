@@ -12,7 +12,6 @@ class Board(args)
 
   def valid_moves(piece)
     valid_moves = []
-
    x = piece.location[0]
    y= piece.location[1]
    possibilities = all_possible_directions(x, y)
