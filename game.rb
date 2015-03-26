@@ -1,7 +1,7 @@
 
 def initialize(board, view)
-  @board = board.new(args)
-  @view = view.new
+  @board = Board.new(args)
+  @view = View.new
   @players = ["white", "black"]
 end
 
@@ -16,14 +16,14 @@ end
 def turns(player)
   # if blank square/outside of board square
   view.turn_message(player)
-  board.find_piece(view.choose_piece)
+  piece =  board.find_piece(view.choose_piece)
+  moves =
+  piece_chosen_message(player, piece, moves)
+
 end
 
-def find_piece(input)
-end
 
-
-class view
+class View
 
   def turn_message(player)
     message(player_turn_message)
