@@ -1,25 +1,45 @@
+# require "byebug"
+
 class Board
   attr_reader :board
   def initialize
-    @board = [ [1,2,3,4,5,6,7,8,9], [1,2,3,4,5,6,7,8,9], [1,2,3,4,5,6,7,8,9], [1,2,3,4,5,6,7,8,9], [1,2,3,4,5,6,7,8,9], [1,2,3,4,5,6,7,8,9], [1,2,3,4,5,6,7,8,9], [1,2,3,4,5,6,7,8,9] ]
+    # @board = [[" ♜ " , " ♞ ",  " ♝ ", " ♛ ",  " ♚ ",  " ♝ ",  " ♞ ",  " ♜ "], [ " ♟ ",  " ♟ ",  " ♟ ",  " ♟ ",  " ♟ ",  " ♟ ",  " ♟ ", " ♟ "], ["   ","   ","   ","   ","   ","   ","   ","   "],["   ","   ","   ","   ","   ","   ","   ","   "], ["   ","   ","   ","   ","   ","   ","   ","   "], ["   ","   ","   ","   ","   ","   ","   ","   "], [" ♙ ",  " ♙ ",  " ♙ ", " ♙ ",  " ♙ ",  " ♙ ",  " ♙ ",  " ♙ "], [" ♖ ",  " ♘ ",  " ♗ ",  " ♕ ",  " ♔ ", " ♗ ",  " ♘ ",  " ♖ "]]
+    @board = [[" ♜ " , " ♞ ",  " ♝ ", " ♛ ",  " ♚ ",  " ♝ ",  " ♞ ",  " ♜ "], [ " ♟ ",  " ♟ ",  " ♟ ",  " ♟ ",  " ♟ ",  " ♟ ",  " ♟ ", " ♟ "], [nil, " ♙ ",nil,nil,nil,nil,nil,nil], [nil,nil,nil,nil,nil, " ♙ ",nil,nil], [nil,nil,nil,nil,nil,nil,nil,nil],[" ♙ ",  " ♙ ",  " ♙ ", " ♙ ",  " ♙ ",nil ,  " ♙ "], [" ♖ ",  " ♘ ",  " ♗ ",  " ♕ ",  " ♔ ", " ♗ ",  " ♘ ",  " ♖ "]]
+    @display_board = @board
+    @col_letters = [" a ", " b ", " c "," d "," e "," f "," g "," h "]
+    @whitespace = "  "
   end
 
-  def to_string
-    row_num = 1
+
+  # # turns display_board into icons and nils into spaces
+  # def to_icons
+  #   @display_board.each do |row|
+  #     row.each do |square|
+  #       # if square equals piece, square = piece.value, else square = whitespace ("   ")
+  #     end
+  #   end
+  # end
+  # need this to not puts 0 to last row
+  def display
+    row_num = 8
     board_string = ""
-    @board = @board.transpose.reverse
-    @board.each do |col|
-      board_string += row_num + col.join("  ") + "\n" 
-      row += 1
+    @display_board << @col_letters
+    @display_board = @display_board
+    @display_board.each do |col|
+      # if value is a piece, turn into ascii
+      # if value is nil, turn into " "
+      board_string += "#{row_num}   " + col.join(" ") + "\n"
+      row_num -= 1
     end
-   puts board_string
+    puts board_string
   end
 
 end
 
 b = Board.new
 # p b.board
-b.to_string
+
+b.display
 
 #   # @board = 8 subarrays, as columns, starting at bottom left. piece objects
 
