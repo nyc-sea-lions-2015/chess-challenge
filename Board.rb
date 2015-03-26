@@ -9,7 +9,6 @@ class Board(args)
     @board.transpose
   end
 
-
   def valid_moves(piece)
     valid_moves = []
    x = piece.location[0]
@@ -38,6 +37,7 @@ def all_possible_directions(x,y)
     end
     possibilities
 end
+
 def out_of_bounds?(x,y)
   (x < 0 || y < 0 || x > 7|| y > 7)
 end

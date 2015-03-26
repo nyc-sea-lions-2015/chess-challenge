@@ -17,7 +17,7 @@ def turns(player)
   # if blank square/outside of board square
   view.turn_message(player)
   piece =  board.find_piece(view.choose_piece)
-  moves =
+  # moves =
   piece_chosen_message(player, piece, moves)
 
 end
