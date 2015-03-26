@@ -9,6 +9,10 @@ def play
   # if !game_over
   players.each do |player|
     turns(player)
+    # clear screen
+    # display_board
+    # ask for user input
+    # 
   end
   # end
 end
@@ -18,14 +22,6 @@ def turns(player)
   view.turn_message(player)
   board.find_piece(view.choose_piece)
 end
-
-# black chars
-♜  ♞  ♝  ♛  ♚  ♝  ♞  ♜
-♟  ♟  ♟  ♟  ♟  ♟  ♟  ♟
-
-# white chars
- ♙  ♙  ♙  ♙  ♙  ♙  ♙  ♙
-♖  ♘  ♗  ♕  ♔  ♗  ♘  ♖
 
 class view
 
