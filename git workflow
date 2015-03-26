@@ -1,0 +1,22 @@
+git workflow
+
+Before working on a feature that might break something.
+
+git checkout - b "main branch name"_feature
+
+git checkout - b "main branch name"_anotherfeature
+
+
+when you want to merge back in
+
+1st.) ON MASTER BRANCH Git pull origin master
+2nd.) git fetch origin master
+3nd.) git merge master (merges with your feature branch)
+4rd.) fix merge issues
+5th.) git merge master
+6.) git push origin (branch)
+7.) make pull request
+8.) compare and merge
+
+
+compare base branch master to feature branch
