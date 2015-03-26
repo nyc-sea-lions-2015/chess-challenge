@@ -5,10 +5,12 @@ class Board
   end
 
   def to_string
+    row_num = 1
     board_string = ""
     @board = @board.transpose.reverse
     @board.each do |col|
-      board_string += col.join("  ") + "\n"
+      board_string += row_num + col.join("  ") + "\n" 
+      row += 1
     end
    puts board_string
   end
