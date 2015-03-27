@@ -289,7 +289,14 @@ class Board
     #output: the object in that position
   end
 
+  def coordinate_to_object(coordinate)
+
+  end
+
+
+
   def check_move_helper(piece)
+
     pawn_move(piece) if piece.is_a?(Pawn)
     king_move(piece) if piece.is_a?(King)
     knight_move(piece) if piece.is_a?(Knight)
@@ -384,14 +391,6 @@ class Board
   #   #modifies the board_array and piece.position
   # end
 
+
+
 end
-
-
-# game = Board.new
-# game.to_s
-# knight = Knight.new(color:"black", position: [0,0])
-# p game.place(knight,knight.position)
-# game.to_s
-# p game.knight_move(knight)
-# p game.place(knight,[2,1])
-# game.to_s
