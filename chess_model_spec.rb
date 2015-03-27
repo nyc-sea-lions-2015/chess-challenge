@@ -2,27 +2,16 @@ require_relative "chess_model"
 
 describe "Board" do
 
-  args = {color: "white", position: [1,0]}
-  let(:pawn) {Pawn.new(args)}
-
-  args = {color: "white", position: [1,1]}
-  let(:king) {King.new(args)}
-
-  args = {color: "white", position: [1,2]}
-  let(:queen) {Queen.new(args)}
-
-  args = {color: "white", position: [1,3]}
-  let(:knight) {Knight.new(args)}
-
-  args = {color: "white", position: [1,4]}
-  let(:bishop) {Bishop.new(args)}
-
-  args = {color: "white", position: [1,5]}
-  let(:rook) {Rook.new(args)}
-
-
+  let(:pawn) {Pawn.new({color: "white", position: [1,0]})}
+  let(:bpawn) {Pawn.new({color: "black", position: [6,0]})}
+  let(:king_move_test_brook) {Rook.new({color: "black", position: [2,1]})}
+  let(:king_move_test_queen) {Queen.new({color: "white", position: [2,2]})}
+  let(:king) {King.new({color: "white", position: [1,1]})}
+  let(:queen) {Queen.new({color: "white", position: [1,2]})}
+  let(:knight) {Knight.new({color: "white", position: [1,3]})}
+  let(:bishop) {Bishop.new({color: "white", position: [1,4]})}
+  let(:rook) {Rook.new({color: "white", position: [1,5]})}
   let(:chess_board) {Board.new}
-
 
   describe "initialize" do
     it "should initialize to nil" do
@@ -64,16 +53,32 @@ describe "Board" do
     end
   end
 
-  describe "pawn_move" do
+  describe "pawn_move for white pawn" do
     it "should return an array of moves for the pawn passed" do
       expect(chess_board.pawn_move(pawn)).to eq [[2,0],[3,0]]
     end
   end
 
+  describe "pawn_move for black pawn" do
+  	it "should return an array of moves for the pawn passed" do
+      expect(chess_board.pawn_move(pawn)).to eq [[5,0],[4,0]]
+    end
+  end
+
     describe "king_move" do
     it "should return an array of moves for the king passed" do
-      expect(chess_board.pawn_move(king)).to eq [[2,1],[2,2],[1,2],[0,2],[0,1],[0,0],[1,0],[2,0]]
+      chess_board.place(king, [1,1])		
+      expect(chess_board.king_move(king)).to eq [[2,1], [2,2], [1,2],[0,2],[0,1],[0,0],[1,0],[2,0]]
     end
+  end
+
+  describe "king_move" do
+  	it "should handle pieces existing on squares that could fall within valid moves" do
+  	  chess_board.place(king, [1,1])
+  	  chess_board.place(king_move_test_queen, [2,2])
+  	  chess_board.place(king_move_test_brook, [2,1])
+  	  expect(chess_board.king_move(king)).to eq [[2,1],[1,2],[0,2],[0,1],[0,0],[1,0],[2,0]]
+  	end
   end
 
   describe "knight_move" do
@@ -84,7 +89,8 @@ describe "Board" do
 
   describe "rqb_move" do
     it "should return an array of moves for the rook passed" do
-      expect(chess_board.pawn_move(rook)).to eq [[2,0],[3,0]]
+      chess_board.place(rook, [1,5])
+      expect(chess_board.pawn_move(rook)).to eq 
     end
   end
 
