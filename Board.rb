@@ -12,31 +12,11 @@ class Board
 
     # @board_hard =  [[nil, nil, nil, nil, nil,nil, nil, nil], [Pawn.new([1,0]), nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil],  [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil]]
     @board_hard = [[Rook.new, Knight.new, Bishop.new, Queen.new, King.new, Bishop.new, Knight.new, Rook.new], [Pawn.new, Pawn.new, Pawn.new, Pawn.new, Pawn.new, Pawn.new, Pawn.new, Pawn.new], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [Pawn.new("black"), Pawn.new("black"), Pawn.new("black"), Pawn.new("black"), Pawn.new("black"), Pawn.new("black"), Pawn.new("black"), Pawn.new("black")], [Rook.new("black"), Knight.new("black"), Bishop.new("black"), King.new("black"), Queen.new("black"), Bishop.new("black"), Knight.new("black"), Rook.new("black")]]
+
+    @row_nums = [1,2,3,4,5,6,7,8]
+    @col_letters = ["a","b","c","d","e","f","g", "h"]
   end
 
-
-  # # turns display_board into icons and nils into spaces
-  # def to_icons
-  #   @display_board.each do |row|
-  #     row.each do |square|
-  #       # if square equals piece, square = piece.value, else square = whitespace ("   ")
-  #     end
-  #   end
-  # end
-  # need this to not puts 0 to last row
-  # def display
-  #   row_num = 8
-  #   board_string = ""
-  #   @display_board << @col_letters
-  #   @display_board = @display_board
-  #   @display_board.each do |col|
-  #     # if value is a piece, turn into ascii
-  #     # if value is nil, turn into " "
-  #     board_string += "#{row_num}   " + col.join(" ") + "\n"
-  #     row_num -= 1
-  #   end
-  #   puts board_string
-  # end
   def move(old_pos, new_pos, piece)
     piece.set_location(new_pos)
     @board_hard[new_pos[0]][new_pos[1]] = piece
@@ -46,13 +26,15 @@ class Board
   def display
     row_num = 8
     board_string = ""
-    # @display_board << @col_letters
     @display_board = @board_hard
-    @display_board.map do |row|
+    @display_board.reverse.map do |row|
       row.map! do |cell|
         cell == nil ? cell = ' ' : cell.display_icon
-      end.join(' ')
+      end.join('  ')
+      board_string += "#{row_num}   " + row.join("   ") + "\n"
+      row_num -= 1
     end
+    board_string += "    " + @col_letters.join("   ")
   end
 
   #   def valid_moves(piece)
@@ -193,7 +175,7 @@ end
 class Pawn < Piece
   attr_accessor :moves #:first_move?, :capturing?
   #logic for capturing?
-  def initialize(location, color = "white")
+  def initialize(color = "white")
     @location = location
     color == "white" ? @icon = "♟" : @icon = '♙'
     # first_move? == true if self.location[0] == 1 || self.location[0] == 6 #initial row value for pawns
@@ -250,9 +232,3 @@ class Knight < Piece
   end
 end
 
-b = Board.new
-# p b.board
-
-
-b.move([1,0], [2,5], b.board_hard[1][0])
-puts b.display
