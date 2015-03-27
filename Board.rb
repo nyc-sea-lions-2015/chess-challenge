@@ -42,9 +42,9 @@ class Board
   def valid_moves(valid_moves = [])
    x = piece.location[0]
    y= piece.location[1]
-   possibilities = move_one(x, y) if possibilities = [] #otherwise you get values from the recursive move check
+   valid_moves = move_one(x, y) if valid_moves = [] #otherwise you get values from the recursive move check
      #filter for out_of_bounds
-      #mathematical possibilities
+      #mathematical valid_moves
       #check against piece.location
     possibilites.each do |coordinate|
       # if collision with white piece, return false
@@ -81,13 +81,13 @@ def recursive_move_check(piece, check_x=0, check_y=0, valid_before_bounds_check=
   end
 
 def move_one(x,y)
-    possibilities = []
+    valid_moves = []
     (piece.moves).each do |vector|
       x += vectors[0]
       y += vector[1]
-      possibilities <<  [x,y]
+      valid_moves <<  [x,y]
     end
-    possibilities
+    valid_moves
 end
 
 def out_of_bounds?(x,y)
@@ -127,6 +127,7 @@ class Pawn < Piece
   attr_accessor :moves, :first_move?, :capturing?
   def initialize(color = "white")
     color == "white" ? @icon = "♟" : @icon = '♙'
+    first_move? = true if self.location[0] == 1 || self.location[0] == 6 #initial row value for pawns
     moves = [[0, 1]]
     moves << [0,2] if first_move?
     moves << [1,1] if capturing?
