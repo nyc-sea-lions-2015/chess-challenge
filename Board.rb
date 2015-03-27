@@ -11,48 +11,30 @@ class Board
     # @board[1], @board[6] = @second_row, @second_row.map! { |piece| piece.color = "black"}
 
     # @board_hard =  [[nil, nil, nil, nil, nil,nil, nil, nil], [Pawn.new([1,0]), nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil],  [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil]]
-    @board_hard = [[Rook.new, Knight.new, Bishop.new, Queen.new, King.new, Bishop.new, Knight.new, Rook.new], [Pawn.new, Pawn.new, Pawn.new, Pawn.new, Pawn.new, Pawn.new, Pawn.new, Pawn.new], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [Pawn.new("black"), Pawn.new("black"), Pawn.new("black"), Pawn.new("black"), Pawn.new("black"), Pawn.new("black"), Pawn.new("black"), Pawn.new("black")], [Rook.new("black"), Knight.new("black"), Bishop.new("black"), King.new("black"), Queen.new("black"), Bishop.new("black"), Knight.new("black"), Rook.new("black")]]
-  end
+    @board_hard = [[Rook.new([0,0]), Knight.new([0, 1]), Bishop.new([0, 2]), Queen.new([0, 3]), King.new([0, 4]), Bishop.new([0, 5]), Knight.new([0, 6]), Rook.new([0,7])], [Pawn.new([1,0]), Pawn.new([1,1]), Pawn.new([1,2]), Pawn.new([1,3]), Pawn.new([1,4]), Pawn.new([1,5]), Pawn.new([1,6]), Pawn.new([1,7])], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [Pawn.new([6,0], "black"), Pawn.new([6,1], "black"), Pawn.new([6,2], "black"), Pawn.new([6,3], "black"), Pawn.new([6,4], "black"), Pawn.new([6,5], "black"), Pawn.new([6,6], "black"), Pawn.new([6, 7], "black")], [Rook.new([7, 0], "black"), Knight.new([7, 1], "black"), Bishop.new([7, 2], "black"), King.new([7, 3], "black"), Queen.new([7, 4], "black"), Bishop.new([7, 5], "black"), Knight.new([7, 6], "black"), Rook.new([7, 7], "black")]]
+  @row_nums = [1,2,3,4,5,6,7,8]
+  @col_letters = ["a","b","c","d","e","f","g", "h"]
+end
+
+def display
+   row_num = 8
+   board_string = ""
+   @display_board = @board_hard
+   @display_board.reverse.map do |row|
+     row.map! do |cell|
+       cell == nil ? cell = ' ' : cell.display_icon
+     end.join('  ')
+     board_string += "#{row_num}   " + row.join("   ") + "\n"
+     row_num -= 1
+   end
+   board_string += "    " + @col_letters.join("   ")
+ end
 
 
-  # # turns display_board into icons and nils into spaces
-  # def to_icons
-  #   @display_board.each do |row|
-  #     row.each do |square|
-  #       # if square equals piece, square = piece.value, else square = whitespace ("   ")
-  #     end
-  #   end
-  # end
-  # need this to not puts 0 to last row
-  # def display
-  #   row_num = 8
-  #   board_string = ""
-  #   @display_board << @col_letters
-  #   @display_board = @display_board
-  #   @display_board.each do |col|
-  #     # if value is a piece, turn into ascii
-  #     # if value is nil, turn into " "
-  #     board_string += "#{row_num}   " + col.join(" ") + "\n"
-  #     row_num -= 1
-  #   end
-  #   puts board_string
-  # end
   def move(old_pos, new_pos, piece)
     piece.set_location(new_pos)
     @board_hard[new_pos[0]][new_pos[1]] = piece
     @board_hard[old_pos[0]][old_pos[1]] = nil
-  end
-
-  def display
-    row_num = 8
-    board_string = ""
-    # @display_board << @col_letters
-    @display_board = @board_hard
-    @display_board.map do |row|
-      row.map! do |cell|
-        cell == nil ? cell = ' ' : cell.display_icon
-      end.join(' ')
-    end
   end
 
   #   def valid_moves(piece)
@@ -175,7 +157,8 @@ end
 class Piece
   attr_accessor :color, :moves, :location, :name
   attr_reader :display
-  def initialize(color = "white")
+  def initialize(location, color = "white")
+    @location = location
     @icon = icon
     @all_adjacent = [[0, 1],[0, -1],[1,0],[-1,0],[1,1],[-1,1],[1,-1],[-1,-1]]
     @location = location
@@ -208,7 +191,8 @@ end
 # TODO: deal with possible_moves method
 class Rook < Piece
   attr_accessor :moves
-  def initialize(color = "white")
+  def initialize(location, color = "white")
+    @location = location
     color == "white" ? @icon = "♜" : @icon = '♖'
     @moves = [[0,1], [1,0], [-1,0], [0, -1]]
     name = "rook"
@@ -218,7 +202,8 @@ class Rook < Piece
 end
 
 class King < Piece
-  def initialize(color = "white")
+  def initialize(location, color = "white")
+    @location = location
     color =="white" ? @icon = "♚" : @icon = '♔'
     @moves = [[0, 1],[0, -1],[1,0],[-1,0],[1,1],[-1,1],[1,-1],[-1,-1]]
     name = "king"
@@ -227,7 +212,8 @@ end
 
 
 class Queen < Piece
-  def initialize(color = "white")
+  def initialize(location, color = "white")
+    @location = location
     color == "white" ? @icon = "♛" : @icon = '♕'
     @moves = [[1, 0], [1,1], [1, -1], [0, -1], [0, 1], [-1, 0], [-1, 1], [-1, -1]]
     name = "queen"
@@ -235,7 +221,8 @@ class Queen < Piece
 end
 
 class Bishop < Piece
-  def initialize(color = "white")
+  def initialize(location, color = "white")
+    @location = location
     color == "white" ? @icon = "♝" : @icon = '♗'
     @moves = [[1, 1], [1, -1], [-1, 1], [-1, -1]]
     name = "bishop"
@@ -243,7 +230,8 @@ class Bishop < Piece
 end
 
 class Knight < Piece
-  def initialize(color = "white")
+  def initialize(location, color = "white")
+    @location = location
     color == "white" ? @icon = "♞" : @icon = '♘'
     @moves = [[1, 2], [1, -2], [2, 1], [2, -1], [-1, 2], [-1, -2], [-2, 1], [-2, -1]]
     name = "knight"
@@ -255,4 +243,5 @@ b = Board.new
 
 
 b.move([1,0], [2,5], b.board_hard[1][0])
+b.move([7,7], [3,4], b.board_hard[7][7])
 puts b.display
