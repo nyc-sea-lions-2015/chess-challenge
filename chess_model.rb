@@ -203,15 +203,11 @@ class Board
     puts "\s" + "\s" + %w[a b c d e f g h].join(' ')
   end
 
-<<<<<<< HEAD
-
   def capture_piece(position)
   	@board[position[0]][position[1]].position = nil if @board[position[0]][position[1]] != nil
   	@board[position[0]][position[1]] = nil
   end
 
-=======
->>>>>>> DBD_development
   def check_move_helper(piece)
     pawn_move(piece) if piece.is_a?(Pawn)
     kk_move(piece) if piece.is_a?(Knight) || piece.is_a?(King)

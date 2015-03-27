@@ -74,33 +74,33 @@ describe "Board" do
 
   describe "pawn_move for black pawn" do
   	it "should return an array of moves for the pawn passed" do
-      expect(chess_board.pawn_move(pawn)).to eq [[5,0],[4,0]]
+      expect(chess_board.pawn_move(bpawn)).to eq [[5,0],[4,0]]
     end
   end
 
-    describe "king_move" do
+    describe "kk_move(king)" do
     it "should return an array of moves for the king passed" do
       chess_board.place(king, [1,1])		
-      expect(chess_board.king_move(king)).to eq [[2,1], [2,2], [1,2],[0,2],[0,1],[0,0],[1,0],[2,0]]
+      expect(chess_board.kk_move(king)).to eq [[2,1], [2,2], [1,2],[0,2],[0,1],[0,0],[1,0],[2,0]]
     end
   end
 
-  describe "king_move" do
+  describe "kk_move(king)" do
   	it "should handle pieces existing on squares that could fall within valid moves" do
   	  chess_board.place(king, [1,1])
   	  chess_board.place(king_move_test_queen, [2,2])
   	  chess_board.place(king_move_test_brook, [2,1])
-  	  expect(chess_board.king_move(king)).to eq [[2,1],[1,2],[0,2],[0,1],[0,0],[1,0],[2,0]]
+  	  expect(chess_board.kk_move(king)).to eq [[2,1],[1,2],[0,2],[0,1],[0,0],[1,0],[2,0]]
   	end
   end
 
-  describe "knight_move" do
+  describe "kk_move(knight)" do
     it "should return an array of moves for the knight passed(including collisions)" do
       chess_board.place(knight, [3,3])
       chess_board.place(knight_move_test_pawn, [1,2])
       chess_board.place(knight_move_test_pawn2, [1,4])
    	  chess_board.place(knight_move_test_bknight, [5,4])
-      expect(chess_board.knight_move(knight)).to eq [[5,2],[5,4], [4,5], [2,5], [2,1], [4,1]]
+      expect(chess_board.kk_move(knight).sort).to eq [[5,2],[5,4], [4,5], [2,5], [2,1], [4,1]].sort
     end
   end
 
@@ -141,26 +141,4 @@ describe "Board" do
   end
 end
 
-describe "Pawn" do
 
-end
-
-describe "Knight" do
-
-end
-
-describe "Bishop" do
-
-end
-
-describe "Queen" do
-
-end
-
-describe "King" do
-
-end
-
-describe "Rook" do
-
-end
