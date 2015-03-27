@@ -42,61 +42,65 @@ end
 class Knight
 
   attr_reader :color, :moves
-  attr_accessor :position
+  attr_accessor :position, :first_move
 
   def initialize(args)
     @position = args[:position]
     @color = args[:color]
     @moves = [[2,1],[1,2],[2,-1],[1,-2],[-2,-1],[-1,-2],[-2,1],[-1,2]]
+    @first_move = true
   end
 end
 
 class Rook
 
   attr_reader :color, :moves
-  attr_accessor :position
+  attr_accessor :position, :first_move
 
   def initialize(args)
     @position = args[:position]
     @color = args[:color]
     @moves = [NORTH, EAST, SOUTH, WEST]
+    @first_move = true
   end
 end
 
 class Bishop
 
   attr_reader :color, :moves
-  attr_accessor :position
+  attr_accessor :position, :first_move
 
   def initialize(args)
     @position = args[:position]
     @color = args[:color]
     @moves = [NORTHEAST, SOUTHEAST, SOUTHWEST, NORTHWEST]
-
+    @first_move = true
   end
 end
 
 class Queen
 
   attr_reader :color, :moves
-  attr_accessor :position
+  attr_accessor :position, :first_move
 
   def initialize(args)
     @position = args[:position]
     @color = args[:color]
     @moves = [NORTH, NORTHEAST, EAST, SOUTHEAST, SOUTH, SOUTHWEST, WEST, NORTHWEST]
+    @first_move = true
   end
 end
 
 class King
 
   attr_reader :color, :moves
-  attr_accessor :position
+  attr_accessor :position, :first_move
 
   def initialize(args)
     @position = args[:position]
     @color = args[:color]
     @moves = [NORTH, NORTHEAST, EAST, SOUTHEAST, SOUTH, SOUTHWEST, WEST, NORTHWEST]
+    @first_move = true
   end
 
 end
@@ -151,6 +155,9 @@ class Board
   end
 
   def place(piece, position)
+  	@board[piece.position[0]][piece.position[1]] = nil if !piece.first_move
+  	piece.first_move = false
+  	capture_piece(position)
     @board[position[0]][position[1]] = piece
     piece.position = position
   end
@@ -194,6 +201,11 @@ class Board
       puts "\n"
     end
     puts "\s" + "\s" + %w[a b c d e f g h].join(' ')
+  end
+
+  def capture_piece(position)
+  	@board[position[0]][position[1]].position = nil if @board[position[0]][position[1]] != nil
+  	@board[position[0]][position[1]] = nil
   end
 
   def check_move_helper(piece)
