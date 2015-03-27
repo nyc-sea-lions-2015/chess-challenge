@@ -198,8 +198,7 @@ class Board
 
   def check_move_helper(piece)
     pawn_move(piece) if piece.is_a?(Pawn)
-    king_move(piece) if piece.is_a?(King)
-    knight_move(piece) if piece.is_a?(Knight)
+    kk_move(piece) if piece.is_a?(Knight) || piece.is_a?(King)
     rqb_move(piece) if piece.is_a?(Rook) || piece.is_a?(Queen) || piece.is_a?(Bishop)
   end
 
@@ -232,7 +231,7 @@ class Board
     return valid_moves
   end
 
-  def king_move(piece)
+  def kk_move(piece)
     valid_moves = []
     move = 0
     num_of_directions = piece.moves.length
@@ -249,22 +248,6 @@ class Board
     valid_moves
   end
 
-  def knight_move(piece)
-    valid_moves = []
-    move = 0
-    num_of_directions = piece.moves.length #8
-    num_of_directions.times do
-      temp_row = piece.position[0] + piece.moves[move][0] #[0][0] row [1][0]
-      temp_col = piece.position[1] + piece.moves[move][1] #[0][1] col [1][1]
-      if temp_row.between?(0,7) && temp_col.between?(0, 7)
-        if @board[temp_row][temp_col] == nil || @board[temp_row][temp_col].color != piece.color
-          valid_moves << [temp_row, temp_col]
-        end
-        move += 1
-      end
-    end
-    valid_moves
-  end
 
   def pawn_move(piece)
     valid_moves = []
