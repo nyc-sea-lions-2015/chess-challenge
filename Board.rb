@@ -4,16 +4,13 @@
 class Board
   attr_reader :board
   def initialize
-    @board = [Array.new(8) { Array.new(nil) }]
-    @first_row = [Rook.new, Knight.new, Bishop.new, Queen.new, King.new, Bishop.new, Knight.new, Rook.new]
-    @second_row = Array.new(8) {Pawns.new}
-    @board[0], @board[7] = @first_row, @first_row.reverse.map! { |piece| piece.color = "black"}
-    @board[1], @board[6] = @second_row, @second_row.map! { |piece| piece.color = "black"}
+    # @board = [Array.new(8) { Array.new(nil) }]
+    # @first_row = [Rook.new, Knight.new, Bishop.new, Queen.new, King.new, Bishop.new, Knight.new, Rook.new]
+    # @second_row = Array.new(8) {Pawn.new}
+    # @board[0], @board[7] = @first_row, @first_row.reverse.map! { |piece| piece.color = "black"}
+    # @board[1], @board[6] = @second_row, @second_row.map! { |piece| piece.color = "black"}
 
-    @board = [[" ♜ " , " ♞ ",  " ♝ ", " ♛ ",  " ♚ ",  " ♝ ",  " ♞ ",  " ♜ "], [ " ♟ ",  " ♟ ",  " ♟ ",  " ♟ ",  " ♟ ",  " ♟ ",  " ♟ ", " ♟ "], [nil, " ♙ ",nil,nil,nil,nil,nil,nil], [nil,nil,nil,nil,nil, " ♙ ",nil,nil], [nil,nil,nil,nil,nil,nil,nil,nil],[" ♙ ",  " ♙ ",  " ♙ ", " ♙ ",  " ♙ ",nil ,  " ♙ "], [" ♖ ",  " ♘ ",  " ♗ ",  " ♕ ",  " ♔ ", " ♗ ",  " ♘ ",  " ♖ "]]
-    @display_board = @board
-    @col_letters = [" a ", " b ", " c "," d "," e "," f "," g "," h "]
-    @whitespace = "  "
+    @board_hard = [[Rook.new, Knight.new, Bishop.new, Queen.new, King.new, Bishop.new, Knight.new, Rook.new], [Pawn.new, Pawn.new, Pawn.new, Pawn.new, Pawn.new, Pawn.new, Pawn.new, Pawn.new], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [Pawn.new("black"), Pawn.new("black"), Pawn.new("black"), Pawn.new("black"), Pawn.new("black"), Pawn.new("black"), Pawn.new("black"), Pawn.new("black")], [Rook.new("black"), Knight.new("black"), Bishop.new("black"), King.new("black"), Queen.new("black"), Bishop.new("black"), Knight.new("black"), Rook.new("black")]]
   end
 
 
@@ -26,18 +23,30 @@ class Board
   #   end
   # end
   # need this to not puts 0 to last row
+  # def display
+  #   row_num = 8
+  #   board_string = ""
+  #   @display_board << @col_letters
+  #   @display_board = @display_board
+  #   @display_board.each do |col|
+  #     # if value is a piece, turn into ascii
+  #     # if value is nil, turn into " "
+  #     board_string += "#{row_num}   " + col.join(" ") + "\n"
+  #     row_num -= 1
+  #   end
+  #   puts board_string
+  # end
+
   def display
     row_num = 8
     board_string = ""
-    @display_board << @col_letters
-    @display_board = @display_board
-    @display_board.each do |col|
-      # if value is a piece, turn into ascii
-      # if value is nil, turn into " "
-      board_string += "#{row_num}   " + col.join(" ") + "\n"
-      row_num -= 1
+    # @display_board << @col_letters
+    @display_board = @board_hard
+    @display_board.map do |row|
+      row.map! do |cell|
+        cell == nil ? cell = ' ' : cell.display_icon
+      end.join(' ')
     end
-    puts board_string
   end
 
   def valid_moves(piece)
@@ -74,7 +83,7 @@ def out_of_bounds?(x,y)
 end
 
   def find_piece(location_string)
-      index = string_to_index(location_string
+      index = string_to_index(location_string)
       piece = @board[index[0]][index[1]]
       piece.location = [index[0], index[1]]
       valid_moves(piece)
@@ -90,15 +99,16 @@ end
 end
 
 
-b = Board.new
-# p b.board
 
-b.display
 
 class Piece
   attr_accessor :color, :moves, :location
   attr_reader :display
   def initialize(color = "white")
+     @icon = icon
+  end
+  def display_icon
+    @icon
   end
 end
 
@@ -151,3 +161,8 @@ end
       @moves = [[1, 2], [1, -2], [2, 1], [2, -1], [-1, 2], [-1, -2], [-2, 1], [-2, -1]]
     end
   end
+
+b = Board.new
+# p b.board
+
+puts b.display
