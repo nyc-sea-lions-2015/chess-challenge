@@ -21,15 +21,13 @@ class Game
   end
 
   def play
-    # if !game_over
-    players.each do |player|
-      # clear screen
-      puts "\e[H\e[2J"
-      display_board
-
-      turn(player)
-      # ask for user input
-      #
+    while !game_over
+      players.each do |player|
+        # clear screen
+        puts "\e[H\e[2J"
+        display_board
+        turn(player)
+      end
     end
     # end
   end
@@ -37,8 +35,6 @@ class Game
   def turn(player)
     # "whites turn"
     @view.turn_message(player)
-    # TODO: check this logic! might need a redo or something
-
     # white, move which piece?
     @view.choose_piece(player)
     # is user input valid?
@@ -47,19 +43,15 @@ class Game
       piece = @board.find_piece(location)
     else
       @view.pick_again(player)
+      location = input_to_int(@view.choice)
+      piece = @board.find_piece(location)
     end
     puts "end of turn"
     # find_piece and return valid_moves 2d array
     # @view.piece_chosen_message(player, piece, moves)
   end
 
-
-  # turn user input of "letter, number" into numbers for "row, col"
-  # returns [x,y] array
-
-  # TODO: Add check for letters outside of a..h!!!
-  # TODO: add check for more than two strings
-
+  # checks for bad user input before we convert to coordinates
   def bad_input?(input)
     # false if more than two chars long
     # false if first char is outside of a..h
@@ -81,7 +73,7 @@ class Game
     return coordinate
   end
 
-  # checks if user input is a single string of a letter and number
+  # checks if user input is a letter and number
   # and is inside 8x8 grid
   # returns boolean
   def valid_pick?(location)
@@ -90,6 +82,10 @@ class Game
 
   def display_board
     puts @board.display
+  end
+
+  def game_over?
+    false
   end
 
 end
@@ -177,5 +173,3 @@ G = Game.new()
 # p G.valid_pick?("f5")
 
 G.turn(G.players[0])
-
-# p G.valid_pick?("a5")
