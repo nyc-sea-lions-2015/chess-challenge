@@ -2,7 +2,7 @@
 # require "byebug"
 
 class Board
-  attr_reader :board
+  attr_reader :board_hard
   def initialize
     # @board = [Array.new(8) { Array.new(nil) }]
     # @first_row = [Rook.new, Knight.new, Bishop.new, Queen.new, King.new, Bishop.new, Knight.new, Rook.new]
@@ -10,7 +10,8 @@ class Board
     # @board[0], @board[7] = @first_row, @first_row.reverse.map! { |piece| piece.color = "black"}
     # @board[1], @board[6] = @second_row, @second_row.map! { |piece| piece.color = "black"}
 
-    @board_hard = [[Rook.new, Knight.new, Bishop.new, Queen.new, King.new, Bishop.new, Knight.new, Rook.new], [Pawn.new, Pawn.new, Pawn.new, Pawn.new, Pawn.new, Pawn.new, Pawn.new, Pawn.new], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [Pawn.new("black"), Pawn.new("black"), Pawn.new("black"), Pawn.new("black"), Pawn.new("black"), Pawn.new("black"), Pawn.new("black"), Pawn.new("black")], [Rook.new("black"), Knight.new("black"), Bishop.new("black"), King.new("black"), Queen.new("black"), Bishop.new("black"), Knight.new("black"), Rook.new("black")]]
+    @board_hard =  [[nil, nil, nil, nil, nil,nil, nil, nil], [Pawn.new([1,0]), nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil],  [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil]]
+    # @board_hard = [[Rook.new, Knight.new, Bishop.new, Queen.new, King.new, Bishop.new, Knight.new, Rook.new], [Pawn.new, Pawn.new, Pawn.new, Pawn.new, Pawn.new, Pawn.new, Pawn.new, Pawn.new], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [Pawn.new("black"), Pawn.new("black"), Pawn.new("black"), Pawn.new("black"), Pawn.new("black"), Pawn.new("black"), Pawn.new("black"), Pawn.new("black")], [Rook.new("black"), Knight.new("black"), Bishop.new("black"), King.new("black"), Queen.new("black"), Bishop.new("black"), Knight.new("black"), Rook.new("black")]]
   end
 
 
@@ -37,9 +38,9 @@ class Board
   #   puts board_string
   # end
   def move(old_pos, new_pos, piece)
-    #capture(board[new_x][new_y]) if board[new_x][new_y] != nil
-    board[new_x][new_y] = piece
-    board[old_x][old_y] = nil
+    piece.set_location(new_pos)
+    @board_hard[new_pos[0]][new_pos[1]] = piece
+    @board_hard[old_pos[0]][old_pos[1]] = nil
   end
 
   def display
@@ -177,9 +178,14 @@ class Piece
   def initialize(color = "white")
     @icon = icon
     @all_adjacent = [[0, 1],[0, -1],[1,0],[-1,0],[1,1],[-1,1],[1,-1],[-1,-1]]
+    @location = location
   end
   def display_icon
     @icon
+  end
+
+  def set_location(new_pos)
+    self.location = new_pos
   end
 end
 
@@ -187,7 +193,8 @@ end
 class Pawn < Piece
   attr_accessor :moves #:first_move?, :capturing?
   #logic for capturing?
-  def initialize(color = "white")
+  def initialize(location, color = "white")
+    @location = location
     color == "white" ? @icon = "♟" : @icon = '♙'
     # first_move? == true if self.location[0] == 1 || self.location[0] == 6 #initial row value for pawns
     moves = [0, 1]
@@ -246,5 +253,6 @@ end
 b = Board.new
 # p b.board
 
+
+b.move([1,0], [2,5], b.board_hard[1][0])
 puts b.display
-b.move()
