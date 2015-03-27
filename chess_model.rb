@@ -208,7 +208,14 @@ class Board
   	@board[position[0]][position[1]] = nil
   end
 
+  def coordinate_to_object(coordinate)
+
+  end
+
+
+
   def check_move_helper(piece)
+
     pawn_move(piece) if piece.is_a?(Pawn)
     kk_move(piece) if piece.is_a?(Knight) || piece.is_a?(King)
     rqb_move(piece) if piece.is_a?(Rook) || piece.is_a?(Queen) || piece.is_a?(Bishop)
@@ -286,4 +293,5 @@ class Board
   end
 
 end
+
 
