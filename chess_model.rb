@@ -42,62 +42,66 @@ end
 class Knight
 
   attr_reader :color, :moves
-  attr_accessor :position
+  attr_accessor :position, :first_move
 
   def initialize(args)
     @position = args[:position]
     @color = args[:color]
     # @moves = [NORTH, NORTHEAST, EAST, SOUTHEAST, SOUTH, SOUTHWEST, WEST, NORTHWEST]
     @moves = [[2,1],[1,2],[2,-1],[1,-2],[-2,-1],[-1,-2],[-2,1],[-1,2]]
+    @first_move = true
   end
 end
 
 class Rook
 
   attr_reader :color, :moves
-  attr_accessor :position
+  attr_accessor :position, :first_move
 
   def initialize(args)
     @position = args[:position]
     @color = args[:color]
     @moves = [NORTH, EAST, SOUTH, WEST]
+    @first_move = true
   end
 end
 
 class Bishop
 
   attr_reader :color, :moves
-  attr_accessor :position
+  attr_accessor :position, :first_move
 
   def initialize(args)
     @position = args[:position]
     @color = args[:color]
     @moves = [NORTHEAST, SOUTHEAST, SOUTHWEST, NORTHWEST]
-
+    @first_move = true
   end
 end
 
 class Queen
 
   attr_reader :color, :moves
-  attr_accessor :position
+  attr_accessor :position, :first_move
 
   def initialize(args)
     @position = args[:position]
     @color = args[:color]
     @moves = [NORTH, NORTHEAST, EAST, SOUTHEAST, SOUTH, SOUTHWEST, WEST, NORTHWEST]
+    @first_move = true
   end
 end
 
 class King
 
   attr_reader :color, :moves
-  attr_accessor :position
+  attr_accessor :position, :first_move
 
   def initialize(args)
     @position = args[:position]
     @color = args[:color]
     @moves = [NORTH, NORTHEAST, EAST, SOUTHEAST, SOUTH, SOUTHWEST, WEST, NORTHWEST]
+    @first_move = true
   end
 
 end
@@ -238,6 +242,9 @@ class Board
   end
 
   def place(piece, position)
+  	@board[piece.position[0]][piece.position[1]] = nil if !piece.first_move
+  	piece.first_move = false
+  	capture_piece(position)
     @board[position[0]][position[1]] = piece
     piece.position = position
   end
@@ -284,9 +291,9 @@ class Board
   end
 
 
-  def get_object_from_position
-    #input: position in array
-    #output: the object in that position
+  def capture_piece(position)
+  	@board[position[0]][position[1]].position = nil if @board[position[0]][position[1]] != nil
+  	@board[position[0]][position[1]] = nil
   end
 
   def check_move_helper(piece)
@@ -390,8 +397,20 @@ end
 # game = Board.new
 # game.to_s
 # knight = Knight.new(color:"black", position: [0,0])
-# p game.place(knight,knight.position)
+# pawn = Pawn.new(color:"white", position: [2,1])
+# game.place(knight, knight.position)
+# game.place(pawn, pawn.position)
 # game.to_s
 # p game.knight_move(knight)
-# p game.place(knight,[2,1])
+# game.place(knight,[2,1])
+# p game.knight_move(knight)
 # game.to_s
+# game.place(knight,[4,2])
+# game.to_s
+
+
+
+
+
+
+
