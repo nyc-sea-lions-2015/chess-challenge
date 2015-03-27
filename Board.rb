@@ -15,6 +15,7 @@ class Board
     @board_hard = [[Rook.new([0,0]), Knight.new([0, 1]), Bishop.new([0, 2]), Queen.new([0, 3]), King.new([0, 4]), Bishop.new([0, 5]), Knight.new([0, 6]), Rook.new([0,7])], [Pawn.new([1,0]), Pawn.new([1,1]), Pawn.new([1,2]), Pawn.new([1,3]), Pawn.new([1,4]), Pawn.new([1,5]), Pawn.new([1,6]), Pawn.new([1,7])], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [Pawn.new([6,0], "black"), Pawn.new([6,1], "black"), Pawn.new([6,2], "black"), Pawn.new([6,3], "black"), Pawn.new([6,4], "black"), Pawn.new([6,5], "black"), Pawn.new([6,6], "black"), Pawn.new([6, 7], "black")], [Rook.new([7, 0], "black"), Knight.new([7, 1], "black"), Bishop.new([7, 2], "black"), King.new([7, 3], "black"), Queen.new([7, 4], "black"), Bishop.new([7, 5], "black"), Knight.new([7, 6], "black"), Rook.new([7, 7], "black")]]
     @row_nums = [1,2,3,4,5,6,7,8]
     @col_letters = ["a","b","c","d","e","f","g", "h"]
+    @boardlength = 8
   end
 
   def display
@@ -140,15 +141,16 @@ class Board
   #   end
   # end
 
-  def find_piece(location_string)
-    index = string_to_index(location_string)
-    piece = @board[index[0]][index[1]]
+  def find_piece(location)
+    p location
+    # index = string_to_index(location_string)
+    piece = @board_hard[location[0]][location[1]]
   end
 
   def string_to_index(location_string)
     # a5
     col_string, row_index = location_string.split("")
-    row_index = BOARDLENGTH - row_index.to_i
+    row_index = @boardlength - row_index.to_i
     col_index = col_string.downcase.ord - 97
     [row_index, col_index]
   end

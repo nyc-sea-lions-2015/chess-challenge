@@ -2,6 +2,7 @@
 require_relative "Board.rb"
 
 class Game
+  attr_reader :board, :players
   def initialize(board = Board.new, view = View.new)
     @board = board
     @view = view
@@ -17,41 +18,41 @@ class Game
       "g" => 6,
       "h" => 7
     }
-    # rows in the sense of "display", but with indexs adjusted
-    @row_hash = {
-
-    }
-    # [a5] = [5, a] [4, 0]
   end
 
   def play
     # if !game_over
     players.each do |player|
-      turns(player)
       # clear screen
-      # display_board
+      puts "\e[H\e[2J"
+      display_board
+
+      turn(player)
       # ask for user input
       #
     end
     # end
   end
 
-  def turns(player)
+  def turn(player)
     # "whites turn"
-    view.turn_message(player)
-    # white, move which piece?
-
-    # needs to check for valid input
+    @view.turn_message(player)
     # TODO: check this logic! might need a redo or something
-    if !valid_pick(view.choose_piece)
-      # gets input of [x,y]
-      view.pick_again
+
+    # white, move which piece?
+    @view.choose_piece(player)
+    # is user input valid?
+    if valid_pick?(@view.choice)
+      location = input_to_int(@view.choice)
+      piece = @board.find_piece(location)
     else
-      piece = board.find_piece(view.choose_piece)
+      @view.pick_again(player)
     end
+    puts "end of turn"
     # find_piece and return valid_moves 2d array
-    piece_chosen_message(player, piece, moves)
+    # @view.piece_chosen_message(player, piece, moves)
   end
+
 
   # turn user input of "letter, number" into numbers for "row, col"
   # returns [x,y] array
@@ -60,10 +61,10 @@ class Game
   # TODO: add check for more than two strings
 
   def bad_input?(input)
-    (input.length > 2 || input[0])
     # false if more than two chars long
     # false if first char is outside of a..h
     # false if 2nd char is NaN
+    (input == nil || input.length > 2 || input[1].to_i < 0 || input[1].to_i > 8 || !(@col_hash.has_key?(input[0])))
   end
 
   def input_to_int(location)
@@ -84,8 +85,7 @@ class Game
   # and is inside 8x8 grid
   # returns boolean
   def valid_pick?(location)
-    @board.out_of_bounds?(input_to_int(location))
-    # !(bad_input?(location) ||
+    !bad_input?(location)
   end
 
   def display_board
@@ -97,13 +97,14 @@ end
 
 
 class View
+  attr_reader :choice
 
   def turn_message(player)
-    message(player_turn_message)
+    message(player_turn_message(player))
   end
 
-  def choose_piece
-    message(choose_piece_message)
+  def choose_piece(player)
+    message(choose_piece_message(player))
     @choice = user_input
   end
 
@@ -112,19 +113,19 @@ class View
     @move = user_input
   end
   # if user picks invalid square
-  def pick_again
-    message(choose_again_message)
+  def pick_again(player)
+    message(choose_again_message(player))
   end
 
-  def display_valid_moves
-    message(piece_chosen_message)
+  def display_valid_moves(player)
+    message(piece_chosen_message(player))
   end
 
-  def display_player_move
-    message(player_move_message)
+  def display_player_move(player)
+    message(player_move_message(player))
   end
 
-  def display_capture_move
+  def display_capture_move(player)
     message(capture_message)
   end
 
@@ -152,6 +153,10 @@ class View
     "#{player}'s #{piece} {choice} captures #{player2}'s #{captured_piece} #{move}"
   end
 
+  def choose_again_message(player)
+    "#{player}, please choose a valid square"
+  end
+
   # siphon methods for prompts and inputs
   def user_input
     gets.chomp
@@ -165,6 +170,12 @@ end
 
 G = Game.new()
 
-G.display_board
+# G.display_board
 #p G.input_to_int("c4")
-p G.valid_pick?("h9")
+# p G.valid_pick?("c4")
+# p G.bad_input("c52829")
+# p G.valid_pick?("f5")
+
+G.turn(G.players[0])
+
+# p G.valid_pick?("a5")
