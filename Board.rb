@@ -11,6 +11,7 @@ class Board
     # @board[1], @board[6] = @second_row, @second_row.map! { |piece| piece.color = "black"}
 
     # @board_hard =  [[nil, nil, nil, nil, nil,nil, nil, nil], [Pawn.new([1,0]), nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil],  [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil]]
+
     @board_hard = [[Rook.new([0,0]), Knight.new([0, 1]), Bishop.new([0, 2]), Queen.new([0, 3]), King.new([0, 4]), Bishop.new([0, 5]), Knight.new([0, 6]), Rook.new([0,7])], [Pawn.new([1,0]), Pawn.new([1,1]), Pawn.new([1,2]), Pawn.new([1,3]), Pawn.new([1,4]), Pawn.new([1,5]), Pawn.new([1,6]), Pawn.new([1,7])], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [Pawn.new([6,0], "black"), Pawn.new([6,1], "black"), Pawn.new([6,2], "black"), Pawn.new([6,3], "black"), Pawn.new([6,4], "black"), Pawn.new([6,5], "black"), Pawn.new([6,6], "black"), Pawn.new([6, 7], "black")], [Rook.new([7, 0], "black"), Knight.new([7, 1], "black"), Bishop.new([7, 2], "black"), King.new([7, 3], "black"), Queen.new([7, 4], "black"), Bishop.new([7, 5], "black"), Knight.new([7, 6], "black"), Rook.new([7, 7], "black")]]
   @row_nums = [1,2,3,4,5,6,7,8]
   @col_letters = ["a","b","c","d","e","f","g", "h"]
@@ -30,6 +31,7 @@ def display
    board_string += "    " + @col_letters.join("   ")
  end
 
+  end
 
   def move(old_pos, new_pos, piece)
     piece.set_location(new_pos)
@@ -176,7 +178,7 @@ end
 class Pawn < Piece
   attr_accessor :moves #:first_move?, :capturing?
   #logic for capturing?
-  def initialize(location, color = "white")
+  def initialize(color = "white")
     @location = location
     color == "white" ? @icon = "♟" : @icon = '♙'
     # first_move? == true if self.location[0] == 1 || self.location[0] == 6 #initial row value for pawns
@@ -238,6 +240,7 @@ class Knight < Piece
   end
 end
 
+
 b = Board.new
 # p b.board
 
@@ -245,3 +248,4 @@ b = Board.new
 b.move([1,0], [2,5], b.board_hard[1][0])
 b.move([7,7], [3,4], b.board_hard[7][7])
 puts b.display
+
