@@ -1,10 +1,15 @@
-<<<<<<< HEAD
+
 # require "byebug"
 
 class Board
   attr_reader :board
   def initialize
-    # @board = [[" ♜ " , " ♞ ",  " ♝ ", " ♛ ",  " ♚ ",  " ♝ ",  " ♞ ",  " ♜ "], [ " ♟ ",  " ♟ ",  " ♟ ",  " ♟ ",  " ♟ ",  " ♟ ",  " ♟ ", " ♟ "], ["   ","   ","   ","   ","   ","   ","   ","   "],["   ","   ","   ","   ","   ","   ","   ","   "], ["   ","   ","   ","   ","   ","   ","   ","   "], ["   ","   ","   ","   ","   ","   ","   ","   "], [" ♙ ",  " ♙ ",  " ♙ ", " ♙ ",  " ♙ ",  " ♙ ",  " ♙ ",  " ♙ "], [" ♖ ",  " ♘ ",  " ♗ ",  " ♕ ",  " ♔ ", " ♗ ",  " ♘ ",  " ♖ "]]
+    @board = [Array.new(8) { Array.new(nil) }]
+    @first_row = [Rook.new, Knight.new, Bishop.new, Queen.new, King.new, Bishop.new, Knight.new, Rook.new]
+    @second_row = Array.new(8) {Pawns.new}
+    @board[0], @board[7] = @first_row, @first_row.reverse.map! { |piece| piece.color = "black"}
+    @board[1], @board[6] = @second_row, @second_row.map! { |piece| piece.color = "black"}
+
     @board = [[" ♜ " , " ♞ ",  " ♝ ", " ♛ ",  " ♚ ",  " ♝ ",  " ♞ ",  " ♜ "], [ " ♟ ",  " ♟ ",  " ♟ ",  " ♟ ",  " ♟ ",  " ♟ ",  " ♟ ", " ♟ "], [nil, " ♙ ",nil,nil,nil,nil,nil,nil], [nil,nil,nil,nil,nil, " ♙ ",nil,nil], [nil,nil,nil,nil,nil,nil,nil,nil],[" ♙ ",  " ♙ ",  " ♙ ", " ♙ ",  " ♙ ",nil ,  " ♙ "], [" ♖ ",  " ♘ ",  " ♗ ",  " ♕ ",  " ♔ ", " ♗ ",  " ♘ ",  " ♖ "]]
     @display_board = @board
     @col_letters = [" a ", " b ", " c "," d "," e "," f "," g "," h "]
@@ -85,52 +90,64 @@ end
 end
 
 
-
-
-
 b = Board.new
 # p b.board
 
 b.display
 
-class Player #?
-end
-
 class Piece
   attr_accessor :color, :moves, :location
-  def initialize(color)
-    @color = color
-    @moves = moves #possible moves on an empty board
-    @location = location
+  attr_reader :display
+  def initialize(color = "white")
   end
-
-
 end
 
-class Pawn < Piece
-  def initialize()
 
-    self.moves = [0,1]
-    # pawn can only move forward.
-    # pawn can only move 1 space, unless it's current position is the starting col.
-    # pawn can move to left front or right front diagonal
-    # if opposing piece occupies that space
-    # stretch: en empasse move condition
-    # stretch: promotion
+class Pawn < Piece
+  attr_accessor :moves
+  def initialize(color = "white")
+    color == "white" ? @icon = "♟" : @icon = '♙'
+    @moves = [0, 1]
   end
+
+end
 
   # TODO: deal with possible_moves method
   class Rook < Piece
+    attr_accessor :moves
+    def initialize(color = "white")
+      color == "white" ? @icon = "♜" : @icon = '♖'
+      @moves = [[0,1], [1,0], [-1,0], [0, -1]]
+    end
+
+
   end
 
   class King < Piece
+    def initialize(color = "white")
+      color =="white" ? @icon = "♚" : @icon = '♔'
+      @moves = [[0, 1],[0, -1],[1,0],[-1,0],[1,1],[-1,1],[1,-1],[-1,-1]]
+    end
   end
 
+
   class Queen < Piece
+    def initialize(color = "white")
+      color == "white" ? @icon = "♛" : @icon = '♕'
+      @moves = [[1, 0], [1,1], [1, -1], [0, -1], [0, 1], [-1, 0], [-1, 1], [-1, -1]]
+    end
   end
 
   class Bishop < Piece
+    def initialize(color = "white")
+      color == "white" ? @icon = "♝" : @icon = '♗'
+      @moves = [[1, 1], [1, -1], [-1, 1], [-1, -1]]
+    end
   end
 
   class Knight < Piece
+    def initialize(color = "white")
+      color == "white" ? @icon = "♞" : @icon = '♘'
+      @moves = [[1, 2], [1, -2], [2, 1], [2, -1], [-1, 2], [-1, -2], [-2, 1], [-2, -1]]
+    end
   end
