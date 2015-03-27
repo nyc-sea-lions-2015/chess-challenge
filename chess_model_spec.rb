@@ -5,19 +5,19 @@ describe "Board" do
   args = {color: "white", position: [1,0]}
   let(:pawn) {Pawn.new(args)}
 
-  args = {color: "white", position: [2,0]}
+  args = {color: "white", position: [1,1]}
   let(:king) {King.new(args)}
 
-  args = {color: "white", position: [3,0]}
+  args = {color: "white", position: [1,2]}
   let(:queen) {Queen.new(args)}
 
-  args = {color: "white", position: [4,0]}
+  args = {color: "white", position: [1,3]}
   let(:knight) {Knight.new(args)}
 
-  args = {color: "white", position: [5,0]}
+  args = {color: "white", position: [1,4]}
   let(:bishop) {Bishop.new(args)}
 
-  args = {color: "white", position: [6,0]}
+  args = {color: "white", position: [1,5]}
   let(:rook) {Rook.new(args)}
 
 
@@ -72,7 +72,7 @@ describe "Board" do
 
     describe "king_move" do
     it "should return an array of moves for the king passed" do
-      expect(chess_board.pawn_move(king)).to eq [[2,0],[3,0]]
+      expect(chess_board.pawn_move(king)).to eq [[2,1],[2,2],[1,2],[0,2],[0,1],[0,0],[1,0],[2,0]]
     end
   end
 
