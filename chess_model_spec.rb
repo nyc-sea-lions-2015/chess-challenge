@@ -8,9 +8,16 @@ describe "Board" do
   let(:king_move_test_queen) {Queen.new({color: "white", position: [2,2]})}
   let(:king) {King.new({color: "white", position: [1,1]})}
   let(:queen) {Queen.new({color: "white", position: [1,2]})}
-  let(:knight) {Knight.new({color: "white", position: [1,3]})}
+  let(:knight) {Knight.new({color: "white", position: [3,3]})}
   let(:bishop) {Bishop.new({color: "white", position: [1,4]})}
   let(:rook) {Rook.new({color: "white", position: [1,5]})}
+  let(:rook_move_test_knight) {Knight.new({color: "white", position: [2,5]})}
+  let(:rook_move_test_bpawn) {Rook.new({color: "black", position: [1,4]})}
+  let(:knight_move_test_pawn) {Pawn.new({color: "white", position: [1,2]})}
+  let(:knight_move_test_pawn2) {Pawn.new({color: "white", position: [1,4]})}
+  let(:knight_move_test_knight) {Knight.new({color: "black", position: [5,4]})}
+  let(:queen_move_test_bking) {King.new({color: "black", position: [4,2]})}
+  let(:queen_move_test_bishop) {Bishop.new({color: "white", position: [1,5]})}
   let(:chess_board) {Board.new}
 
   describe "initialize" do
@@ -82,21 +89,37 @@ describe "Board" do
   end
 
   describe "knight_move" do
-    it "should return an array of moves for the knight passed" do
-      expect(chess_board.pawn_move(knight)).to eq [[2,0],[3,0]]
+    it "should return an array of moves for the knight passed(including collisions)" do
+      chess_board.place(knight, [3,3])
+      chess_board.place(knight_move_test_pawn, [1,2])
+      chess_board.place(knight_move_test_pawn2, [1,4])
+   	  chess_board.place(knight_move_test_knight, [5,4])
+      expect(chess_board.pawn_move(knight)).to eq [[5,2],[5,4], [4,5], [2,5], [2,1], [4,1]]
     end
   end
 
-  describe "rqb_move" do
+  describe "rqb_move(rook)" do
     it "should return an array of moves for the rook passed" do
       chess_board.place(rook, [1,5])
-      expect(chess_board.pawn_move(rook)).to eq 
+      expect(chess_board.pawn_move(rook)).to eq [[2,5],[3,5],[4,5],[5,5],[6,5],[7,5],[1,6],[1,7],[0,5],[1,4],[1,3],[1,2],[1,1],[1,0]]
     end
   end
 
-  describe "rqb_move" do
-    it "should return an array of moves for the queen passed" do
-      expect(chess_board.pawn_move(queen)).to eq [[2,0],[3,0]]
+  describe "rbq_move(rook)" do
+  	it "should handle pieces existing on squares that could fall within valid moves(collisions with black at 1,4 and white at 2,5" do
+  		chess_board.place(rook, [1,5])
+  		chess_board.place(rook_move_test_bpawn, [1,4])
+  		chess_board.place(rook_move_test_knight, [2,5])
+  		expect(chess_board.rbq_move(rook)).to eq [[1,6],[1,7],[0,5],[1,4]]
+  	end
+  end
+
+  describe "rqb_move(queen)" do
+    it "should return an array of moves for the queen passed(including collisions w/ black at 4,2 and white at 1,5)" do
+      chess_board.place(queen, [1,2])
+      chess_board.place(queen_move_test_bishop, [1,5])
+      chess_board.place(queen_move_test_bking, [4,2])
+      expect(chess_board.pawn_move(queen)).to eq [[2,2],[3,2],[4,2],[2,3],[3,4],[4,5],[5,6],[6,7][1,3],[1,4],[0,3],[0,2],[0,1],[1,1],[0,1],[2,1],[3,0]]
     end
   end
 
