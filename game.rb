@@ -1,7 +1,7 @@
 
 def initialize(board, view)
-  @board = board.new(args)
-  @view = view.new
+  @board = Board.new(args)
+  @view = View.new
   @players = ["white", "black"]
 end
 
@@ -9,18 +9,29 @@ def play
   # if !game_over
   players.each do |player|
     turns(player)
+    # clear screen
+    # display_board
+    # ask for user input
+    #
   end
   # end
 end
 
 def turns(player)
   # if blank square/outside of board square
-  #
-  # view.turn_message
-end
+  view.turn_message(player)
+  piece =  board.find_piece(view.choose_piece)
+  # moves =
+  piece_chosen_message(player, piece, moves)
 
 
-class view
+
+  def display_board
+
+
+  end
+
+class View
 
   def turn_message(player)
     message(player_turn_message)
@@ -29,6 +40,11 @@ class view
   def choose_piece
     message(choose_piece_message)
     @choice = user_input
+  end
+
+  def pick_move(player, choice)
+    "#{player}, move #{choice} where?"
+    @move = user_input
   end
   # if user picks invalid square
   def pick_again
@@ -61,10 +77,7 @@ class view
     "moves for #{player} #{piece}" + moves.join(" ")
   end
   # @move gets sent to board
-  def pick_move(player, choice)
-    "#{player}, move #{choice} where?"
-    @move = user_input
-  end
+
 
   def player_move_message(player, piece, move)
     "ok, #{player}'s #{piece} #{choice} to move to #{move}"
