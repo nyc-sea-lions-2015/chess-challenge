@@ -1,7 +1,7 @@
-<<<<<<< HEAD
 # require "byebug"
 
 class Board
+  BOARDLENGTH = 8
   attr_reader :board
   def initialize
     # @board = [[" ♜ " , " ♞ ",  " ♝ ", " ♛ ",  " ♚ ",  " ♝ ",  " ♞ ",  " ♜ "], [ " ♟ ",  " ♟ ",  " ♟ ",  " ♟ ",  " ♟ ",  " ♟ ",  " ♟ ", " ♟ "], ["   ","   ","   ","   ","   ","   ","   ","   "],["   ","   ","   ","   ","   ","   ","   ","   "], ["   ","   ","   ","   ","   ","   ","   ","   "], ["   ","   ","   ","   ","   ","   ","   ","   "], [" ♙ ",  " ♙ ",  " ♙ ", " ♙ ",  " ♙ ",  " ♙ ",  " ♙ ",  " ♙ "], [" ♖ ",  " ♘ ",  " ♗ ",  " ♕ ",  " ♔ ", " ♗ ",  " ♘ ",  " ♖ "]]
@@ -22,7 +22,6 @@ class Board
   # end
   # need this to not puts 0 to last row
   def display
-    row_num = 8
     board_string = ""
     @display_board << @col_letters
     @display_board = @display_board
@@ -30,7 +29,7 @@ class Board
       # if value is a piece, turn into ascii
       # if value is nil, turn into " "
       board_string += "#{row_num}   " + col.join(" ") + "\n"
-      row_num -= 1
+      BOARDLENGTH -= 1
     end
     puts board_string
   end
