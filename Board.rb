@@ -39,11 +39,10 @@ class Board
     puts board_string
   end
 
-  def valid_moves(piece)
-    valid_moves = []
+  def valid_moves(valid_moves = [])
    x = piece.location[0]
    y= piece.location[1]
-   possibilities = move_one(x, y)
+   possibilities = move_one(x, y) if possibilities = [] #otherwise you get values from the recursive move check
      #filter for out_of_bounds
       #mathematical possibilities
       #check against piece.location
@@ -58,33 +57,29 @@ class Board
     valid_moves
 end
 
-def recursive_move_check(piece)
+def recursive_move_check(piece, check_x=0, check_y=0, valid_before_bounds_check=[])
+   directions = piece.moves
    row = piece.location[0]
    col = piece.location[1]
-    (piece.moves).each do |vector|
-      x = vector[0] + row
-      y = vector[1] + col
-      if match?(x, y)
-        count_more_in_same_direction(direction, adjacent_r, adjacent_c, count=2)
+   check_x += row         #incrementing out from current x location
+   check_y += col         #incrementing out from current y location
+   directions.each do |direction|
+        check_x += direction[0]
+        check_y += direction[1]
+      if free_space?(check_x, check_y)
+        valid_before_bounds_check << [check_x,check_y]
+        recursive_move_check(piece, check_x, check_y, valid_before_bounds_check)
+      else
+        return valid_moves(valid_before_bounds_check) #base case for if it runs into a guy
       end
     end
-  end
-  def match?(comp_row, comp_col)
-    @board[comp_row][comp_col] != nil
+
   end
 
-  def count_more_in_same_direction(direction, row, col, count)
-    @count = count
-    x = (piece.moves)[direction][0] + row
-    y = (piece.moves)[direction][1] + col
-    if match?(x, y)
-        valid_moves << [x, y]
-      count_more_in_same_direction(direction, x, y, count+1)
-    end
+  def free_space?(check_row, check_col)
+    @board[check_row][check_col] == nil
   end
 
-
-end
 def move_one(x,y)
     possibilities = []
     (piece.moves).each do |vector|
@@ -120,18 +115,22 @@ b = Board.new
 b.display
 
 class Piece
-  attr_accessor :color, :moves, :location
+  attr_accessor :color, :moves, :location, :name
   attr_reader :display
   def initialize(color = "white")
+    @all_adjacent = [[0, 1],[0, -1],[1,0],[-1,0],[1,1],[-1,1],[1,-1],[-1,-1]]
   end
 end
 
 
 class Pawn < Piece
-  attr_accessor :moves
+  attr_accessor :moves, :first_move?, :capturing?
   def initialize(color = "white")
     color == "white" ? @icon = "♟" : @icon = '♙'
-    @moves = [0, 1]
+    moves = [[0, 1]]
+    moves << [0,2] if first_move?
+    moves << [1,1] if capturing?
+    name = "pawn"
   end
 
 end
@@ -141,7 +140,8 @@ end
     attr_accessor :moves
     def initialize(color = "white")
       color == "white" ? @icon = "♜" : @icon = '♖'
-      @moves = [[0,1], [1,0], [-1,0], [0, -1]]
+      moves = @all_adjacent - [1, 1] - [1, -1] - [-1, 1] - [-1, -1]
+      name = "rook"
     end
 
 
@@ -150,7 +150,8 @@ end
   class King < Piece
     def initialize(color = "white")
       color =="white" ? @icon = "♚" : @icon = '♔'
-      @moves = [[0, 1],[0, -1],[1,0],[-1,0],[1,1],[-1,1],[1,-1],[-1,-1]]
+      @moves = @all_adjacent
+      name = "king"
     end
   end
 
@@ -158,14 +159,16 @@ end
   class Queen < Piece
     def initialize(color = "white")
       color == "white" ? @icon = "♛" : @icon = '♕'
-      @moves = [[1, 0], [1,1], [1, -1], [0, -1], [0, 1], [-1, 0], [-1, 1], [-1, -1]]
+      @moves = @all_adjacent
+      name = "queen"
     end
   end
 
   class Bishop < Piece
     def initialize(color = "white")
       color == "white" ? @icon = "♝" : @icon = '♗'
-      @moves = [[1, 1], [1, -1], [-1, 1], [-1, -1]]
+      @moves = @all_adjacent - [0,1] - [0,-1], [1,0], [-1,0]
+      name = "bishop"
     end
   end
 
@@ -173,5 +176,6 @@ end
     def initialize(color = "white")
       color == "white" ? @icon = "♞" : @icon = '♘'
       @moves = [[1, 2], [1, -2], [2, 1], [2, -1], [-1, 2], [-1, -2], [-2, 1], [-2, -1]]
+      name = "knight"
     end
   end
