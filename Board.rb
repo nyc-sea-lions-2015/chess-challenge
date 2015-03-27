@@ -20,7 +20,7 @@ class Board
     row_num = 8
     board_string = ""
     @display_board = @board
-    @display_board.reverse.map do |row|
+    @display_board.map do |row|
       row.map! do |cell|
         cell == nil ? cell = ' ' : cell.display_icon
       end.join('  ')
@@ -124,10 +124,6 @@ class Board
   #   end
   # end
 
-  def find_piece(location_string)
-    index = string_to_index(location_string)
-    piece = @board[index[0]][index[1]]
-  end
 
   def string_to_index(location_string)
     # a5
