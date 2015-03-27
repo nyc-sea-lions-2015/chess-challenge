@@ -42,61 +42,65 @@ end
 class Knight
 
   attr_reader :color, :moves
-  attr_accessor :position
+  attr_accessor :position, :first_move
 
   def initialize(args)
     @position = args[:position]
     @color = args[:color]
     @moves = [[2,1],[1,2],[2,-1],[1,-2],[-2,-1],[-1,-2],[-2,1],[-1,2]]
+    @first_move = true
   end
 end
 
 class Rook
 
   attr_reader :color, :moves
-  attr_accessor :position
+  attr_accessor :position, :first_move
 
   def initialize(args)
     @position = args[:position]
     @color = args[:color]
     @moves = [NORTH, EAST, SOUTH, WEST]
+    @first_move = true
   end
 end
 
 class Bishop
 
   attr_reader :color, :moves
-  attr_accessor :position
+  attr_accessor :position, :first_move
 
   def initialize(args)
     @position = args[:position]
     @color = args[:color]
     @moves = [NORTHEAST, SOUTHEAST, SOUTHWEST, NORTHWEST]
-
+    @first_move = true
   end
 end
 
 class Queen
 
   attr_reader :color, :moves
-  attr_accessor :position
+  attr_accessor :position, :first_move
 
   def initialize(args)
     @position = args[:position]
     @color = args[:color]
     @moves = [NORTH, NORTHEAST, EAST, SOUTHEAST, SOUTH, SOUTHWEST, WEST, NORTHWEST]
+    @first_move = true
   end
 end
 
 class King
 
   attr_reader :color, :moves
-  attr_accessor :position
+  attr_accessor :position, :first_move
 
   def initialize(args)
     @position = args[:position]
     @color = args[:color]
     @moves = [NORTH, NORTHEAST, EAST, SOUTHEAST, SOUTH, SOUTHWEST, WEST, NORTHWEST]
+    @first_move = true
   end
 
 end
@@ -151,6 +155,9 @@ class Board
   end
 
   def place(piece, position)
+  	@board[piece.position[0]][piece.position[1]] = nil if !piece.first_move
+  	piece.first_move = false
+  	capture_piece(position)
     @board[position[0]][position[1]] = piece
     piece.position = position
   end
@@ -196,10 +203,14 @@ class Board
     puts "\s" + "\s" + %w[a b c d e f g h].join(' ')
   end
 
+  def capture_piece(position)
+  	@board[position[0]][position[1]].position = nil if @board[position[0]][position[1]] != nil
+  	@board[position[0]][position[1]] = nil
+  end
+
   def check_move_helper(piece)
     pawn_move(piece) if piece.is_a?(Pawn)
-    king_move(piece) if piece.is_a?(King)
-    knight_move(piece) if piece.is_a?(Knight)
+    kk_move(piece) if piece.is_a?(Knight) || piece.is_a?(King)
     rqb_move(piece) if piece.is_a?(Rook) || piece.is_a?(Queen) || piece.is_a?(Bishop)
   end
 
@@ -232,7 +243,7 @@ class Board
     return valid_moves
   end
 
-  def king_move(piece)
+  def kk_move(piece)
     valid_moves = []
     move = 0
     num_of_directions = piece.moves.length
@@ -249,22 +260,6 @@ class Board
     valid_moves
   end
 
-  def knight_move(piece)
-    valid_moves = []
-    move = 0
-    num_of_directions = piece.moves.length #8
-    num_of_directions.times do
-      temp_row = piece.position[0] + piece.moves[move][0] #[0][0] row [1][0]
-      temp_col = piece.position[1] + piece.moves[move][1] #[0][1] col [1][1]
-      if temp_row.between?(0,7) && temp_col.between?(0, 7)
-        if @board[temp_row][temp_col] == nil || @board[temp_row][temp_col].color != piece.color
-          valid_moves << [temp_row, temp_col]
-        end
-        move += 1
-      end
-    end
-    valid_moves
-  end
 
   def pawn_move(piece)
     valid_moves = []
