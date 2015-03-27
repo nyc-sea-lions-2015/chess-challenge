@@ -32,125 +32,126 @@ class Board
   end
 
 
-
-def move(old_pos, new_pos, piece)
-  piece.set_location(new_pos)
-  @board_hard[new_pos[0]][new_pos[1]] = piece
-  @board_hard[old_pos[0]][old_pos[1]] = nil
-end
-
-#   def valid_moves(piece)
-#     valid_moves = []
-#    x = piece.location[0]
-#    y= piece.location[1]
-#    possibilities = all_possible_directions(x, y)
-#      #filter for out_of_bounds
-#       #mathematical possibilities
-#       #check against piece.location
-#     possibilites.each do |coordinate|
-#       # if collision with white piece, return false
-#         x = coordinate[0]
-#         y = coordinate[1]
-#         next if out_of_bounds?(x,y)
-#         next if (@board[x][y]).color == piece.color
-#         valid_moves << coordinate
-#     end
-#     valid_moves
-# end
-
-def valid_moves(valid_moves = [])
-  x = piece.location[0]
-  y= piece.location[1]
-  valid_moves = move_one(x, y) if valid_moves == [] #otherwise you get values from the recursive move check
-  #filter for out_of_bounds
-  #mathematical valid_moves
-  #check against piece.location
-  possibilites.each do |coordinate|
-    # if collision with white piece, return false
-    x = coordinate[0]
-    y = coordinate[1]
-    next if out_of_bounds?(x,y)
-    next if (@board[x][y]).color == piece.color
-    valid_moves << coordinate
+  def move(old_pos, new_pos, piece)
+    piece.set_location(new_pos)
+    @board_hard[new_pos[0]][new_pos[1]] = piece
+    @board_hard[old_pos[0]][old_pos[1]] = nil
   end
-  valid_moves
-end
 
-def recursive_move_check(piece, check_x=0, check_y=0, valid_before_bounds_check=[])
-  directions = piece.moves
-  row = piece.location[0]
-  col = piece.location[1]
-  check_x += row         #incrementing out from current x location
-  check_y += col         #incrementing out from current y location
-  directions.each do |direction|
-    check_x += direction[0]
-    check_y += direction[1]
-    if free_space?(check_x, check_y)
-      valid_before_bounds_check << [check_x,check_y]
-      recursive_move_check(piece, check_x, check_y, valid_before_bounds_check)
-    else
-      return valid_moves(valid_before_bounds_check) #base case for if it runs into a guy
+  #   def valid_moves(piece)
+  #     valid_moves = []
+  #    x = piece.location[0]
+  #    y= piece.location[1]
+  #    possibilities = all_possible_directions(x, y)
+  #      #filter for out_of_bounds
+  #       #mathematical possibilities
+  #       #check against piece.location
+  #     possibilites.each do |coordinate|
+  #       # if collision with white piece, return false
+  #         x = coordinate[0]
+  #         y = coordinate[1]
+  #         next if out_of_bounds?(x,y)
+  #         next if (@board[x][y]).color == piece.color
+  #         valid_moves << coordinate
+  #     end
+  #     valid_moves
+  # end
+
+  def valid_moves(valid_moves = [])
+    x = piece.location[0]
+    y= piece.location[1]
+    valid_moves = move_one(x, y) if valid_moves == [] #otherwise you get values from the recursive move check
+    #filter for out_of_bounds
+    #mathematical valid_moves
+    #check against piece.location
+    possibilites.each do |coordinate|
+      # if collision with white piece, return false
+      x = coordinate[0]
+      y = coordinate[1]
+      next if out_of_bounds?(x,y)
+      next if (@board[x][y]).color == piece.color
+      valid_moves << coordinate
+    end
+    valid_moves
+  end
+
+  def recursive_move_check(piece, check_x=0, check_y=0, valid_before_bounds_check=[])
+    directions = piece.moves
+    row = piece.location[0]
+    col = piece.location[1]
+    check_x += row         #incrementing out from current x location
+    check_y += col         #incrementing out from current y location
+    directions.each do |direction|
+      check_x += direction[0]
+      check_y += direction[1]
+      if free_space?(check_x, check_y)
+        valid_before_bounds_check << [check_x,check_y]
+        recursive_move_check(piece, check_x, check_y, valid_before_bounds_check)
+      else
+        return valid_moves(valid_before_bounds_check) #base case for if it runs into a guy
+      end
     end
   end
-end
 
-# def all_possible_directions(x,y)
-#     possibilities = []
-#     (piece.moves).each do |vector|
-#       x += vectors[0]
-#       y += vector[1]
-#       possibilities <<  [x,y]
-#     end
-#     possibilities
-# end
+  # def all_possible_directions(x,y)
+  #     possibilities = []
+  #     (piece.moves).each do |vector|
+  #       x += vectors[0]
+  #       y += vector[1]
+  #       possibilities <<  [x,y]
+  #     end
+  #     possibilities
+  # end
 
-def free_space?(check_row, check_col)
-  @board[check_row][check_col] == nil
-end
-
-def move_one(x,y)
-  valid_moves = []
-  (piece.moves).each do |vector|
-    x += vectors[0]
-    y += vector[1]
-    valid_moves <<  [x,y]
+  def free_space?(check_row, check_col)
+    @board[check_row][check_col] == nil
   end
-  valid_moves
-end
+
+  def move_one(x,y)
+    valid_moves = []
+    (piece.moves).each do |vector|
+      x += vectors[0]
+      y += vector[1]
+      valid_moves <<  [x,y]
+    end
+    valid_moves
+  end
 
 
-def out_of_bounds?(x,y)
-  (x < 0 || y < 0 || x > 7|| y > 7)
-end
+  def out_of_bounds?(location)
+    x = location[0]
+    y = location[1]
+    !(x < 0 || y < 0 || x > 7|| y > 7)
+  end
 
-#   def find_piece(location_string)
-#       index = string_to_index(location_string)
-#       piece = @board[index[0]][index[1]]
-#       piece.location = [index[0], index[1]]
-#       valid_moves(piece)
-#   end
+  #   def find_piece(location_string)
+  #       index = string_to_index(location_string)
+  #       piece = @board[index[0]][index[1]]
+  #       piece.location = [index[0], index[1]]
+  #       valid_moves(piece)
+  #   end
 
-#   def string_to_index(location_string)
-#     # a5
-#     col_string, row_index = location_string.split("")
-#     row_index = BOARDLENGTH - row_index.to_i
-#     col_index = col_string.downcase.ord - 97
-#     [row_index, col_index]
-#   end
-# end
+  #   def string_to_index(location_string)
+  #     # a5
+  #     col_string, row_index = location_string.split("")
+  #     row_index = BOARDLENGTH - row_index.to_i
+  #     col_index = col_string.downcase.ord - 97
+  #     [row_index, col_index]
+  #   end
+  # end
 
-def find_piece(location_string)
-  index = string_to_index(location_string)
-  piece = @board[index[0]][index[1]]
-end
+  def find_piece(location_string)
+    index = string_to_index(location_string)
+    piece = @board[index[0]][index[1]]
+  end
 
-def string_to_index(location_string)
-  # a5
-  col_string, row_index = location_string.split("")
-  row_index = BOARDLENGTH - row_index.to_i
-  col_index = col_string.downcase.ord - 97
-  [row_index, col_index]
-end
+  def string_to_index(location_string)
+    # a5
+    col_string, row_index = location_string.split("")
+    row_index = BOARDLENGTH - row_index.to_i
+    col_index = col_string.downcase.ord - 97
+    [row_index, col_index]
+  end
 end
 
 
@@ -241,10 +242,10 @@ class Knight < Piece
 end
 
 
-b = Board.new
-# p b.board
+# b = Board.new
+# # p b.board
 
 
-b.move([1,0], [2,5], b.board_hard[1][0])
-b.move([7,7], [3,4], b.board_hard[7][7])
-puts b.display
+# b.move([1,0], [2,5], b.board_hard[1][0])
+# b.move([7,7], [3,4], b.board_hard[7][7])
+# puts b.display
