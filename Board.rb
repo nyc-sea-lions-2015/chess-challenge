@@ -59,8 +59,8 @@ class Board
     piece_moves = piece.moves
     current_location = piece.location
     piece_moves.each do |move|
-      x = current_location[1] + move[0]
-      y = current_location[0] + move[1]
+      x = current_location[0] + move[0]
+      y = current_location[1] + move[1]
       # byebug
       next if out_of_bounds?(x,y)
       if free_space?(piece, x, y)
