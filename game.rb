@@ -88,7 +88,6 @@ class Game
     # !(bad_input?(location) ||
   end
 
-
   def display_board
     puts @board.display
   end
@@ -168,4 +167,4 @@ G = Game.new()
 
 G.display_board
 #p G.input_to_int("c4")
-p G.valid_pick?("c4")
+p G.valid_pick?("h9")
