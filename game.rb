@@ -21,8 +21,15 @@ def turns(player)
   # if blank square/outside of board square
   view.turn_message(player)
   piece =  board.find_piece(view.choose_piece)
-  # moves =
-  piece_chosen_message(player, piece, moves)
+  name = piece.name.downcase!
+  board.recursive_move_check(piece) if name == "queen" || name == "bishop" || name == "rook"
+  moves = valid_moves(piece)
+
+  view.piece_chosen_message(player, name, moves)
+  view.display_valid_moves(player, location, move) #prompts move
+  view.pick_move
+  view.player_move_message(player, piece, move)
+
 
 
 
@@ -41,7 +48,9 @@ class View
     message(choose_piece_message)
     @choice = user_input
   end
-
+ def display_valid_moves
+    message(piece_chosen_message)
+  end
   def pick_move(player, choice)
     "#{player}, move #{choice} where?"
     @move = user_input
@@ -51,9 +60,7 @@ class View
     message(choose_again_message)
   end
 
-  def display_valid_moves
-    message(piece_chosen_message)
-  end
+
 
   def display_player_move
     message(player_move_message)
@@ -78,10 +85,15 @@ class View
   end
   # @move gets sent to board
 
-
-  def player_move_message(player, piece, move)
-    "ok, #{player}'s #{piece} #{choice} to move to #{move}"
+   def player_choose_move_message(player, location, move)
+    "ok, #{player}, move #{location} where?"
+    user_input
   end
+  def player_move_message(player, piece, move)
+    "ok, #{player}'s #{piece} #{choice} #{location}to move to #{move}"
+  end
+
+
 
   def capture_message(player, player2, piece, captured_piece, choice, move)
     "#{player}'s #{piece} {choice} captures #{player2}'s #{captured_piece} #{move}"

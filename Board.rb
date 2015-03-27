@@ -43,7 +43,7 @@ class Board
     valid_moves = []
    x = piece.location[0]
    y= piece.location[1]
-   possibilities = all_possible_directions(x, y)
+   possibilities = move_one(x, y)
      #filter for out_of_bounds
       #mathematical possibilities
       #check against piece.location
@@ -58,7 +58,34 @@ class Board
     valid_moves
 end
 
-def all_possible_directions(x,y)
+def recursive_move_check(piece)
+   row = piece.location[0]
+   col = piece.location[1]
+    (piece.moves).each do |vector|
+      x = vector[0] + row
+      y = vector[1] + col
+      if match?(x, y)
+        count_more_in_same_direction(direction, adjacent_r, adjacent_c, count=2)
+      end
+    end
+  end
+  def match?(comp_row, comp_col)
+    @board[comp_row][comp_col] != nil
+  end
+
+  def count_more_in_same_direction(direction, row, col, count)
+    @count = count
+    x = (piece.moves)[direction][0] + row
+    y = (piece.moves)[direction][1] + col
+    if match?(x, y)
+        valid_moves << [x, y]
+      count_more_in_same_direction(direction, x, y, count+1)
+    end
+  end
+
+
+end
+def move_one(x,y)
     possibilities = []
     (piece.moves).each do |vector|
       x += vectors[0]
@@ -75,8 +102,6 @@ end
   def find_piece(location_string)
       index = string_to_index(location_string
       piece = @board[index[0]][index[1]]
-      piece.location = [index[0], index[1]]
-      valid_moves(piece)
   end
 
   def string_to_index(location_string)
