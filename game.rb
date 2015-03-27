@@ -21,10 +21,9 @@ class Game
   end
 
   def play
-    while !game_over
+    while !game_over?
       players.each do |player|
         # clear screen
-        puts "\e[H\e[2J"
         display_board
         turn(player)
       end
@@ -111,6 +110,7 @@ class View
   # if user picks invalid square
   def pick_again(player)
     message(choose_again_message(player))
+    @choice = user_input
   end
 
   def display_valid_moves(player)
@@ -172,4 +172,4 @@ G = Game.new()
 # p G.bad_input("c52829")
 # p G.valid_pick?("f5")
 
-G.turn(G.players[0])
+G.play

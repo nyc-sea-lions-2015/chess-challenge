@@ -2,7 +2,7 @@
 # require "byebug"
 
 class Board
-  attr_reader :board_hard
+  attr_reader :board
   def initialize
     # @board = [Array.new(8) { Array.new(nil) }]
     # @first_row = [Rook.new, Knight.new, Bishop.new, Queen.new, King.new, Bishop.new, Knight.new, Rook.new]
@@ -10,19 +10,24 @@ class Board
     # @board[0], @board[7] = @first_row, @first_row.reverse.map! { |piece| piece.color = "black"}
     # @board[1], @board[6] = @second_row, @second_row.map! { |piece| piece.color = "black"}
 
-    # @board_hard =  [[nil, nil, nil, nil, nil,nil, nil, nil], [Pawn.new([1,0]), nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil],  [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil]]
+    # @board =  [[nil, nil, nil, nil, nil,nil, nil, nil], [Pawn.new([1,0]), nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil],  [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil]]
 
-    @board_hard = [[Rook.new([0,0]), Knight.new([0, 1]), Bishop.new([0, 2]), Queen.new([0, 3]), King.new([0, 4]), Bishop.new([0, 5]), Knight.new([0, 6]), Rook.new([0,7])], [Pawn.new([1,0]), Pawn.new([1,1]), Pawn.new([1,2]), Pawn.new([1,3]), Pawn.new([1,4]), Pawn.new([1,5]), Pawn.new([1,6]), Pawn.new([1,7])], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [Pawn.new([6,0], "black"), Pawn.new([6,1], "black"), Pawn.new([6,2], "black"), Pawn.new([6,3], "black"), Pawn.new([6,4], "black"), Pawn.new([6,5], "black"), Pawn.new([6,6], "black"), Pawn.new([6, 7], "black")], [Rook.new([7, 0], "black"), Knight.new([7, 1], "black"), Bishop.new([7, 2], "black"), King.new([7, 3], "black"), Queen.new([7, 4], "black"), Bishop.new([7, 5], "black"), Knight.new([7, 6], "black"), Rook.new([7, 7], "black")]]
+    @board = [[Rook.new([0,0]), Knight.new([0, 1]), Bishop.new([0, 2]), Queen.new([0, 3]), King.new([0, 4]), Bishop.new([0, 5]), Knight.new([0, 6]), Rook.new([0,7])], [Pawn.new([1,0]), Pawn.new([1,1]), Pawn.new([1,2]), Pawn.new([1,3]), Pawn.new([1,4]), Pawn.new([1,5]), Pawn.new([1,6]), Pawn.new([1,7])], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [Pawn.new([6,0], "black"), Pawn.new([6,1], "black"), Pawn.new([6,2], "black"), Pawn.new([6,3], "black"), Pawn.new([6,4], "black"), Pawn.new([6,5], "black"), Pawn.new([6,6], "black"), Pawn.new([6, 7], "black")], [Rook.new([7, 0], "black"), Knight.new([7, 1], "black"), Bishop.new([7, 2], "black"), King.new([7, 3], "black"), Queen.new([7, 4], "black"), Bishop.new([7, 5], "black"), Knight.new([7, 6], "black"), Rook.new([7, 7], "black")]]
     @row_nums = [1,2,3,4,5,6,7,8]
     @col_letters = ["a","b","c","d","e","f","g", "h"]
     @boardlength = 8
+    @display_board = ""
   end
 
   def display
+
+  end
+
+  def format
     row_num = 8
     board_string = ""
-    @display_board = @board_hard
-    @display_board.reverse.map do |row|
+    @formatting = @board
+    @formatting.reverse.map do |row|
       row.map! do |cell|
         cell == nil ? cell = ' ' : cell.display_icon
       end.join('  ')
@@ -33,10 +38,11 @@ class Board
   end
 
 
+
   def move(old_pos, new_pos, piece)
     piece.set_location(new_pos)
-    @board_hard[new_pos[0]][new_pos[1]] = piece
-    @board_hard[old_pos[0]][old_pos[1]] = nil
+    @board[new_pos[0]][new_pos[1]] = piece
+    @board[old_pos[0]][old_pos[1]] = nil
   end
 
   #   def valid_moves(piece)
@@ -142,9 +148,7 @@ class Board
   # end
 
   def find_piece(location)
-    p location
-    # index = string_to_index(location_string)
-    piece = @board_hard[location[0]][location[1]]
+    piece = @board[location[0]][location[1]]
   end
 
   def string_to_index(location_string)
@@ -168,6 +172,7 @@ class Piece
     @all_adjacent = [[0, 1],[0, -1],[1,0],[-1,0],[1,1],[-1,1],[1,-1],[-1,-1]]
     @location = location
   end
+
   def display_icon
     @icon
   end
@@ -248,6 +253,6 @@ end
 # # p b.board
 
 
-# b.move([1,0], [2,5], b.board_hard[1][0])
-# b.move([7,7], [3,4], b.board_hard[7][7])
+# b.move([1,0], [2,5], b.board[1][0])
+# b.move([7,7], [3,4], b.board[7][7])
 # puts b.display
