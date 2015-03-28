@@ -3,6 +3,11 @@
 # TODO: refactor turn logic.
 # require "byebug"
 
+
+# TODO: Critical: return a message saying "no legal moves for that piece" when blocked piece is picked
+
+# TODO: Get captured piece message working
+
 require_relative "Board.rb"
 
 class Game
@@ -39,6 +44,7 @@ class Game
 
   # TODO: refactor this mess.
   def turn(player)
+
     # "players turn"
     @view.turn_message(player)
     # player, move which piece?
@@ -56,30 +62,36 @@ class Game
     begin
       # player picks a move
       player_choice = @view.pick_move(player, @view.choice)
-    end until valid_player_choice?(player_choice, moves)
+    end until valid_move_choice?(player_choice, moves)
 
     # check for piece capture
     if @board.piece_captured?(piece, input_to_coord(player_choice))
       @board.capture_piece(input_to_coord(player_choice))
-      @view.display_capture_move(player, player, piece, captured_piece, choice, move_move)
+      @view.display_capture_message(player, other_player(player), piece, captured_piece, choice, move_move)
       @board.move(piece, input_to_coord(player_choice))
     else
       @board.move(piece, input_to_coord(player_choice))
     end
-
     # end turn
     puts "end of turn"
   end
 
-  def valid_player_choice?(player_choice, moves)
+  def other_player(current_player)
+    @players.select{|player| player != current_player}.to_s
+  end
+
+  def valid_move_choice?(player_choice, moves)
     moves.include?(player_choice)
   end
 
   # Is the user picking a square on the board occupied by their piece?
   def valid_pick?(user_input, player)
     coord = input_to_coord(user_input)
-    return false if @board.board[coord[0]][coord[0]] == nil
-    (@board.board_values.has_key?(user_input) && @board.board[coord[0]][coord[0]].color == player)
+    puts @board.board_values.has_key?(user_input)
+    puts @board.board[coord[0]][coord[1]].color == player
+    puts @board.board[coord[0]][coord[1]]
+    return false if @board.board[coord[0]][coord[1]] == nil
+    (@board.board_values.has_key?(user_input) && @board.board[coord[0]][coord[1]].color == player)
   end
 
   def input_to_coord(user_input)
@@ -151,10 +163,6 @@ class View
 
   def display_player_move(player)
     message(player_move_message(player, piece, move))
-  end
-
-  def display_capture_move(player)
-    message(capture_message)
   end
 
   def display_game_over(player)

@@ -5,6 +5,7 @@
 # TODO: deal with captures
 
 
+
 require "byebug"
 
 class Board
