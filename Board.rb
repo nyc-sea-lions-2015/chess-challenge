@@ -31,7 +31,7 @@ class Board
       @board_string += "#{row_num} "
       row.each do |cell|
         # byebug
-        cell == nil ? cell = ' ' : cell = cell.display_icon
+        cell == nil ? cell = '.' : cell = cell.display_icon
         @board_string +=" " + cell + " "
       end
       @board_string += "\n"
@@ -61,7 +61,9 @@ class Board
   end
 
   def piece_captured?(piece, location)
-    (square(location[0], location[1]) != nil)
+    p piece
+    p location
+    (@board[location[0]][location[1]] != nil)
   end
 
   def capture_piece(location)
@@ -84,12 +86,12 @@ class Board
       y = current_location[1] + move[1]
       next if out_of_bounds?([x,y])
       if free_space?(piece, x, y)
-        valid_moves << [x, y] #fix
+        valid_moves << [x,y] #fix
         vector_array = check_direction(piece, x, y, move[0], move[1])
         vector_array.each { |coord| valid_moves << coord } unless piece.multiple_moves == false || vector_array == []
         # valid_moves << vector_array
       elsif (@board[x][y]).color != piece.color
-        valid_move << move
+        valid_moves << move
       else
         next
       end

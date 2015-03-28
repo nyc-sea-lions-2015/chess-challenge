@@ -1,12 +1,13 @@
 # STRETCH: have "pick a move" filter for all legal choices player can make at that time.
+# STRETCH: allow for undo
+
 # TODO: refactor: turn message passing variable assignment/method calling/argument names.2
 
-
-# TODO: fix valid moves formatting
 # TODO: Only allow user to pick move from valid move array, not any square.
+
 # TODO: critical: fix turn method when empty square is called
 
-
+# TODO: only allow player to pick from IT"S PIECES
 
 # require "byebug"
 require_relative "Board.rb"
@@ -35,6 +36,7 @@ class Game
     while !game_over?
       players.each do |player|
         # clear screen
+        puts "\e[H\e[2J"
         puts display_board
         turn(player)
       end
@@ -56,12 +58,13 @@ class Game
       piece = @board.find_piece(location)
       # find valid moves
       # might be missing an input here?
-      moves = @board.valid_move(piece)
+      moves = coord_to_string(@board.valid_move(piece))
       # display valid moves and ask player for choice
+
       @view.display_valid_moves(player, piece.name, moves)
       # player picks a move
       move_choice = input_to_coord(@view.pick_move(player, @view.choice))
-   
+
 
       # if invalid_move_choice(move_choice)
       #   @view.pick_again(player)
@@ -103,17 +106,14 @@ class Game
     @board.board_values[user_input]
   end
 
-  def coord_to_string(output)
-
+  # turns board coord into player coords
+  def coord_to_string(moves)
+    moves.map! do |coord|
+      coord = @board.board_values.key(coord)
+    end
+    return moves
   end
 
-  # def valid_move_choice?(moves, input)
-  #   moves.include?(input)
-  # end
-
-  # TODO: reconcile this with move method in board!
-  # Currently not inputing old_pos anywhere.
-  # maybe use "choice?
   def move_piece(new_pos,piece)
     @board.move(new_pos,piece)
   end
@@ -184,6 +184,7 @@ class View
   end
 
   def display_capture_message(player, player2, piece, captured_piece, choice, move)
+    message(capture_message(player, player2, piece, captured_piece, choice, move))
   end
 
   # Messages to console
@@ -197,7 +198,7 @@ class View
   end
 
   def piece_chosen_message(player, piece, moves)
-    "moves for #{player}'s #{piece}" +": " + moves.join(" ")
+    "moves for #{player}'s #{piece}" +": " + moves.join(", ")
   end
   # move gets sent to board
   def player_move_message(player, piece, move)
@@ -217,7 +218,7 @@ class View
   end
 
   def game_over_message(player)
-    "#{player} wins!"
+    "#{player} wins"
   end
 
   # siphon methods for prompts and inputs
