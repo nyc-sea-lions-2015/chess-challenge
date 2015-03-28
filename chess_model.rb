@@ -143,38 +143,21 @@ class Board
     counter = 8
     piece_picture = ""
     @board.reverse.each do |row|
-      # "#{counter}\s"
       row.each_with_index do |piece, piece_index|
-        if piece_index == 0
-          piece_picture += "#{counter} "
-        end
-        if piece.is_a?(Rook) && piece.color == "black"
-          piece_picture += "\u265C\s"
-        elsif piece.is_a?(Rook) && piece.color == "white"
-          piece_picture += "\u2656\s"
-        elsif piece.is_a?(Knight) && piece.color == "black"
-          piece_picture += "\u265E\s"
-        elsif piece.is_a?(Knight) && piece.color == "white"
-          piece_picture += "\u2658\s"
-        elsif piece.is_a?(Bishop) && piece.color == "black"
-          piece_picture += "\u265D\s"
-        elsif piece.is_a?(Bishop) && piece.color == "white"
-          piece_picture += "\u2657\s"
-        elsif piece.is_a?(Queen) && piece.color == "black"
-          piece_picture += "\u265B\s"
-        elsif piece.is_a?(Queen) && piece.color == "white"
-          piece_picture += "\u2655\s"
-        elsif piece.is_a?(King) && piece.color == "black"
-          piece_picture += "\u265A\s"
-        elsif piece.is_a?(King) && piece.color == "white"
-          piece_picture += "\u2654\s"
-        elsif piece.is_a?(Pawn) && piece.color == "black"
-          piece_picture += "\u265F\s"
-        elsif piece.is_a?(Pawn) && piece.color == "white"
-          piece_picture += "\u2659\s"
-        elsif piece == nil
-          piece_picture += ". "
-        end
+        piece_picture += "#{counter} " if piece_index == 0
+        piece_picture += "\u265C\s" if piece.is_a?(Rook) && piece.color == "black"
+        piece_picture += "\u2656\s" if piece.is_a?(Rook) && piece.color == "white"
+        piece_picture += "\u265E\s" if piece.is_a?(Knight) && piece.color == "black"
+        piece_picture += "\u2658\s" if piece.is_a?(Knight) && piece.color == "white"
+        piece_picture += "\u265D\s" if piece.is_a?(Bishop) && piece.color == "black"
+        piece_picture += "\u2657\s" if piece.is_a?(Bishop) && piece.color == "white"
+        piece_picture += "\u265B\s" if piece.is_a?(Queen) && piece.color == "black"
+        piece_picture += "\u2655\s" if piece.is_a?(Queen) && piece.color == "white"
+        piece_picture += "\u265A\s" if piece.is_a?(King) && piece.color == "black"
+        piece_picture += "\u2654\s" if piece.is_a?(King) && piece.color == "white"
+        piece_picture += "\u265F\s" if piece.is_a?(Pawn) && piece.color == "black"
+        piece_picture += "\u2659\s" if piece.is_a?(Pawn) && piece.color == "white"
+        piece_picture += ". " if piece == nil
       end
       counter -= 1
       piece_picture += "\n"
