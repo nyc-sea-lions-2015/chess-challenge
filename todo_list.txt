@@ -1,8 +1,8 @@
 Refactor piece instantiation
 Make controller back and forth
-Make to_s method return instead of print (debbie)
 Include win states
 Add in check
+Make sure people can't place pieces
 
 
 

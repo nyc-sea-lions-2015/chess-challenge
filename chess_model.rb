@@ -141,31 +141,7 @@ class Board
     piece.position = position
   end
 
-  def to_s
-    counter = 8
-    piece_picture = ""
-    @board.reverse.each do |row|
-      row.each_with_index do |piece, piece_index|
-        piece_picture += "#{counter} " if piece_index == 0
-        piece_picture += "\u265C\s" if piece.is_a?(Rook) && piece.color == "black"
-        piece_picture += "\u2656\s" if piece.is_a?(Rook) && piece.color == "white"
-        piece_picture += "\u265E\s" if piece.is_a?(Knight) && piece.color == "black"
-        piece_picture += "\u2658\s" if piece.is_a?(Knight) && piece.color == "white"
-        piece_picture += "\u265D\s" if piece.is_a?(Bishop) && piece.color == "black"
-        piece_picture += "\u2657\s" if piece.is_a?(Bishop) && piece.color == "white"
-        piece_picture += "\u265B\s" if piece.is_a?(Queen) && piece.color == "black"
-        piece_picture += "\u2655\s" if piece.is_a?(Queen) && piece.color == "white"
-        piece_picture += "\u265A\s" if piece.is_a?(King) && piece.color == "black"
-        piece_picture += "\u2654\s" if piece.is_a?(King) && piece.color == "white"
-        piece_picture += "\u265F\s" if piece.is_a?(Pawn) && piece.color == "black"
-        piece_picture += "\u2659\s" if piece.is_a?(Pawn) && piece.color == "white"
-        piece_picture += ". " if piece == nil
-      end
-      counter -= 1
-      piece_picture += "\n"
-    end
-    piece_picture += "\s" + "\s" + %w[a b c d e f g h].join(' ')
-  end
+
 
   def check_mate?
     return true if @wking.position == nil || @bking.position == nil
@@ -258,6 +234,38 @@ class Board
     end
     return valid_moves
   end
+
+  def to_s
+    counter = 8
+    piece_picture = ""
+    @board.reverse.each do |row|
+      row.each_with_index do |piece, piece_index|
+        piece_picture += "#{counter} " if piece_index == 0
+        piece_picture += "\u265C\s" if piece.is_a?(Rook) && piece.color == "black"
+        piece_picture += "\u2656\s" if piece.is_a?(Rook) && piece.color == "white"
+        piece_picture += "\u265E\s" if piece.is_a?(Knight) && piece.color == "black"
+        piece_picture += "\u2658\s" if piece.is_a?(Knight) && piece.color == "white"
+        piece_picture += "\u265D\s" if piece.is_a?(Bishop) && piece.color == "black"
+        piece_picture += "\u2657\s" if piece.is_a?(Bishop) && piece.color == "white"
+        piece_picture += "\u265B\s" if piece.is_a?(Queen) && piece.color == "black"
+        piece_picture += "\u2655\s" if piece.is_a?(Queen) && piece.color == "white"
+        piece_picture += "\u265A\s" if piece.is_a?(King) && piece.color == "black"
+        piece_picture += "\u2654\s" if piece.is_a?(King) && piece.color == "white"
+        piece_picture += "\u265F\s" if piece.is_a?(Pawn) && piece.color == "black"
+        piece_picture += "\u2659\s" if piece.is_a?(Pawn) && piece.color == "white"
+        piece_picture += ". " if piece == nil
+      end
+      counter -= 1
+      piece_picture += "\n"
+    end
+    piece_picture += "\s" + "\s" + %w[a b c d e f g h].join(' ')
+  end
+
+  def valid_spot?(coord, player_color)
+    piece = @board[coord[0]][coord[1]]
+    piece != nil && piece.color == player_color && coord[0].between?(0, 7) && coord[1].between?(0, 7) ? true : false
+  end
+
 end
 
 
