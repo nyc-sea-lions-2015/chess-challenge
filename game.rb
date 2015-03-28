@@ -1,8 +1,8 @@
 # STRETCH: allow for undo
 # Stretch: allow for forfeit/end game if user types "forfeit"/"quit"
-# TODO: refactor: turn message passing variable assignment/method calling/argument names.2
-
+# TODO: refactor turn logic.
 # require "byebug"
+
 require_relative "Board.rb"
 
 class Game
@@ -75,12 +75,11 @@ class Game
     moves.include?(player_choice)
   end
 
+  # Is the user picking a square on the board occupied by their piece?
   def valid_pick?(user_input, player)
     coord = input_to_coord(user_input)
     return false if @board.board[coord[0]][coord[0]] == nil
     (@board.board_values.has_key?(user_input) && @board.board[coord[0]][coord[0]].color == player)
-    # && (@board[coord[0]][coord[0]].color == player)
-    # this needs to check that the square is occupied by a piece of that player
   end
 
   def input_to_coord(user_input)
