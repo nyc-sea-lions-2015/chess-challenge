@@ -2,9 +2,10 @@
 # TODO: refactor: turn message passing variable assignment/method calling/argument names.2
 
 
+# TODO: fix valid moves formatting
+# TODO: Only allow user to pick move from valid move array, not any square.
+# TODO: critical: fix turn method when empty square is called
 
-# TODO: CRITICAL: create new method to parse user input
-# TODO: critical: fix display so it works every time
 
 
 # require "byebug"
@@ -59,18 +60,27 @@ class Game
       # display valid moves and ask player for choice
       @view.display_valid_moves(player, piece.name, moves)
       # player picks a move
-      move_choice =input_to_coord(@view.pick_move(player, @view.choice))
+      move_choice = input_to_coord(@view.pick_move(player, @view.choice))
+   
+
+      # if invalid_move_choice(move_choice)
+      #   @view.pick_again(player)
+
+
+      # else
+      # end
+
       # check for bad user input/a pick that isn't in the moves array.
       # valid_move_choice?(moves, move_choice)
       # if it was a capture, remove captured piece and display capture message, else move onto next turn.
-      # if piece_captured?(piece)
-      #   @board.capture_piece(captured_piece)
-      #   @view.display_capture_move(player, player2, piece, captured_piece, choice, move)
-      # else
-
-        move_piece(piece, move_choice)
+      if @board.piece_captured?(piece, move_choice)
+        @board.capture_piece(move_choice)
+        # @view.display_capture_move(player, player, piece, captured_piece, choice, move_move)
+        @board.move(piece, move_choice)
+      else
+        @board.move(piece, move_choice)
         # end turn
-      # end
+      end
     else
       @view.pick_again(player)
       location = input_to_coord(@view.choice)
@@ -81,45 +91,21 @@ class Game
     # @view.piece_chosen_message(player, piece, moves)
   end
 
-
-  #TODO: refactor: use a big ol hash full of all possible chess board values!
-
-  # checks for bad user input before user input is converted to xy coord
-  # def bad_input?(input)
-  #   # false if more than two chars long
-  #   # false if first char is outside of a..h
-  #   # false if 2nd char is NaN
-  #   (input == nil || input.length > 2 || input[1].to_i < 0 || input[1].to_i > 8 || !(@col_hash.has_key?(input[0])))
-  # end
-
-  # def input_to_int(location)
-  #   coordinate = []
-  #   # reverses because board stores as row/col, but player calls col/row
-  #   parse_array = location.split("")
-  #   row = parse_array.first
-  #   col = parse_array.last
-  #   # transform letter to int
-  #   coordinate << (col.to_i- 1)
-  #   coordinate << @col_hash[row]
-  #   return coordinate
-  #oard.
+  def invalid_move_choice(move_choice, moves)
+    moves.include?(input_to_coord(move_choice))
+  end
 
   def valid_pick?(user_input)
     @board.board_values.has_key?(user_input)
   end
 
   def input_to_coord(user_input)
-    # p "this is what input to coord sees"
-    # p user_input
     @board.board_values[user_input]
   end
 
-  # checks if user input is a letter and number
-  # and is inside 8x8 grid
-  # returns boolean
-  # def valid_pick?(location)
-  #   !bad_input?(location)
-  # end
+  def coord_to_string(output)
+
+  end
 
   # def valid_move_choice?(moves, input)
   #   moves.include?(input)
@@ -211,7 +197,7 @@ class View
   end
 
   def piece_chosen_message(player, piece, moves)
-    "moves for #{player}'s #{piece}" + moves.join(" ")
+    "moves for #{player}'s #{piece}" +": " + moves.join(" ")
   end
   # move gets sent to board
   def player_move_message(player, piece, move)

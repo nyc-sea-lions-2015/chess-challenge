@@ -1,10 +1,16 @@
 # TODO: add "piece_captured?" and/or "capture_piece" method(s)
 #deal with white pawn movement
+
+# TODO: deal with formatting valid moves strings
+# TODO: deal with captures
+
+
 require "byebug"
 
 class Board
   attr_accessor :board, :board_values
   def initialize
+    @checkmate = false
     @board = [[Rook.new([0,0]), Knight.new([0, 1]), Bishop.new([0, 2]), Queen.new([0, 3]), King.new([0, 4]), Bishop.new([0, 5]), Knight.new([0, 6]), Rook.new([0,7])], [Pawn.new([1,0]), Pawn.new([1,1]), Pawn.new([1,2]), Pawn.new([1,3]), Pawn.new([1,4]), Pawn.new([1,5]), Pawn.new([1,6]), Pawn.new([1,7])], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [Pawn.new([6,0], "black"), Pawn.new([6,1], "black"), Pawn.new([6,2], "black"), Pawn.new([6,3], "black"), Pawn.new([6,4], "black"), Pawn.new([6,5], "black"), Pawn.new([6,6], "black"), Pawn.new([6, 7], "black")], [Rook.new([7, 0], "black"), Knight.new([7, 1], "black"), Bishop.new([7, 2], "black"), King.new([7, 3], "black"), Queen.new([7, 4], "black"), Bishop.new([7, 5], "black"), Knight.new([7, 6], "black"), Rook.new([7, 7], "black")]]
     @col_letters = ["a","b","c","d","e","f","g", "h"]
     @boardlength = 8
@@ -52,6 +58,15 @@ class Board
   def friendly_fire?(piece, check_row, check_col)
     return false if free_space?(piece, check_row, check_col)
     square(check_row, check_col).color == piece.color
+  end
+
+  def piece_captured?(piece, location)
+    (square(location[0], location[1]) != nil)
+  end
+
+  def capture_piece(location)
+    @captured << square(location[0], location[1])
+    @board[location[0]][location[1]] = nil
   end
 
   def out_of_bounds?(location)
@@ -108,7 +123,53 @@ class Board
   def find_piece(location)
     piece = square(location[0], location[1])
   end
+
 end
+
+  def check?(player) #does player color put the other teams king in check?
+    result = false
+    team = all_pieces_same_color(player) # all of one player's pieces on board
+    all_possible_team_moves = [] # all the potential moves by all the player's pieces
+    team.each do |piece|
+      valid_move(piece).each do |move|
+        x = move[0]
+        y = move[1]
+        next if @board[x][y] == nil
+        if @board[x][y].name == "king" #if one of your valid moves equals the king
+          king_location = [x,y] # location, the king is in check
+          result = true
+        end
+        all_possible_team_moves << move
+      end
+    end
+    checkmate?(all_possible_team_moves, king_location) if result == true
+    result
+  end
+
+  def checkmate?(all_possible_team_moves, king_location)
+    king_x = king_location[0]
+    king_y = king_location[1]
+    team_moves.each do |move| #if the king is in check, and your valid moves also
+      valid_move(@board[king_x][king_y]) do |king_move| # cover its valid moves, it is checkmate
+       move == king_move ? (self.checkmate = true) : (self.checkmate = false)
+      end
+    end
+    @checkmate
+  end
+
+  def all_pieces_same_color(player)
+    team = []
+    @board.each_with_index do |row, r_i|
+      row.each_with_index.select do |col,c_i|
+        next if @board[r_i][c_i] == nil
+        team << @board[r_i][c_i] if @board[r_i][c_i].color == player
+      end
+    end
+    team
+  end
+
+end
+
 
 class Piece
   attr_accessor :color, :moves, :location, :name
@@ -130,7 +191,6 @@ class Piece
     self.location = new_pos
   end
 end
-
 
 class Pawn < Piece
   attr_reader :color
@@ -175,7 +235,6 @@ class Rook < Piece
     @moves = [[0,1], [1,0], [-1,0], [0, -1]]
     @name = "rook"
   end
-
 
 end
 
@@ -240,5 +299,14 @@ b = Board.new
 # # p b.board[3][4]
 # # p b.valid_move(b.board[3][4])
 # p b.valid_move(b.board[1][1])
+
+# b.move([1,3], [3,3])
+# b.move([1,4], [3,4])
+# b.move([1,5], [3,5])
+# b.move([6,1], [5,1])
+# # p b.board[3][4]
+# # p b.valid_move(b.board[3][4])
+# p b.valid_move(b.board[5][1])
+
 # #puts b.display
 # p b.board[1][1]
