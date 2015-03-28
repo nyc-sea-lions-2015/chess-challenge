@@ -1,9 +1,4 @@
-Make controller
-Set up logic to actually move pieces
-Set up logic to actually take pieces
 Convert coordinates to viewer coordinates
-
-
 Include win states
 Add in check
 Make sure people can't place pieces

@@ -141,8 +141,6 @@ class Board
     piece.position = position
   end
 
-
-
   def check_mate?
     return true if @wking.position == nil || @bking.position == nil
     false
@@ -218,6 +216,7 @@ class Board
     if temp_row.between?(0,7) && temp_col.between?(0, 7) && @board[temp_row][temp_col] == nil
       valid_moves << [temp_row, temp_col]
       if piece.first_move == true
+        piece.first_move = false
         temp_row += piece.moves[0][0]
         temp_col += piece.moves[0][1]
         if temp_row.between?(0,7) && temp_col.between?(0, 7) && @board[temp_row][temp_col] == nil
@@ -254,7 +253,7 @@ class Board
         piece_picture += "\u2654\s" if piece.is_a?(King) && piece.color == "white"
         piece_picture += "\u265F\s" if piece.is_a?(Pawn) && piece.color == "black"
         piece_picture += "\u2659\s" if piece.is_a?(Pawn) && piece.color == "white"
-        piece_picture += ". " if piece == nil
+        piece_picture += "\u2022\s" if piece == nil
       end
       counter -= 1
       piece_picture += "\n"
