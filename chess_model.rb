@@ -1,4 +1,4 @@
-# require "byebug"
+require "byebug"
 NORTH = [1,0]
 NORTHEAST = [1, 1]
 EAST = [0, 1]
@@ -84,7 +84,7 @@ class King < Piece
 end
 
 class Board
-  attr_accessor :board, :white_pieces_array, :black_pieces_array
+  attr_accessor :board, :white_pieces_array, :black_pieces_array, :valid_moves
 
   def initialize
     @board = Array.new(8) {Array.new(8)}
@@ -155,7 +155,7 @@ class Board
   end
 
   def coordinate_to_object(coordinate)
-  	check_move_helper(@board[coordinate[0]][coordinate[1]])
+    @board[coordinate[0]][coordinate[1]]
   end
 
   def check_move_helper(piece)
@@ -232,7 +232,8 @@ class Board
         valid_moves << [temp_row, temp_col]
       end
     end
-    return valid_moves
+    # byebug
+    valid_moves
   end
 
   def to_s
@@ -267,5 +268,7 @@ class Board
   end
 
 end
-
+# board = Board.new
+# board.set_up_board
+# board.pawn_move(board.board[1][0])
 
