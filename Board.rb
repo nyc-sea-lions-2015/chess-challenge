@@ -19,11 +19,9 @@ class Board
                       }
   end
 
-
   def display
     format
   end
-
 
   # TODO: format is only FIRST time around. Call display_icon on an existing icon breaks it.
   #
@@ -226,7 +224,6 @@ class Board
   def find_piece(location_string)
     index = string_to_index(location_string)
     piece = @board[index[0]][index[1]]
-    >>>>>>> chupa_master
   end
 
   def string_to_index(location_string)
