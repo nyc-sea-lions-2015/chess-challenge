@@ -58,22 +58,32 @@ class Board
   def check?(player)          #does player color put the other teams king in check?
     result = false
     team = all_pieces_same_color(player)    # all of one player's pieces on board
-    team_moves = []                  # all the potential moves by all the player's pieces
+    all_possible_team_moves = []                  # all the potential moves by all the player's pieces
     team.each do |piece|
       valid_move(piece).each do |move|
         x = move[0]
         y = move[1]
         next if @board[x][y] == nil
-        result = true if @board[x][y].name == "king"
-        king_location = [x,y]
-        team_moves << move
+        if @board[x][y].name == "king"        #if one of your valid moves equals the king
+          king_location = [x,y]        # location, the king is in check
+          result = true
+        end
+        all_possible_team_moves << move
     end
   end
-  if result == true ? checkmate?(team_moves)
+      checkmate?(all_possible_team_moves, king_location) if result == true
+      result
   end
 
-  def checkmate?(team_moves, king_location)
-    team_moves.each
+  def checkmate?(all_possible_team_moves, king_location)
+    king_x = king_location[0]
+    king_y = king_location[1]
+    team_moves.each do |move|       #if the king is in check, and your valid moves also
+      valid_move(@board[king_x][king_y]) do |king_move|      # cover its valid moves, it is checkmate
+        return true if move == king_move
+      end
+    end
+    return false
 
   end
 
