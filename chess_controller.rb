@@ -31,9 +31,6 @@ while !game.check_mate? do
   players.each do |player|
     reset_screen!
     puts game.to_s
-    # model_coord = ""
-    # view_coord = ""
-    # move_coord = ""
     model_coord, view_coord, move_coord, piece, moves = ""
     loop do
       puts "#{player}'s turn"

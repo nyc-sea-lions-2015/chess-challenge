@@ -163,7 +163,6 @@ describe "Board" do
       expect(chess_board.check_mate?).to eq false
     end
   end
-
 end
 
 
