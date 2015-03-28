@@ -111,6 +111,24 @@ class Board
     @pieces_array.each {|piece| place(piece, piece.position)}
   end
 
+  def place(piece, position)
+  	@board[piece.position[0]][piece.position[1]] = nil if !piece.first_move
+  	piece.first_move = false
+    piece.pawn_move_count += 1 if piece.is_a?(Pawn)
+  	capture_piece(position) if capture_piece?(position)
+    @board[position[0]][position[1]] = piece
+    piece.position = position
+  end
+  def capture_piece?(position)
+    @board[position[0]][position[1]] != nil ? true : false
+  end
+
+  def capture_piece(position)
+    @board[position[0]][position[1]].position = nil
+    @board[position[0]][position[1]] = nil
+    check_mate?
+  end
+
   def check?
     @board.each do |row|
       row.each do |piece|
@@ -124,48 +142,28 @@ class Board
     return false
   end
 
-  def place(piece, position)
-  	@board[piece.position[0]][piece.position[1]] = nil if !piece.first_move
-  	piece.first_move = false
-    piece.pawn_move_count += 1 if piece.is_a?(Pawn)
-  	capture_piece(position)
-    @board[position[0]][position[1]] = piece
-    piece.position = position
-  end
-
   def check_mate?
-    return true if @wking.position == nil || @bking.position == nil
-    false
-  end
-
-  def capture_piece(position)
-  	@board[position[0]][position[1]].position = nil if @board[position[0]][position[1]] != nil
-  	@board[position[0]][position[1]] = nil
-    check_mate?
-  end
-
-  def coordinate_to_object(coordinate)
-    @board[coordinate[0]][coordinate[1]]
+    @wking.position == nil || @bking.position == nil ? true : false
   end
 
   def check_move_helper(piece)
-    return pawn_move(piece) if piece.is_a?(Pawn)
-    return kk_move(piece) if piece.is_a?(Knight) || piece.is_a?(King)
-    return rqb_move(piece) if piece.is_a?(Rook) || piece.is_a?(Queen) || piece.is_a?(Bishop)
+    return check_pawn_move(piece) if piece.is_a?(Pawn)
+    return check_kk_move(piece) if piece.is_a?(Knight) || piece.is_a?(King)
+    return check_rqb_move(piece) if piece.is_a?(Rook) || piece.is_a?(Queen) || piece.is_a?(Bishop)
   end
 
-  def rqb_move(piece)
+  def check_rqb_move(piece)
     valid_moves = []
     move = 0
     num_of_directions = piece.moves.length
     num_of_directions.times do
-      rqb_move_recursive(piece, piece.moves[move], temp_row = piece.position[0], temp_col = piece.position[1], valid_moves)
+      check_rqb_move_recursive(piece, piece.moves[move], temp_row = piece.position[0], temp_col = piece.position[1], valid_moves)
       move += 1
     end
     valid_moves
   end
 
-  def rqb_move_recursive(piece, direction, temp_row, temp_col, valid_moves)
+  def check_rqb_move_recursive(piece, direction, temp_row, temp_col, valid_moves)
     temp_row += direction[0]
     temp_col += direction[1]
     return valid_moves if !temp_row .between?(0,7) || !temp_col.between?(0, 7)
@@ -179,11 +177,11 @@ class Board
         return valid_moves
       end
     end
-    valid_moves = rqb_move_recursive(piece, direction, temp_row, temp_col, valid_moves)
+    valid_moves = check_rqb_move_recursive(piece, direction, temp_row, temp_col, valid_moves)
     return valid_moves
   end
 
-  def kk_move(piece)
+  def check_kk_move(piece)
     valid_moves = []
     move = 0
     num_of_directions = piece.moves.length
@@ -201,7 +199,7 @@ class Board
   end
 
 
-  def pawn_move(piece)
+  def check_pawn_move(piece)
     valid_moves = []
     temp_row = piece.position[0] + piece.moves[0][0]
     temp_col = piece.position[1] + piece.moves[0][1]
@@ -222,8 +220,16 @@ class Board
         valid_moves << [temp_row, temp_col]
       end
     end
-    # byebug
     valid_moves
+  end
+
+  def coordinate_to_object(coordinate)
+    @board[coordinate[0]][coordinate[1]]
+  end
+
+  def valid_spot?(coord, player_color)
+    piece = @board[coord[0]][coord[1]]
+    piece != nil && piece.color == player_color && coord[0].between?(0, 7) && coord[1].between?(0, 7) ? true : false
   end
 
   def to_s
@@ -251,13 +257,6 @@ class Board
     end
     piece_picture += "\s" + "\s" + %w[a b c d e f g h].join(' ')
   end
-
-  def valid_spot?(coord, player_color)
-    piece = @board[coord[0]][coord[1]]
-    piece != nil && piece.color == player_color && coord[0].between?(0, 7) && coord[1].between?(0, 7) ? true : false
-  end
 end
-# board = Board.new
-# board.set_up_board
-# board.pawn_move(board.board[1][0])
+
 
