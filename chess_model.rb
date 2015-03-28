@@ -23,10 +23,11 @@ attr_accessor :first_move, :position
 end
 
 class Pawn < Piece
-
+  attr_accessor :pawn_move_count
   attr_reader :moves, :attack
   def initialize(args)
     super(args)
+    @pawn_move_count = 0
     if @color == "white"
       @moves = [NORTH]
       @attack = [NORTHEAST, NORTHWEST]
@@ -133,9 +134,23 @@ class Board
     end
   end
 
+  def check?
+    @board.each do |row|
+      row.each do |piece|
+        if piece !=nil &&
+        (check_move_helper(piece).include?(@bking.position) ||
+        check_move_helper(piece).include?(@wking.position))
+          return true
+        end
+      end
+    end
+    return false
+  end
+
   def place(piece, position)
   	@board[piece.position[0]][piece.position[1]] = nil if !piece.first_move
-  	piece.first_move = false unless piece.is_a?(Pawn)
+  	piece.first_move = false
+    piece.pawn_move_count += 1 if piece.is_a?(Pawn)
   	capture_piece(position)
     @board[position[0]][position[1]] = piece
     piece.position = position
@@ -215,8 +230,7 @@ class Board
     temp_col = piece.position[1] + piece.moves[0][1]
     if temp_row.between?(0,7) && temp_col.between?(0, 7) && @board[temp_row][temp_col] == nil
       valid_moves << [temp_row, temp_col]
-      if piece.first_move == true
-        piece.first_move = false
+      if piece.pawn_move_count == 1
         temp_row += piece.moves[0][0]
         temp_col += piece.moves[0][1]
         if temp_row.between?(0,7) && temp_col.between?(0, 7) && @board[temp_row][temp_col] == nil
