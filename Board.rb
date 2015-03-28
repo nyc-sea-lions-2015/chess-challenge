@@ -184,7 +184,6 @@ class King < Piece
   end
 end
 
-
 class Queen < Piece
   attr_reader :color
   attr_accessor :moves, :multiple_moves
