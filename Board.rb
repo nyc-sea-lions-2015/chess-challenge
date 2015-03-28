@@ -194,22 +194,6 @@ class Board
     !(x < 0 || y < 0 || x > 7|| y > 7)
   end
 
-  #   def find_piece(location_string)
-  #       index = string_to_index(location_string)
-  #       piece = @board[index[0]][index[1]]
-  #       piece.location = [index[0], index[1]]
-  #       valid_moves(piece)
-  #   end
-
-  #   def string_to_index(location_string)
-  #     # a5
-  #     col_string, row_index = location_string.split("")
-  #     row_index = BOARDLENGTH - row_index.to_i
-  #     col_index = col_string.downcase.ord - 97
-  #     [row_index, col_index]
-  #   end
-  # end
-
   def find_piece(location)
     piece = @board[location[0]][location[1]]
   end
