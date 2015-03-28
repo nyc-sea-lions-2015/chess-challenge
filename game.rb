@@ -66,18 +66,21 @@ class Game
 
     # check for piece capture
     if @board.piece_captured?(piece, input_to_coord(player_choice))
+      # refactor to capture_piece method
+
       @board.capture_piece(input_to_coord(player_choice))
-      @view.display_capture_message(player, other_player(player), piece, captured_piece, choice, move_move)
+      "puts capture message"
+      @view.display_capture_message(player, other_player(player), piece.name, @view.choice, @board.captured.last.name, player_choice)
       @board.move(piece, input_to_coord(player_choice))
+      sleep(1.2)
     else
       @board.move(piece, input_to_coord(player_choice))
     end
-    # end turn
-    puts "end of turn"
   end
 
   def other_player(current_player)
-    @players.select{|player| player != current_player}.to_s
+    other_player = @players.select{|player| player != current_player}
+    other_player[0]
   end
 
   def valid_move_choice?(player_choice, moves)
@@ -87,9 +90,6 @@ class Game
   # Is the user picking a square on the board occupied by their piece?
   def valid_pick?(user_input, player)
     coord = input_to_coord(user_input)
-    puts @board.board_values.has_key?(user_input)
-    puts @board.board[coord[0]][coord[1]].color == player
-    puts @board.board[coord[0]][coord[1]]
     return false if @board.board[coord[0]][coord[1]] == nil
     (@board.board_values.has_key?(user_input) && @board.board[coord[0]][coord[1]].color == player)
   end
@@ -169,8 +169,8 @@ class View
     message(game_over_message(player))
   end
 
-  def display_capture_message(player, player2, piece, captured_piece, choice, move)
-    message(capture_message(player, player2, piece, captured_piece, choice, move))
+  def display_capture_message(player, player2, piece, starting_location, captured_piece, player_choice)
+    message(capture_message(player, player2, piece, starting_location, captured_piece, player_choice))
   end
 
   # Messages to console
@@ -195,8 +195,8 @@ class View
     "#{player}, move #{choice} where?"
   end
 
-  def capture_message(player, player2, piece, captured_piece, choice, move)
-    "#{player}'s #{piece} {choice} captures #{player2}'s #{captured_piece} #{move}"
+  def capture_message(player, player2, piece, starting_location, captured_piece, move)
+    "#{player}'s #{piece} #{starting_location} captures #{player2}'s #{captured_piece} #{move}"
   end
 
   def choose_again_message(player)
