@@ -66,7 +66,8 @@ class Board
       if free_space?(piece, x, y)
       valid_moves << [x, y] #fix
       vector_array = check_direction(piece, x, y, move[0], move[1])
-      valid_moves << vector_array unless piece.multiple_moves == false || vector_array == []
+      vector_array.each { |coord| valid_moves << coord } unless piece.multiple_moves == false || vector_array == []
+      # valid_moves << vector_array
       elsif (@board[x][y]).color != piece.color
         valid_move << move
       else
