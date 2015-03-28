@@ -141,43 +141,45 @@ class Board
 
   def to_s
     counter = 8
+    piece_picture = ""
     @board.reverse.each do |row|
-      print "#{counter}\s"
-      row.each do |piece|
+      # "#{counter}\s"
+      row.each_with_index do |piece, piece_index|
+        if piece_index == 0
+          piece_picture += "#{counter} "
+        end
         if piece.is_a?(Rook) && piece.color == "black"
-          print "\u265C\s"
+          piece_picture += "\u265C\s"
         elsif piece.is_a?(Rook) && piece.color == "white"
-          print "\u2656\s"
+          piece_picture += "\u2656\s"
         elsif piece.is_a?(Knight) && piece.color == "black"
-          print "\u265E\s"
+          piece_picture += "\u265E\s"
         elsif piece.is_a?(Knight) && piece.color == "white"
-          print "\u2658\s"
+          piece_picture += "\u2658\s"
         elsif piece.is_a?(Bishop) && piece.color == "black"
-          print "\u265D\s"
+          piece_picture += "\u265D\s"
         elsif piece.is_a?(Bishop) && piece.color == "white"
-          print "\u2657\s"
+          piece_picture += "\u2657\s"
         elsif piece.is_a?(Queen) && piece.color == "black"
-          print "\u265B\s"
+          piece_picture += "\u265B\s"
         elsif piece.is_a?(Queen) && piece.color == "white"
-          print "\u2655\s"
+          piece_picture += "\u2655\s"
         elsif piece.is_a?(King) && piece.color == "black"
-          print "\u265A\s"
+          piece_picture += "\u265A\s"
         elsif piece.is_a?(King) && piece.color == "white"
-          print "\u2654\s"
+          piece_picture += "\u2654\s"
         elsif piece.is_a?(Pawn) && piece.color == "black"
-          print "\u265F\s"
+          piece_picture += "\u265F\s"
         elsif piece.is_a?(Pawn) && piece.color == "white"
-          print "\u2659\s"
+          piece_picture += "\u2659\s"
         elsif piece == nil
-          print ". "
-        else
-          print piece
+          piece_picture += ". "
         end
       end
       counter -= 1
-      puts "\n"
+      piece_picture += "\n"
     end
-    puts "\s" + "\s" + %w[a b c d e f g h].join(' ')
+    piece_picture += "\s" + "\s" + %w[a b c d e f g h].join(' ')
   end
 
   def capture_piece(position)
