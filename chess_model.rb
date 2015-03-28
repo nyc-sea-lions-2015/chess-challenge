@@ -115,13 +115,16 @@ class Board
   	@board[piece.position[0]][piece.position[1]] = nil if !piece.first_move
   	piece.first_move = false
     piece.pawn_move_count += 1 if piece.is_a?(Pawn)
-  	capture_piece(position)
+  	capture_piece(position) if capture_piece?(position)
     @board[position[0]][position[1]] = piece
     piece.position = position
   end
+  def capture_piece?(position)
+    @board[position[0]][position[1]] != nil ? true : false
+  end
 
   def capture_piece(position)
-    @board[position[0]][position[1]].position = nil if @board[position[0]][position[1]] != nil
+    @board[position[0]][position[1]].position = nil
     @board[position[0]][position[1]] = nil
     check_mate?
   end

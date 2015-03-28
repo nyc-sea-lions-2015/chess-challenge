@@ -25,7 +25,7 @@ while !game.check_mate? do
   players.each do |player|
     reset_screen!
     puts game.to_s
-    model_coord, view_coord, move_coord, piece, moves = ""
+    model_coord, view_coord, move_coord, piece, moves, model_move_coord = ""
     puts "Check" if game.check?
     loop do
       puts "#{player}'s turn"
@@ -43,10 +43,17 @@ while !game.check_mate? do
       puts "Moves for #{player} #{piece.class.to_s.downcase} are #{m2v_coord_converter(moves)}"
       puts "Which move would you like?"
       move_coord = gets.chomp.downcase
-      break if moves.include?(v2m_coord_converter(move_coord))
+      model_move_coord = v2m_coord_converter(move_coord)
+      break if moves.include?(model_move_coord)
       puts "Invalid selection"
     end
-    game.place(piece, v2m_coord_converter(move_coord))
+    if game.capture_piece?(model_move_coord)
+      string = "Okay, #{player} #{piece.class.to_s.downcase} captures #{game.board[model_move_coord[0]][model_move_coord[1]].class.to_s.downcase}"
+    else
+    string = "Okay, #{player} #{piece.class.to_s.downcase} moves to #{move_coord}"
+    end
+    game.place(piece, model_move_coord )
+    puts string
   end
 end
 
