@@ -2,10 +2,10 @@
 # TODO: refactor: turn message passing variable assignment/method calling/argument names.2
 
 
-
-# TODO: CRITICAL: create new method to parse user input
+# TODO: critical: fix turn method when empty square is called
 # TODO: critical: fix display so it works every time
-
+# TODO: fix valid moves formatting
+# TODO: Only allow user to pick move from valid move array, not any square.
 
 # require "byebug"
 require_relative "Board.rb"
@@ -59,18 +59,18 @@ class Game
       # display valid moves and ask player for choice
       @view.display_valid_moves(player, piece.name, moves)
       # player picks a move
-      move_choice =input_to_coord(@view.pick_move(player, @view.choice))
+      move_choice = input_to_coord(@view.pick_move(player, @view.choice))
       # check for bad user input/a pick that isn't in the moves array.
       # valid_move_choice?(moves, move_choice)
       # if it was a capture, remove captured piece and display capture message, else move onto next turn.
-      # if piece_captured?(piece)
-      #   @board.capture_piece(captured_piece)
-      #   @view.display_capture_move(player, player2, piece, captured_piece, choice, move)
-      # else
-
-        move_piece(piece, move_choice)
+      if @board.piece_captured?(piece, move_choice)
+        @board.capture_piece(move_choice)
+        # @view.display_capture_move(player, player, piece, captured_piece, choice, move_move)
+        @board.move(piece, move_choice)
+      else
+        @board.move(piece, move_choice)
         # end turn
-      # end
+      end
     else
       @view.pick_again(player)
       location = input_to_coord(@view.choice)
@@ -109,8 +109,6 @@ class Game
   end
 
   def input_to_coord(user_input)
-    # p "this is what input to coord sees"
-    # p user_input
     @board.board_values[user_input]
   end
 
@@ -211,7 +209,7 @@ class View
   end
 
   def piece_chosen_message(player, piece, moves)
-    "moves for #{player}'s #{piece}" + moves.join(" ")
+    "moves for #{player}'s #{piece}" +": " + moves.join(" ")
   end
   # move gets sent to board
   def player_move_message(player, piece, move)
