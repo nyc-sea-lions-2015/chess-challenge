@@ -1,13 +1,4 @@
- #later:
-#castling
-#stalemate
-#check/check mate
-#promotion
-#undo_move
-#speed chess
-#piece class?
-require "byebug"
-
+# require "byebug"
 NORTH = [1,0]
 NORTHEAST = [1, 1]
 EAST = [0, 1]
@@ -92,7 +83,7 @@ class King < Piece
 
 end
 
-class Board	
+class Board
   attr_accessor :board, :white_pieces_array, :black_pieces_array
 
   def initialize

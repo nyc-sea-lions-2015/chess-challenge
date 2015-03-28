@@ -1,5 +1,16 @@
-Refactor piece classes
 Refactor piece instantiation
-Make controller
-Make move methods
-Make tests (1 per method?)
+Make controller back and forth
+Make to_s method return instead of print
+Include win states
+Add in check
+
+
+
+check/check mate/speed chess
+Pawns can capture en passant. Don't worry about that.
+Pawns can also be promoted to any other piece
+Kings can castle. Don't worry about it.
+Stalemate happens when one player is not in check (her king is not being immediately threatened), but she has no legal moves. Don't worry about it.
+Threefold repetition of a board position results in a draw. Don't worry about it.
+If no pawn has moved and no capture has occurred in 50 moves, either player may claim a draw. Don't worry about it.
+If one player has insufficient material to win despite being ahead, the other player may claim a draw. Don't worry about it.
