@@ -17,8 +17,6 @@ SOUTHWEST = [-1, -1]
 WEST = [0, -1]
 NORTHWEST = [1, -1]
 
-
-
 class Pawn
 
   attr_reader :color, :moves, :attack
@@ -105,8 +103,7 @@ class King
 
 end
 
-class Board
-
+class Board	
   attr_accessor :board, :white_pieces_array, :black_pieces_array
 
   def initialize
@@ -156,7 +153,7 @@ class Board
 
   def place(piece, position)
   	@board[piece.position[0]][piece.position[1]] = nil if !piece.first_move
-  	piece.first_move = false
+  	piece.first_move = false unless piece.is_a?(Pawn)
   	capture_piece(position)
     @board[position[0]][position[1]] = piece
     piece.position = position
@@ -209,13 +206,10 @@ class Board
   end
 
   def coordinate_to_object(coordinate)
-
+  	check_move_helper(@board[coordinate[0]][coordinate[1]])
   end
 
-
-
   def check_move_helper(piece)
-
     pawn_move(piece) if piece.is_a?(Pawn)
     kk_move(piece) if piece.is_a?(Knight) || piece.is_a?(King)
     rqb_move(piece) if piece.is_a?(Rook) || piece.is_a?(Queen) || piece.is_a?(Bishop)
@@ -289,9 +283,8 @@ class Board
         valid_moves << [temp_row, temp_col]
       end
     end
-    valid_moves
+    return valid_moves
   end
-
 end
 
 

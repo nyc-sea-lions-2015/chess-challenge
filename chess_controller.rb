@@ -1,6 +1,4 @@
-
 require_relative 'chess_model.rb'
-
 
 game = Board.new
 game.set_up_board
@@ -16,12 +14,13 @@ def get_value(chosen_piece) #user input string
   "f" => 5,
   "g" => 6,
   "h" => 7}
-  coordinate = [conversion[chosen_piece[0]],chosen_piece[1].to_i - 1]
+  coordinate = [chosen_piece[1].to_i - 1, conversion[chosen_piece[0]]]
 end
   puts "white's turn"
   puts "white, your move?"
   chosen_piece = gets.chomp.downcase #d2
-p get_value(chosen_piece)
+  coords = get_value(chosen_piece)
+  p game.coordinate_to_object(coords)
 
 
   # puts "moves for" #white pawn d2: d3, d4
