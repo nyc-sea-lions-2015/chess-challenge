@@ -195,13 +195,12 @@ class Board
   end
 
   def coordinate_to_object(coordinate)
-
+    @board[coordinate[0]][coordinate[1]]
   end
 
 
 
   def check_move_helper(piece)
-
     pawn_move(piece) if piece.is_a?(Pawn)
     kk_move(piece) if piece.is_a?(Knight) || piece.is_a?(King)
     rqb_move(piece) if piece.is_a?(Rook) || piece.is_a?(Queen) || piece.is_a?(Bishop)
