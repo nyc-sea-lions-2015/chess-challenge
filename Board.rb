@@ -77,6 +77,15 @@ class Board
     (x < 0 || y < 0 || x > 7|| y > 7)
   end
 
+  def piece_captured?(piece, location)
+    (@board[location[0]][location[1]] != nil)
+  end
+
+  def capture_piece(location)
+    @captured << square(location[0], location[1])
+    @board[location[0]][location[1]] = nil
+  end
+
   def valid_move(piece)
     valid_moves = []
     piece_moves = piece.moves
@@ -166,8 +175,6 @@ class Piece
   attr_accessor :color, :moves, :location, :name
   attr_reader :display, :multiple_moves
   def initialize(location, color = "white")
-    @location = location
-    @color = color
     @icon = icon
     @all_adjacent = [[0, 1],[0, -1],[1,0],[-1,0],[1,1],[-1,1],[1,-1],[-1,-1]]
     @location = location
@@ -185,7 +192,7 @@ end
 
 class Pawn < Piece
   attr_reader :color
-  attr_accessor :moves, :multiple_moves #:first_move?, :capturing?
+  attr_accessor :multiple_moves, :location #:first_move?, :capturing?
   #logic for capturing?
   def initialize(location, color = "white")
     @location = location
@@ -193,23 +200,23 @@ class Pawn < Piece
     @color == "white" ? @icon = "♟" : @icon = '♙'
     @multiple_moves = false
     # first_move? == true if self.location[0] == 1 || self.location[0] == 6 #initial row value for pawns
-    x = @location
-    if x[0] == 1 && @color == "white"
-      @moves = [[1,0], [2,0]]
-    elsif @color == "white"
-      @moves = [[1,0]]
-    elsif x[0] == 6 && @color == "black"
-      @moves = [[-1,0], [-2,0]]
-    else
-      @moves = [[-1, 0]]
-    end
     # moves << [0,2] if first_move?
     # moves << [1,1] if capturing?
     @name = "pawn"
   end
 
   def moves
-    @moves
+    moves = []
+    if @location[0] == 1 && @color == "white"
+      moves = [[1,0], [2,0]]
+    elsif @color == "white"
+      moves = [[1,0]]
+    elsif @location[0] == 6 && @color == "black"
+      moves = [[-1,0], [-2,0]]
+    else
+      moves = [[-1, 0]]
+    end
+    moves
   end
 
 end
@@ -285,6 +292,12 @@ b = Board.new
 # p b.board
 
 
+#  b.move(b.board[1][3], [3,3])
+
+# # p b.board[3][4]
+# # p b.valid_move(b.board[3][4])
+# p b.valid_move(b.board[1][1])
+
 # b.move([1,3], [3,3])
 # b.move([1,4], [3,4])
 # b.move([1,5], [3,5])
@@ -292,5 +305,6 @@ b = Board.new
 # # p b.board[3][4]
 # # p b.valid_move(b.board[3][4])
 # p b.valid_move(b.board[5][1])
+
 # #puts b.display
 # p b.board[1][1]
