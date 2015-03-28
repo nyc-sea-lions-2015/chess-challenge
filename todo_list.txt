@@ -1,6 +1,6 @@
 Refactor piece instantiation
 Make controller back and forth
-Make to_s method return instead of print
+Make to_s method return instead of print (debbie)
 Include win states
 Add in check
 

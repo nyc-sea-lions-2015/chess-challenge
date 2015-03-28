@@ -104,7 +104,8 @@ class Board
     @white_pieces_array << Knight.new({color: "white", position: [0,1]})
     @white_pieces_array << Knight.new({color: "white", position: [0,6]})
     @white_pieces_array << Queen.new({color: "white", position: [0,3]})
-    @white_pieces_array << King.new({color: "white", position: [0,4]})
+    @wking = King.new({color: "white", position: [0,4]})
+    @white_pieces_array << @wking
   end
 
   def initialize_black_pieces
@@ -119,7 +120,8 @@ class Board
     @black_pieces_array << Knight.new({color: "black", position: [7,1]})
     @black_pieces_array << Knight.new({color: "black", position: [7,6]})
     @black_pieces_array << Queen.new({color: "black", position: [7,3]})
-    @black_pieces_array << King.new({color: "black", position: [7,4]})
+    @bking = King.new({color: "black", position: [7,4]})
+    @black_pieces_array << @bking
   end
 
   def set_up_board
@@ -165,9 +167,15 @@ class Board
     piece_picture += "\s" + "\s" + %w[a b c d e f g h].join(' ')
   end
 
+  def check_mate?
+    return true if @wking.position == nil || @bking.position == nil
+    false
+  end
+
   def capture_piece(position)
   	@board[position[0]][position[1]].position = nil if @board[position[0]][position[1]] != nil
   	@board[position[0]][position[1]] = nil
+    check_mate?
   end
 
   def coordinate_to_object(coordinate)
