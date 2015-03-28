@@ -1,7 +1,7 @@
 # TODO: add "piece_captured?" and/or "capture_piece" method(s)
 
+require "byebug"
 
-# require 'byebug'
 class Board
   attr_accessor :board
   def initialize
@@ -19,35 +19,28 @@ class Board
                       }
   end
 
-
   def display
     format
   end
-
 
   # TODO: format is only FIRST time around. Call display_icon on an existing icon breaks it.
   #
   def format
     row_num = 8
     board_string = ""
-    formatting = @board
-    @displayed_board = formatting.reverse.map! do |row|
-      row.map do |square|
-        # case
-        # when cell == nil
-        #   cell = " "
-        # when object.type(cell) == string
-        #   cell = cell
-        # when object.type(cell) == object
-        #   cell = cell.display_icon
-        # end
-        square == nil ? square = ' ' : square.display_icon
-      end.join('  ')
+    displayed_board = @board
+    displayed_board.map! do |row|
+      row.map! do |cell|
+        # byebug
+        cell == nil ? cell = ' ' : cell.display_icon
+      end
+      # byebug
       board_string += "#{row_num}   " + row.join("   ") + "\n"
       row_num -= 1
     end
     board_string += "    " + @col_letters.join("   ")
-    @displayed_board
+    board_string
+    # displayed_board
   end
 
   # TODO: reconcile this with viewer/controller messages. shouldn't have to pass in old pos, just assign to piece's position before we move
@@ -58,61 +51,6 @@ class Board
     piece.set_location(new_pos)
     @board[new_pos[0]][new_pos[1]] = piece
     @board[old_pos[0]][old_pos[1]] = nil
-  end
-
-  #   def valid_moves(piece)
-  #     valid_moves = []
-  #    x = piece.location[0]
-  #    y= piece.location[1]
-  #    possibilities = all_possible_directions(x, y)
-  #      #filter for out_of_bounds
-  #       #mathematical possibilities
-  #       #check against piece.location
-  #     possibilites.each do |coordinate|
-  #       # if collision with white piece, return false
-  #         x = coordinate[0]
-  #         y = coordinate[1]
-  #         next if out_of_bounds?(x,y)
-  #         next if (@board[x][y]).color == piece.color
-  #         valid_moves << coordinate
-  #     end
-  #     valid_moves
-  # end
-
-  def valid_moves(piece)
-    x = piece.location[0]
-    y= piece.location[1]
-    valid_moves = move_one(x, y) if valid_moves == [] #otherwise you get values from the recursive move check
-    #filter for out_of_bounds
-    #mathematical valid_moves
-    #check against piece.location
-    possibilites.each do |coordinate|
-      # if collision with white piece, return false
-      x = coordinate[0]
-      y = coordinate[1]
-      next if out_of_bounds?(x,y)
-      next if (@board[x][y]).color == piece.color
-      valid_moves << coordinate
-    end
-    valid_moves
-  end
-
-  def recursive_move_check(piece, check_x=0, check_y=0, valid_before_bounds_check=[])
-    directions = piece.moves
-    row = piece.location[0]
-    col = piece.location[1]
-    check_x += row         #incrementing out from current x location
-    check_y += col         #incrementing out from current y location
-    directions.each do |direction|
-      check_x += direction[0]
-      check_y += direction[1]
-      if free_space?(check_x, check_y)
-        valid_before_bounds_check << [check_x,check_y]
-        recursive_move_check(piece, check_x, check_y, valid_before_bounds_check)
-      else
-        return valid_moves(valid_before_bounds_check) #base case for if it runs into a guy
-      end
-    end
   end
 
   def square(x,y)
@@ -146,13 +84,12 @@ class Board
     piece_moves.each do |move|
       x = current_location[0] + move[0]
       y = current_location[1] + move[1]
-      # byebug
       next if out_of_bounds?(x,y)
       if free_space?(piece, x, y)
-        # byebug
         valid_moves << [x, y] #fix
         vector_array = check_direction(piece, x, y, move[0], move[1])
-        valid_moves << vector_array unless piece.multiple_moves == false || vector_array == []
+        vector_array.each { |coord| valid_moves << coord } unless piece.multiple_moves == false || vector_array == []
+        # valid_moves << vector_array
       elsif (@board[x][y]).color != piece.color
         valid_move << move
       else
@@ -164,17 +101,13 @@ class Board
 
   def check_direction(piece, x, y, add_x, add_y, array_direction = [])
     if out_of_bounds?(x + add_x, y + add_y)
-      p "Out"
       return array_direction
     elsif friendly_fire?(piece, x + add_x, y + add_y) #&& piece.name != 'knight'
-      p "friendly"
       return array_direction
     elsif free_space?(piece, x + add_x, y + add_y)
-      p "free"
       array_direction << [x + add_x, y + add_y]
       check_direction(piece, x + add_x, y + add_y, add_x, add_y, array_direction )
     else
-      p "opponent"
       array_direction << [x + add_x, y + add_y]
     end
     array_direction
@@ -206,14 +139,14 @@ class Board
   #       valid_moves(piece)
   #   end
 
-  #   def string_to_index(location_string)
-  #     # a5
-  #     col_string, row_index = location_string.split("")
-  #     row_index = BOARDLENGTH - row_index.to_i
-  #     col_index = col_string.downcase.ord - 97
-  #     [row_index, col_index]
-  #   end
-  # end
+  def string_to_index(location_string)
+    # a5
+    col_string, row_index = location_string.split("")
+    row_index = BOARDLENGTH - row_index.to_i
+    col_index = col_string.downcase.ord - 97
+    [row_index, col_index]
+  end
+
 
   def find_piece(location)
     piece = @board[location[0]][location[1]]
@@ -226,7 +159,6 @@ class Board
   def find_piece(location_string)
     index = string_to_index(location_string)
     piece = @board[index[0]][index[1]]
-    >>>>>>> chupa_master
   end
 
   def string_to_index(location_string)
@@ -237,7 +169,6 @@ class Board
     [row_index, col_index]
   end
 end
-
 
 
 class Piece
@@ -301,9 +232,11 @@ class Rook < Piece
 end
 
 class King < Piece
-  attr_reader :moves, :multiple_moves
+  attr_reader :color
+  attr_accessor :moves, :multiple_moves
   def initialize(location, color = "white")
     @location = location
+    @color = color
     @color =="white" ? @icon = "♚" : @icon = '♔'
     @multiple_moves = false
     @moves = [[0, 1],[0, -1],[1,0],[-1,0],[1,1],[-1,1],[1,-1],[-1,-1]]
@@ -313,9 +246,11 @@ end
 
 
 class Queen < Piece
-  attr_reader :moves
+  attr_reader :color
+  attr_accessor :moves, :multiple_moves
   def initialize(location, color = "white")
     @location = location
+    @color = color
     @color == "white" ? @icon = "♛" : @icon = '♕'
     @moves = [[1, 0], [1,1], [1, -1], [0, -1], [0, 1], [-1, 0], [-1, 1], [-1, -1]]
     @name = "queen"
@@ -323,9 +258,11 @@ class Queen < Piece
 end
 
 class Bishop < Piece
-  attr_reader :moves
+  attr_reader :color
+  attr_accessor :moves, :multiple_moves
   def initialize(location, color = "white")
     @location = location
+    @color = color
     @color == "white" ? @icon = "♝" : @icon = '♗'
     @moves = [[1, 1], [1, -1], [-1, 1], [-1, -1]]
     @name = "bishop"
@@ -333,9 +270,11 @@ class Bishop < Piece
 end
 
 class Knight < Piece
-  attr_reader :moves, :multiple_moves
+  attr_reader :color
+  attr_accessor :moves, :multiple_moves
   def initialize(location, color = "white")
     @location = location
+    @color = color
     @color == "white" ? @icon = "♞" : @icon = '♘'
     @multiple_moves = false
     @moves = [[1, 2], [1, -2], [2, 1], [2, -1], [-1, 2], [-1, -2], [-2, 1], [-2, -1]]
@@ -345,6 +284,17 @@ end
 
 
 b = Board.new
+
+# p b.board
+
+
+# b.move([1,3], [3,3], b.board[1][3])
+# b.move([1,4], [3,4], b.board[1][4])
+# b.move([1,5], [3,5], b.board[1][5])
+# #b.move([7,7], [3,4], b.board[7][7])
+# # p b.board[3][4]
+# # p b.valid_move(b.board[3][4])
+# b.valid_move(b.board[0][3])
+# b.display
+
 # # p b.board
-
-

@@ -1,9 +1,10 @@
-# TODO: critical: FIX DISPLAY METHODS
 # STRETCH: have "pick a move" filter for all legal choices player can make at that time.
-
-
-#TODO: refactor: use a big ol array full of all possible chess board values to check for user input
 # TODO: refactor: turn message passing variable assignment/method calling/argument names.2
+
+# TODO: critical: FIX DISPLAY METHODS
+# TODO: CRITICAL: create new method to parse user input
+
+
 
 # require "byebug"
 require_relative "Board.rb"
@@ -32,7 +33,7 @@ class Game
     while !game_over?
       players.each do |player|
         # clear screen
-        display_board
+         display_board
         turn(player)
       end
     end
@@ -60,13 +61,12 @@ class Game
       move_choice = @view.pick_move(player, @view.choice)
       # check for bad user input/a pick that isn't in the moves array.
       valid_move_choice?(moves, move_choice)
-      # move the piece
-      move_piece(piece, new_pos)
       # if it was a capture, remove captured piece and display capture message, else move onto next turn.
-      # if piece_captured?
-      # @board.capture_piece(piece)
-      # @view.display_capture_move(player, player2, piece, captured_piece, choice, move)
+      # if piece_captured?(piece)
+      @board.capture_piece(captured_piece)
+      @view.display_capture_move(player, player2, piece, captured_piece, choice, move)
       # else
+      move_piece(piece, new_pos)
       # end turn
     else
       @view.pick_again(player)
@@ -119,10 +119,123 @@ class Game
   end
 
   def display_board
-    puts @board.format
+     @board.format
   end
 
   # checks for king taken, stalemate, or checkmate
   def game_over?
     (king_taken? || stalemate? || checkmate?)
   end
+
+  def king_taken?
+    false
+  end
+
+  def stalemate?
+    false
+  end
+
+  def checkmate?
+    false
+  end
+
+end
+
+
+
+
+class View
+  attr_reader :choice
+
+  def turn_message(player)
+    message(player_turn_message(player))
+  end
+
+  def choose_piece(player)
+    message(choose_piece_message(player))
+    @choice = user_input
+  end
+
+  # pick_move gets sent to game and @move gets sent to "move_piece"
+  def pick_move(player, choice)
+    message(pick_move_message(player, choice))
+    @move = user_input
+  end
+  # if user picks invalid square
+  def pick_again(player)
+    message(choose_again_message(player))
+    @choice = user_input
+  end
+
+  def display_valid_moves(player, piece, moves)
+    message(piece_chosen_message(player, piece, moves))
+  end
+
+  def display_player_move(player)
+    message(player_move_message(player, piece, move))
+  end
+
+  def display_capture_move(player)
+    message(capture_message)
+  end
+
+  def display_game_over(player)
+    message(game_over_message(player))
+  end
+
+  def display_capture_message(player, player2, piece, captured_piece, choice, move)
+  end
+
+  # Messages to console
+
+  def player_turn_message(player)
+    "#{player}'s turn"
+  end
+
+  def choose_piece_message(player)
+    "#{player}, which piece do you want to move? ex: a5, e8"
+  end
+
+  def piece_chosen_message(player, piece, moves)
+    "moves for #{player} #{piece}" + moves.join(" ")
+  end
+  # move gets sent to board
+  def player_move_message(player, piece, move)
+    "ok, #{player}'s #{piece} #{choice} to move to #{move}"
+  end
+
+  def pick_move_message(player, choice)
+    "#{player}, move #{choice} where?"
+  end
+
+  def capture_message(player, player2, piece, captured_piece, choice, move)
+    "#{player}'s #{piece} {choice} captures #{player2}'s #{captured_piece} #{move}"
+  end
+
+  def choose_again_message(player)
+    "#{player}, please choose a valid square"
+  end
+
+  def game_over_message(player)
+    "#{player} wins!"
+  end
+
+  # siphon methods for prompts and inputs
+  def user_input
+    gets.chomp
+  end
+
+  def message(str)
+    puts str
+  end
+end
+
+
+G = Game.new()
+
+#p G.input_to_int("c4")
+# p G.valid_pick?("c4")
+# p G.bad_input("c52829")
+# p G.valid_pick?("f5")
+
+puts G.display_board
