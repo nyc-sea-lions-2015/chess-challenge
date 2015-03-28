@@ -1,9 +1,10 @@
 # STRETCH: have "pick a move" filter for all legal choices player can make at that time.
 # TODO: refactor: turn message passing variable assignment/method calling/argument names.2
 
-# TODO: critical: FIX DISPLAY METHODS
-# TODO: CRITICAL: create new method to parse user input
 
+
+# TODO: CRITICAL: create new method to parse user input
+# TODO: critical: fix display so it works every time
 
 
 # require "byebug"
@@ -33,7 +34,7 @@ class Game
     while !game_over?
       players.each do |player|
         # clear screen
-         display_board
+        puts display_board
         turn(player)
       end
     end
@@ -49,28 +50,30 @@ class Game
     # is user input valid?
     if valid_pick?(@view.choice)
       #
-      location = input_to_int(@view.choice)
+      location = input_to_coord(@view.choice)
       # choose piece
       piece = @board.find_piece(location)
       # find valid moves
       # might be missing an input here?
-      moves = @board.valid_moves(piece)
+      moves = @board.valid_move(piece)
       # display valid moves and ask player for choice
-      # @view.display_valid_moves(player, piece, moves)
+      @view.display_valid_moves(player, piece.name, moves)
       # player picks a move
-      move_choice = @view.pick_move(player, @view.choice)
+      move_choice =input_to_coord(@view.pick_move(player, @view.choice))
       # check for bad user input/a pick that isn't in the moves array.
-      valid_move_choice?(moves, move_choice)
+      # valid_move_choice?(moves, move_choice)
       # if it was a capture, remove captured piece and display capture message, else move onto next turn.
       # if piece_captured?(piece)
-      @board.capture_piece(captured_piece)
-      @view.display_capture_move(player, player2, piece, captured_piece, choice, move)
+      #   @board.capture_piece(captured_piece)
+      #   @view.display_capture_move(player, player2, piece, captured_piece, choice, move)
       # else
-      move_piece(piece, new_pos)
-      # end turn
+
+        move_piece(piece, move_choice)
+        # end turn
+      # end
     else
       @view.pick_again(player)
-      location = input_to_int(@view.choice)
+      location = input_to_coord(@view.choice)
       piece = @board.find_piece(location)
     end
     puts "end of turn"
@@ -78,38 +81,49 @@ class Game
     # @view.piece_chosen_message(player, piece, moves)
   end
 
+
   #TODO: refactor: use a big ol hash full of all possible chess board values!
 
   # checks for bad user input before user input is converted to xy coord
-  def bad_input?(input)
-    # false if more than two chars long
-    # false if first char is outside of a..h
-    # false if 2nd char is NaN
-    (input == nil || input.length > 2 || input[1].to_i < 0 || input[1].to_i > 8 || !(@col_hash.has_key?(input[0])))
+  # def bad_input?(input)
+  #   # false if more than two chars long
+  #   # false if first char is outside of a..h
+  #   # false if 2nd char is NaN
+  #   (input == nil || input.length > 2 || input[1].to_i < 0 || input[1].to_i > 8 || !(@col_hash.has_key?(input[0])))
+  # end
+
+  # def input_to_int(location)
+  #   coordinate = []
+  #   # reverses because board stores as row/col, but player calls col/row
+  #   parse_array = location.split("")
+  #   row = parse_array.first
+  #   col = parse_array.last
+  #   # transform letter to int
+  #   coordinate << (col.to_i- 1)
+  #   coordinate << @col_hash[row]
+  #   return coordinate
+  #oard.
+
+  def valid_pick?(user_input)
+    @board.board_values.has_key?(user_input)
   end
 
-  def input_to_int(location)
-    coordinate = []
-    # reverses because board stores as row/col, but player calls col/row
-    parse_array = location.split("")
-    row = parse_array.first
-    col = parse_array.last
-    # transform letter to int
-    coordinate << (col.to_i- 1)
-    coordinate << @col_hash[row]
-    return coordinate
+  def input_to_coord(user_input)
+    # p "this is what input to coord sees"
+    # p user_input
+    @board.board_values[user_input]
   end
 
   # checks if user input is a letter and number
   # and is inside 8x8 grid
   # returns boolean
-  def valid_pick?(location)
-    !bad_input?(location)
-  end
+  # def valid_pick?(location)
+  #   !bad_input?(location)
+  # end
 
-  def valid_move_choice?(moves, input)
-    moves.include?(input)
-  end
+  # def valid_move_choice?(moves, input)
+  #   moves.include?(input)
+  # end
 
   # TODO: reconcile this with move method in board!
   # Currently not inputing old_pos anywhere.
@@ -119,7 +133,7 @@ class Game
   end
 
   def display_board
-     @board.format
+    @board.format
   end
 
   # checks for king taken, stalemate, or checkmate
@@ -197,7 +211,7 @@ class View
   end
 
   def piece_chosen_message(player, piece, moves)
-    "moves for #{player} #{piece}" + moves.join(" ")
+    "moves for #{player}'s #{piece}" + moves.join(" ")
   end
   # move gets sent to board
   def player_move_message(player, piece, move)
@@ -238,4 +252,4 @@ G = Game.new()
 # p G.bad_input("c52829")
 # p G.valid_pick?("f5")
 
-puts G.display_board
+puts G.play
