@@ -1,19 +1,14 @@
 require_relative 'chess_model.rb'
-require "byebug"
-
 
 players = ["white", "black"]
 game = Board.new
 game.set_up_board
-
-
-def reset_screen!
-  print "\e[2J"
-  print "\e[H"
-end
-
 @v2m_conversion = {"a" => 0, "b" => 1, "c" => 2, "d" => 3, "e" => 4, "f" => 5, "g" => 6, "h"=> 7}
 @m2v_conversion = @v2m_conversion.invert
+
+def reset_screen!
+  print "\e[2J\e[H"
+end
 
 def v2m_coord_converter(view_coord)
   [view_coord[1].to_i - 1, @v2m_conversion[view_coord[0]]]
@@ -24,7 +19,6 @@ def m2v_coord_converter(model_coord_array)
     [@m2v_conversion[model_coord[1]], model_coord[0] + 1].join("")
   end.join(", ")
 end
-
 
 moves = ""
 while !game.check_mate? do

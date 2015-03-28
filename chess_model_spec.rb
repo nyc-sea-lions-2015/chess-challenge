@@ -69,20 +69,20 @@ describe "Board" do
 
   describe "pawn_move for white pawn" do
     it "should return an array of moves for the pawn passed" do
-      expect(chess_board.pawn_move(pawn)).to eq [[2,0],[3,0]]
+      expect(chess_board.check_pawn_move(pawn)).to eq [[2,0],[3,0]]
     end
   end
 
   describe "pawn_move for black pawn" do
   	it "should return an array of moves for the pawn passed" do
-      expect(chess_board.pawn_move(bpawn)).to eq [[5,0],[4,0]]
+      expect(chess_board.check_pawn_move(bpawn)).to eq [[5,0],[4,0]]
     end
   end
 
     describe "kk_move(king)" do
     it "should return an array of moves for the king passed" do
       chess_board.place(king, [1,1])
-      expect(chess_board.kk_move(king)).to eq [[2,1], [2,2], [1,2],[0,2],[0,1],[0,0],[1,0],[2,0]]
+      expect(chess_board.check_kk_move(king)).to eq [[2,1], [2,2], [1,2],[0,2],[0,1],[0,0],[1,0],[2,0]]
     end
   end
 
@@ -91,7 +91,7 @@ describe "Board" do
   	  chess_board.place(king, [1,1])
   	  chess_board.place(king_move_test_queen, [2,2])
   	  chess_board.place(king_move_test_brook, [2,1])
-  	  expect(chess_board.kk_move(king)).to eq [[2,1],[1,2],[0,2],[0,1],[0,0],[1,0],[2,0]]
+  	  expect(chess_board.check_kk_move(king)).to eq [[2,1],[1,2],[0,2],[0,1],[0,0],[1,0],[2,0]]
   	end
   end
 
@@ -101,14 +101,14 @@ describe "Board" do
       chess_board.place(knight_move_test_pawn, [1,2])
       chess_board.place(knight_move_test_pawn2, [1,4])
    	  chess_board.place(knight_move_test_bknight, [5,4])
-      expect(chess_board.kk_move(knight).sort).to eq [[5,2],[5,4], [4,5], [2,5], [2,1], [4,1]].sort
+      expect(chess_board.check_kk_move(knight).sort).to eq [[5,2],[5,4], [4,5], [2,5], [2,1], [4,1]].sort
     end
   end
 
   describe "rqb_move(rook)" do
     it "should return an array of moves for the rook passed" do
       chess_board.place(rook, [1,5])
-      expect(chess_board.rqb_move(rook)).to eq [[2,5],[3,5],[4,5],[5,5],[6,5],[7,5],[1,6],[1,7],[0,5],[1,4],[1,3],[1,2],[1,1],[1,0]]
+      expect(chess_board.check_rqb_move(rook)).to eq [[2,5],[3,5],[4,5],[5,5],[6,5],[7,5],[1,6],[1,7],[0,5],[1,4],[1,3],[1,2],[1,1],[1,0]]
     end
   end
 
@@ -117,7 +117,7 @@ describe "Board" do
   		chess_board.place(rook, [1,5])
   		chess_board.place(rook_move_test_bpawn, [1,4])
   		chess_board.place(rook_move_test_knight, [2,5])
-  		expect(chess_board.rqb_move(rook)).to eq [[1,6],[1,7],[0,5],[1,4]]
+  		expect(chess_board.check_rqb_move(rook)).to eq [[1,6],[1,7],[0,5],[1,4]]
   	end
   end
 
@@ -126,7 +126,7 @@ describe "Board" do
       chess_board.place(queen, [1,2])
       chess_board.place(queen_move_test_bishop, [1,5])
       chess_board.place(queen_move_test_bking, [4,2])
-      expect(chess_board.rqb_move(queen)).to eq [[2,2],[3,2],[4,2],[2,3],[3,4],[4,5],[5,6],[6,7],[1,3],[1,4],[0,3],[0,2],[0,1],[1,1],[1,0],[2,1],[3,0]]
+      expect(chess_board.check_rqb_move(queen)).to eq [[2,2],[3,2],[4,2],[2,3],[3,4],[4,5],[5,6],[6,7],[1,3],[1,4],[0,3],[0,2],[0,1],[1,1],[1,0],[2,1],[3,0]]
     end
   end
 
@@ -137,7 +137,7 @@ describe "Board" do
       chess_board.place(bishop_move_test_queen, [4,1])
       chess_board.place(bishop_move_test_brook, [0,1])
       chess_board.place(bishop_move_test_bbishop, [4,5])
-      expect(chess_board.rqb_move(bishop)).to eq [[3,4],[4,5],[1,4],[1,2],[0,1],[3,2]]
+      expect(chess_board.check_rqb_move(bishop)).to eq [[3,4],[4,5],[1,4],[1,2],[0,1],[3,2]]
     end
   end
 
