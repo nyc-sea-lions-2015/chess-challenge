@@ -1,12 +1,13 @@
 # STRETCH: have "pick a move" filter for all legal choices player can make at that time.
+# STRETCH: allow for undo
+# Stretch: allow for forfeit/end game if user types "forfeit"/"quit"
+
+
 # TODO: refactor: turn message passing variable assignment/method calling/argument names.2
 
-
-# TODO: fix valid moves formatting
-# TODO: Only allow user to pick move from valid move array, not any square.
 # TODO: critical: fix turn method when empty square is called
 
-
+# TODO: only allow player to pick from IT"S PIECES
 
 # require "byebug"
 require_relative "Board.rb"
@@ -35,6 +36,7 @@ class Game
     while !game_over?
       players.each do |player|
         # clear screen
+        puts "\e[H\e[2J"
         puts display_board
         turn(player)
       end
@@ -42,57 +44,42 @@ class Game
     # end
   end
 
-  # TODO: refactor this disasterous mess of variable assignment and message passing
+  # TODO: refactor this mess.
   def turn(player)
-    # "whites turn"
+    # "players turn"
     @view.turn_message(player)
-    # white, move which piece?
-    @view.choose_piece(player)
-    # is user input valid?
-    if valid_pick?(@view.choice)
-      #
-      location = input_to_coord(@view.choice)
-      # choose piece
-      piece = @board.find_piece(location)
-      # find valid moves
-      # might be missing an input here?
-      moves = @board.valid_move(piece)
-      # display valid moves and ask player for choice
-      @view.display_valid_moves(player, piece.name, moves)
+    # player, move which piece?
+    begin
+      # until user gives a input that matches a piece of their color, keep asking.
+      @view.choose_piece(player)
+    end until valid_pick?(@view.choice)
+    # choose piece
+    piece = @board.find_piece(input_to_coord(@view.choice))
+    # find valid moves
+    moves = coord_to_string(@board.valid_move(piece))
+    # display valid moves and ask player for choice
+    @view.display_valid_moves(player, piece.name, moves)
+    # player picks a move
+    begin
       # player picks a move
-      move_choice = input_to_coord(@view.pick_move(player, @view.choice))
+      player_choice = @view.pick_move(player, @view.choice)
+    end until valid_player_choice?(player_choice, moves)
 
-
-      # if invalid_move_choice(move_choice)
-      #   @view.pick_again(player)
-
-
-      # else
-      # end
-
-      # check for bad user input/a pick that isn't in the moves array.
-      # valid_move_choice?(moves, move_choice)
-      # if it was a capture, remove captured piece and display capture message, else move onto next turn.
-      if @board.piece_captured?(piece, move_choice)
-        @board.capture_piece(move_choice)
-        # @view.display_capture_move(player, player, piece, captured_piece, choice, move_move)
-        @board.move(piece, move_choice)
-      else
-        @board.move(piece, move_choice)
-        # end turn
-      end
+    # check for piece capture
+    if @board.piece_captured?(piece, input_to_coord(player_choice))
+      @board.capture_piece(input_to_coord(player_choice))
+      # @view.display_capture_move(player, player, piece, captured_piece, choice, move_move)
+      @board.move(piece, input_to_coord(player_choice))
     else
-      @view.pick_again(player)
-      location = input_to_coord(@view.choice)
-      piece = @board.find_piece(location)
+      @board.move(piece, input_to_coord(player_choice))
     end
+
+    # end turn
     puts "end of turn"
-    # find_piece and return valid_moves 2d array
-    # @view.piece_chosen_message(player, piece, moves)
   end
 
-  def invalid_move_choice(move_choice, moves)
-    moves.include?(input_to_coord(move_choice))
+  def valid_player_choice?(player_choice, moves)
+    moves.include?(player_choice)
   end
 
   def valid_pick?(user_input)
@@ -103,17 +90,14 @@ class Game
     @board.board_values[user_input]
   end
 
-  def coord_to_string(output)
-
+  # turns board coord into player coords
+  def coord_to_string(moves)
+    moves.map! do |coord|
+      coord = @board.board_values.key(coord)
+    end
+    return moves
   end
 
-  # def valid_move_choice?(moves, input)
-  #   moves.include?(input)
-  # end
-
-  # TODO: reconcile this with move method in board!
-  # Currently not inputing old_pos anywhere.
-  # maybe use "choice?
   def move_piece(new_pos,piece)
     @board.move(new_pos,piece)
   end
@@ -184,6 +168,7 @@ class View
   end
 
   def display_capture_message(player, player2, piece, captured_piece, choice, move)
+    message(capture_message(player, player2, piece, captured_piece, choice, move))
   end
 
   # Messages to console
@@ -197,7 +182,7 @@ class View
   end
 
   def piece_chosen_message(player, piece, moves)
-    "moves for #{player}'s #{piece}" +": " + moves.join(" ")
+    "moves for #{player}'s #{piece}" +": " + moves.join(", ")
   end
   # move gets sent to board
   def player_move_message(player, piece, move)
@@ -217,7 +202,7 @@ class View
   end
 
   def game_over_message(player)
-    "#{player} wins!"
+    "#{player} wins"
   end
 
   # siphon methods for prompts and inputs
