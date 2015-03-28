@@ -88,16 +88,16 @@ class Board
   end
 
   def initialize_pieces(color, pawn_row, row)
-    # for x in 0..7 do
-    #   @pieces_array << Pawn.new({color: color, position: [pawn_row, x]})
-    # end
-    #@pieces_array << Rook.new({color: color, position: [row, 0]})
-    #@pieces_array << Rook.new({color: color, position: [row,7]})
-    #@pieces_array << Bishop.new({color: color, position: [row,2]})
-    #@pieces_array << Bishop.new({color: color, position: [row,5]})
+    for x in 0..7 do
+      @pieces_array << Pawn.new({color: color, position: [pawn_row, x]})
+    end
+    @pieces_array << Rook.new({color: color, position: [row, 0]})
+    @pieces_array << Rook.new({color: color, position: [row,7]})
+    @pieces_array << Bishop.new({color: color, position: [row,2]})
+    @pieces_array << Bishop.new({color: color, position: [row,5]})
     @pieces_array << Knight.new({color: color, position: [row,1]})
     @pieces_array << Knight.new({color: color, position: [row,6]})
-    #@pieces_array << Queen.new({color: color, position: [row,3]})
+    @pieces_array << Queen.new({color: color, position: [row,3]})
   end
 
   def initialize_kings
@@ -183,16 +183,13 @@ class Board
 
   def check_kk_move(piece)
     valid_moves = []
-    move = 0
-    num_of_directions = piece.moves.length
-    num_of_directions.times do
-      temp_row = piece.position[0] + piece.moves[move][0]
-      temp_col = piece.position[1] + piece.moves[move][1]
+    piece.moves.each do |move|
+      temp_row = piece.position[0] + move[0]
+      temp_col = piece.position[1] + move[1]
       if temp_row.between?(0,7) && temp_col.between?(0, 7)
         if @board[temp_row][temp_col] == nil || @board[temp_row][temp_col].color != piece.color
           valid_moves << [temp_row, temp_col]
         end
-        move += 1
       end
     end
     valid_moves
@@ -259,8 +256,8 @@ class Board
   end
 end
 
-b = Board.new
-knight = Knight.new({color: "black", position: [5,1]})
-b.place(knight, knight.position)
-puts b.to_s
-p b.check_kk_move(knight)
+# b = Board.new
+# knight = Knight.new({color: "black", position: [7,1]})
+# b.place(knight, knight.position)
+# puts b.to_s
+# p b.check_kk_move(knight)
