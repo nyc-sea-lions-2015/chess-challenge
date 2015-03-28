@@ -138,7 +138,8 @@ class Board
   def checkmate?(all_possible_team_moves, king_location)
     king_x = king_location[0]
     king_y = king_location[1]
-   p valid_move(@board[king_x][king_y]).all? do |king_move|
+   valid_move(@board[king_x][king_y]).all? do |king_move|
+    p king_move
                 all_possible_team_moves.include?(king_move)
                   end
    #if the king is in check, and your valid moves also cover its valid moves, it is checkmate
@@ -305,9 +306,12 @@ b.all_pieces_same_color("white")
     # test_board[0][1] = Queen.new([0,1], "black")
     test_board[1][0] = Rook.new([1,0], "black")
     test_board[0][1] = Bishop.new([1,1], "black")
-    p "king" valid_move(test_board[0][0])
-    p "rook" valid_move(test_board[1][0])
-    p "bishop" valid_move(test_board[0][1])
+    p "king"
+    p board2.valid_move(test_board[0][0])
+    p "rook"
+    p board2.valid_move(test_board[1][0])
+    p "bishop"
+    p board2.valid_move(test_board[0][1])
 
     p board2.board
 p board2.check?("black")
