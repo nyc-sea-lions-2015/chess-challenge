@@ -154,18 +154,15 @@ class Board
 
   def check_rqb_move(piece)
     valid_moves = []
-    move = 0
-    num_of_directions = piece.moves.length
-    num_of_directions.times do
-      check_rqb_move_recursive(piece, piece.moves[move], temp_row = piece.position[0], temp_col = piece.position[1], valid_moves)
-      move += 1
+    piece.moves.each do |move|
+      check_rqb_move_recursive(piece, move, temp_row = piece.position[0], temp_col = piece.position[1], valid_moves)
     end
     valid_moves
   end
 
-  def check_rqb_move_recursive(piece, direction, temp_row, temp_col, valid_moves)
-    temp_row += direction[0]
-    temp_col += direction[1]
+  def check_rqb_move_recursive(piece, move, temp_row, temp_col, valid_moves)
+    temp_row += move[0]
+    temp_col += move[1]
     return valid_moves if !temp_row .between?(0,7) || !temp_col.between?(0, 7)
     if @board[temp_row][temp_col] == nil
       valid_moves << [temp_row, temp_col]
@@ -177,7 +174,7 @@ class Board
         return valid_moves
       end
     end
-    valid_moves = check_rqb_move_recursive(piece, direction, temp_row, temp_col, valid_moves)
+    valid_moves = check_rqb_move_recursive(piece, move, temp_row, temp_col, valid_moves)
     return valid_moves
   end
 
@@ -210,9 +207,9 @@ class Board
         end
       end
     end
-    for x in 0..1 do
-      temp_row = piece.position[0] + piece.attack[x][0]
-      temp_col = piece.position[1] + piece.attack[x][1]
+    piece.attack.each do |move|
+      temp_row = piece.position[0] + move[0]
+      temp_col = piece.position[1] + move[1]
       if temp_row.between?(0,7) && temp_col.between?(0, 7) && @board[temp_row][temp_col] != nil && @board[temp_row][temp_col].color != piece.color
         valid_moves << [temp_row, temp_col]
       end
