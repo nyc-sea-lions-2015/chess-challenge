@@ -3,7 +3,7 @@
 require "byebug"
 
 class Board
-  attr_accessor :board
+  attr_accessor :board, :board_values
   def initialize
     # @board = [Array.new(8) { Array.new(nil) }]
     # @first_row = [Rook.new, Knight.new, Bishop.new, Queen.new, King.new, Bishop.new, Knight.new, Rook.new]
@@ -25,43 +25,59 @@ class Board
 
   # TODO: format is only FIRST time around. Call display_icon on an existing icon breaks it.
   #
+
+  # flatten, turn into icons or spaces, puts each slice
+  # def format
+  #   displayed_board = board.flatten.map do |square|
+  #     square == nil ? square = " " : square.display_icon
+  #   end
+  #   displayed_board.each_slice(8)
+  # end
+
+  # create empty string
+  # get a COPY of the board/or non destructively iterate over
+  # for every cell, if it's nil, add a " " to the string. if it's a piece, add that pieces icon to the string.
+
+  #TODO: fix this bullshit formatting
   def format
     row_num = 8
-    board_string = ""
-    displayed_board = @board
-    displayed_board.map! do |row|
-      row.map! do |cell|
+    @board_string = ""
+    board_row = []
+    @board.reverse.each do |row|
+      @board_string += "#{row_num} "
+      row.each do |cell|
         # byebug
-        cell == nil ? cell = ' ' : cell.display_icon
+        cell == nil ? cell = ' ' : cell = cell.display_icon
+        @board_string +=" " + cell + " "
       end
-      # byebug
-      board_string += "#{row_num}   " + row.join("   ") + "\n"
+      @board_string += "\n"
       row_num -= 1
     end
-    board_string += "    " + @col_letters.join("   ")
-    board_string
-    # displayed_board
+    # board_string += "#{row_num}   " + board_row + "\n"
+    @board_string += "   " +  @col_letters.join("  ")
+    # board_string += "    " + @col_letters.join("   ")
+    # board_stringa5
   end
 
   # TODO: reconcile this with viewer/controller messages. shouldn't have to pass in old pos, just assign to piece's position before we move
-  def move(new_pos, piece)
-    # this should work...
-    old_pos = piece.location
-    p old_pos
-    piece.set_location(new_pos)
+  def move(piece,new_pos)
+    p new_pos
+    p old_pos = piece.location
+    p piece
     @board[new_pos[0]][new_pos[1]] = piece
     @board[old_pos[0]][old_pos[1]] = nil
+    piece.set_location(new_pos)
   end
 
   def square(x,y)
     @board[x][y]
   end
 
-  def move(old_pos, new_pos, piece)
-    piece.set_location(new_pos)
-    @board[new_pos[0]][new_pos[1]] = piece
-    @board[old_pos[0]][old_pos[1]] = nil
-  end
+  # def move(old_pos, new_pos, piece)
+  #   piece.set_location(new_pos)
+  #   @board[new_pos[0]][new_pos[1]] = piece
+  #   @board[old_pos[0]][old_pos[1]] = nil
+  # en
 
   #Friday @ 4:05 Things to figure out: 1.       2. move increments are wrong
   def free_space?(piece, check_row, check_col)
@@ -156,18 +172,17 @@ class Board
     (x < 0 || y < 0 || x > 7|| y > 7)
   end
 
-  def find_piece(location_string)
-    index = string_to_index(location_string)
-    piece = @board[index[0]][index[1]]
+  def find_piece(location)
+    piece = square(location[0], location[1])
   end
 
-  def string_to_index(location_string)
-    # a5
-    col_string, row_index = location_string.split("")
-    row_index = @boardlength - row_index.to_i
-    col_index = col_string.downcase.ord - 97
-    [row_index, col_index]
-  end
+  # def string_to_index(location_string)
+  #   # a5
+  #   col_string, row_index = location_string.split("")
+  #   row_index = @boardlength - row_index.to_i
+  #   col_index = col_string.downcase.ord - 97
+  #   [row_index, col_index]
+  # end
 end
 
 
