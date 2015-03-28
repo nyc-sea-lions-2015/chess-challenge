@@ -1,5 +1,5 @@
 # TODO: add "piece_captured?" and/or "capture_piece" method(s)
-
+#deal with white pawn movement
 require "byebug"
 
 class Board
@@ -16,7 +16,6 @@ class Board
     format
   end
 
-  #TODO: fix this bullshit formatting
   def format
     row_num = 8
     @board_string = ""
@@ -100,10 +99,6 @@ class Board
     piece = square(location[0], location[1])
   end
 
-end
-
-
-
 
 class Piece
   attr_accessor :color, :moves, :location, :name
@@ -137,7 +132,16 @@ class Pawn < Piece
     @color == "white" ? @icon = "♟" : @icon = '♙'
     @multiple_moves = false
     # first_move? == true if self.location[0] == 1 || self.location[0] == 6 #initial row value for pawns
-    @moves = [[0, 1]]
+    x = @location
+    if x[0] == 1 && @color == "white"
+      @moves = [[1,0], [2,0]]
+    elsif @color == "white"
+      @moves = [[1,0]]
+    elsif x[0] == 6 && @color == "black"
+      @moves = [[-1,0], [-2,0]]
+    else
+      @moves = [[-1, 0]]
+    end
     # moves << [0,2] if first_move?
     # moves << [1,1] if capturing?
     @name = "pawn"
@@ -177,7 +181,6 @@ class King < Piece
     @name = "king"
   end
 end
-
 
 class Queen < Piece
   attr_reader :color
@@ -222,13 +225,12 @@ b = Board.new
 # p b.board
 
 
-# b.move([1,3], [3,3], b.board[1][3])
-# b.move([1,4], [3,4], b.board[1][4])
-# b.move([1,5], [3,5], b.board[1][5])
-# #b.move([7,7], [3,4], b.board[7][7])
-# # p b.board[3][4]
-# # p b.valid_move(b.board[3][4])
-# b.valid_move(b.board[0][3])
-# b.display
-
-# # p b.board
+ b.move([1,3], [3,3], b.board[1][3])
+b.move([1,4], [3,4], b.board[1][4])
+b.move([1,5], [3,5], b.board[1][5])
+b.move([6,1], [5,1], b.board[6][1])
+# p b.board[3][4]
+# p b.valid_move(b.board[3][4])
+p b.valid_move(b.board[5][1])
+#puts b.display
+p b.board[1][1]
