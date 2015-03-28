@@ -1,3 +1,5 @@
+# TODO: add "piece_captured?" and/or "capture_piece" method(s)
+
 
 # require "byebug"
 
@@ -17,29 +19,46 @@ class Board
     @col_letters = ["a","b","c","d","e","f","g", "h"]
     @boardlength = 8
     @display_board = ""
+    @board_values = { "a1"=> [0,0], "b1"=> [0,1], "c1"=> [0,2], "d1" => [0,3], "e1" => [0,4], "f1" => [0,5], "g1" => [0,6], "h1" => [0,7], "a2" => [1,0], "b2" => [2,1], "c2" => [3,2], "d2" => [4,3], "e2" => [5,4], "f2" => [6,5], "g2" => [7,6], "h2" => [7,7], "a3" => [2,0], "b3" => [2,1], "d3" => [2,2], "e3" => [2,3], "f3" => [2,4], "g3" => [2,5], "h3" => [3,6], "f3" => [3,7], "a4" => [4,0], "b4" => [4,1], "c4" => [4,2], "d4" => [4,3], "e4" => [4,4], "f4" => [4,5], "g4" => [4,6], "h4" => [4,7], "a5" => [5,0], "b5" => [5,1], "c5" => [5,2], "d5" => [5,3], "e5" => [5,4], "f5" => [5,5], "g5" => [5,6], "h5" => [5,7], "f5" => [5,0], "a6" => [6,0], "b6" => [6,1], "c6" => [6,2], "d6" => [6,3], "e6" => [6,4], "f6" => [6,5], "g6" => [6,6], "h6" => [6,7], "a7" => [7,0], "b7" => [7,1], "c7" => [7,2], "d7" => [7,3], "e7" => [7,4], "f7" => [7,5], "g7" => [7,6], "h7" => [7,7], "a8" => [8,0], "b8" => [8,1], "c8" => [8,2], "d8" => [8,3], "e8" => [8,4], "f8" => [8,5], "g8" => [8,6], "h8" => [8,7],
+    }
   end
+
 
   def display
-
+    format
   end
 
+
+  # TODO: format is only FIRST time around. Call display_icon on an existing icon breaks it.
+  #
   def format
     row_num = 8
     board_string = ""
-    @formatting = @board
-    @formatting.reverse.map do |row|
-      row.map! do |cell|
-        cell == nil ? cell = ' ' : cell.display_icon
+    formatting = @board
+    @displayed_board = formatting.reverse.map! do |row|
+      row.map do |square|
+        # case
+        # when cell == nil
+        #   cell = " "
+        # when object.type(cell) == string
+        #   cell = cell
+        # when object.type(cell) == object
+        #   cell = cell.display_icon
+        # end
+        square == nil ? square = ' ' : square.display_icon
       end.join('  ')
       board_string += "#{row_num}   " + row.join("   ") + "\n"
       row_num -= 1
     end
     board_string += "    " + @col_letters.join("   ")
+    @displayed_board
   end
 
-
-
-  def move(old_pos, new_pos, piece)
+  # TODO: reconcile this with viewer/controller messages. shouldn't have to pass in old pos, just assign to piece's position before we move
+  def move(new_pos, piece)
+    # this should work...
+    old_pos = piece.location
+    p old_pos
     piece.set_location(new_pos)
     @board[new_pos[0]][new_pos[1]] = piece
     @board[old_pos[0]][old_pos[1]] = nil
@@ -64,7 +83,7 @@ class Board
   #     valid_moves
   # end
 
-  def valid_moves(valid_moves = [])
+  def valid_moves(piece)
     x = piece.location[0]
     y= piece.location[1]
     valid_moves = move_one(x, y) if valid_moves == [] #otherwise you get values from the recursive move check
@@ -249,10 +268,10 @@ class Knight < Piece
 end
 
 
-# b = Board.new
+b = Board.new
 # # p b.board
 
 
-# b.move([1,0], [2,5], b.board[1][0])
+b.move([2,5], b.board[1][0])
 # b.move([7,7], [3,4], b.board[7][7])
 # puts b.display
