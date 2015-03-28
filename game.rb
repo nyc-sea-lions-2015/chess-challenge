@@ -1,8 +1,6 @@
 # STRETCH: have "pick a move" filter for all legal choices player can make at that time.
 # STRETCH: allow for undo
 # Stretch: allow for forfeit/end game if user types "forfeit"/"quit"
-
-
 # TODO: refactor: turn message passing variable assignment/method calling/argument names.2
 
 # TODO: critical: fix turn method when empty square is called
@@ -68,7 +66,7 @@ class Game
     # check for piece capture
     if @board.piece_captured?(piece, input_to_coord(player_choice))
       @board.capture_piece(input_to_coord(player_choice))
-      # @view.display_capture_move(player, player, piece, captured_piece, choice, move_move)
+      @view.display_capture_move(player, player, piece, captured_piece, choice, move_move)
       @board.move(piece, input_to_coord(player_choice))
     else
       @board.move(piece, input_to_coord(player_choice))
@@ -124,8 +122,6 @@ class Game
   end
 
 end
-
-
 
 
 class View
@@ -217,10 +213,5 @@ end
 
 
 G = Game.new()
-
-#p G.input_to_int("c4")
-# p G.valid_pick?("c4")
-# p G.bad_input("c52829")
-# p G.valid_pick?("f5")
 
 puts G.play
