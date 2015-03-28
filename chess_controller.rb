@@ -17,7 +17,7 @@ def get_value(chosen_piece)
   [chosen_piece[1].to_i - 1, conversion[chosen_piece[0]]]
 end
 moves = ""
-loop do
+while !game.check_mate? do
   players.each do |player|
     reset_screen!
     puts game.to_s
@@ -32,9 +32,6 @@ loop do
     end
     piece = game.coordinate_to_object(coord)
     moves = game.check_move_helper(piece)
-    game.valid_moves
-    # byebug
-    p moves
     puts "Moves are #{moves}"
     puts "Which move would you like?"
     chosen_space = gets.chomp.downcase

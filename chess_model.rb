@@ -159,9 +159,9 @@ class Board
   end
 
   def check_move_helper(piece)
-    pawn_move(piece) if piece.is_a?(Pawn)
-    kk_move(piece) if piece.is_a?(Knight) || piece.is_a?(King)
-    rqb_move(piece) if piece.is_a?(Rook) || piece.is_a?(Queen) || piece.is_a?(Bishop)
+    return pawn_move(piece) if piece.is_a?(Pawn)
+    return kk_move(piece) if piece.is_a?(Knight) || piece.is_a?(King)
+    return rqb_move(piece) if piece.is_a?(Rook) || piece.is_a?(Queen) || piece.is_a?(Bishop)
   end
 
   def rqb_move(piece)
