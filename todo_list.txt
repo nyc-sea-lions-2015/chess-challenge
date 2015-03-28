@@ -1,11 +1,15 @@
-Refactor piece instantiation
-Make controller back and forth
+Make controller
+Set up logic to actually move pieces
+Set up logic to actually take pieces
+Convert coordinates to viewer coordinates
+
+
 Include win states
 Add in check
 Make sure people can't place pieces
 
 
-
+Refactor piece instantiation
 check/check mate/speed chess
 Pawns can capture en passant. Don't worry about that.
 Pawns can also be promoted to any other piece
