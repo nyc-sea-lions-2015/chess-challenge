@@ -57,14 +57,18 @@ describe "Board" do
       chess_board.place(pawn, [5,0])
       expect(chess_board.board[5][0].is_a?(Pawn)).to eq true
     end
-  end
-
-  describe "place" do
     it "should update the position of the piece after placing it on the board" do
       chess_board.place(pawn, [7,7])
       expect(pawn.position).to eq [7,7]
     end
+    it "should set the pieces previous position to nil" do
+      chess_board.place(king, [1,0])
+      chess_board.place(king, [5,6])
+      expect(chess_board.board[1][0]).to eq nil
+    end
   end
+
+
 
   describe "pawn_move for white pawn" do
     it "should return an array of moves for the pawn passed" do
