@@ -83,49 +83,32 @@ class Board
   attr_accessor :board, :white_pieces_array, :black_pieces_array, :valid_moves
   def initialize
     @board = Array.new(8) {Array.new(8)}
+    @pieces_array = []
+    initialize_kings
   end
 
-  def initialize_white_pieces
-    @white_pieces_array = []
+  def initialize_pieces(color, pawn_row, row)
     for x in 0..7 do
-      @white_pieces_array << Pawn.new({color: "white", position: [1, x]})
+      @pieces_array << Pawn.new({color: color, position: [pawn_row, x]})
     end
-    @white_pieces_array << Rook.new({color: "white", position: [0, 0]})
-    @white_pieces_array << Rook.new({color: "white", position: [0,7]})
-    @white_pieces_array << Bishop.new({color: "white", position: [0,2]})
-    @white_pieces_array << Bishop.new({color: "white", position: [0,5]})
-    @white_pieces_array << Knight.new({color: "white", position: [0,1]})
-    @white_pieces_array << Knight.new({color: "white", position: [0,6]})
-    @white_pieces_array << Queen.new({color: "white", position: [0,3]})
-    @wking = King.new({color: "white", position: [0,4]})
-    @white_pieces_array << @wking
+    @pieces_array << Rook.new({color: color, position: [row, 0]})
+    @pieces_array << Rook.new({color: color, position: [row,7]})
+    @pieces_array << Bishop.new({color: color, position: [row,2]})
+    @pieces_array << Bishop.new({color: color, position: [row,5]})
+    @pieces_array << Knight.new({color: color, position: [row,1]})
+    @pieces_array << Knight.new({color: color, position: [row,6]})
+    @pieces_array << Queen.new({color: color, position: [row,3]})
   end
 
-  def initialize_black_pieces
-    @black_pieces_array = []
-    for x in 0..7 do
-      @black_pieces_array << Pawn.new({color: "black", position: [6, x]})
-    end
-    @black_pieces_array << Rook.new({color: "black", position: [7, 0]})
-    @black_pieces_array << Rook.new({color: "black", position: [7, 7]})
-    @black_pieces_array << Bishop.new({color: "black", position: [7,2]})
-    @black_pieces_array << Bishop.new({color: "black", position: [7,5]})
-    @black_pieces_array << Knight.new({color: "black", position: [7,1]})
-    @black_pieces_array << Knight.new({color: "black", position: [7,6]})
-    @black_pieces_array << Queen.new({color: "black", position: [7,3]})
-    @bking = King.new({color: "black", position: [7,4]})
-    @black_pieces_array << @bking
+  def initialize_kings
+    @pieces_array << @wking = King.new({color: "white", position: [0,4]})
+    @pieces_array << @bking = King.new({color: "black", position: [7,4]})
   end
 
   def set_up_board
-    initialize_white_pieces
-    initialize_black_pieces
-    @white_pieces_array.each do |piece|
-      place(piece, piece.position)
-    end
-    @black_pieces_array.each do |piece|
-      place(piece, piece.position)
-    end
+    initialize_pieces("white", 1, 0)
+    initialize_pieces("black", 6, 7)
+    @pieces_array.each {|piece| place(piece, piece.position)}
   end
 
   def check?
@@ -224,7 +207,7 @@ class Board
     temp_col = piece.position[1] + piece.moves[0][1]
     if temp_row.between?(0,7) && temp_col.between?(0, 7) && @board[temp_row][temp_col] == nil
       valid_moves << [temp_row, temp_col]
-      if piece.pawn_move_count == 1
+      if piece.pawn_move_count <= 1
         temp_row += piece.moves[0][0]
         temp_col += piece.moves[0][1]
         if temp_row.between?(0,7) && temp_col.between?(0, 7) && @board[temp_row][temp_col] == nil
