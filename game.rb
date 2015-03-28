@@ -1,4 +1,3 @@
-
 def initialize(board, view)
   @board = Board.new(args)
   @view = View.new
