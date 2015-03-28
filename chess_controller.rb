@@ -1,29 +1,23 @@
 require_relative 'chess_model.rb'
+require "byebug"
 
 
 players = ["white", "black"]
 game = Board.new
 game.set_up_board
 
-def clear_screen!
-  print "\e[2J"
-end
 
-def move_to_home!
+def reset_screen!
+  print "\e[2J"
   print "\e[H"
 end
 
-def reset_screen!
-  clear_screen!
-  move_to_home!
-end
-
 def get_value(chosen_piece)
-  conversion = {a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7}
+  conversion = {"a" => 0, "b" => 1, "c" => 2, "d" => 3, "e" => 4, "f" => 5, "g" => 6, "h"=> 7}
   [chosen_piece[1].to_i - 1, conversion[chosen_piece[0]]]
 end
 moves = ""
-loop do
+while !game.check_mate? do
   players.each do |player|
     reset_screen!
     puts game.to_s
@@ -36,7 +30,8 @@ loop do
       break if game.valid_spot?(coord, player)
       puts "Invalid selection"
     end
-    moves = game.coordinate_to_object(coord)
+    piece = game.coordinate_to_object(coord)
+    moves = game.check_move_helper(piece)
     puts "Moves are #{moves}"
     puts "Which move would you like?"
     chosen_space = gets.chomp.downcase
