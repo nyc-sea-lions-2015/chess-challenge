@@ -47,6 +47,7 @@ class Game
     # white, move which piece?
     @view.choose_piece(player)
     # is user input valid?
+    @board.check?(player)  #player color puts the other player's king in check
     if valid_pick?(@view.choice)
       #
       location = input_to_int(@view.choice)
@@ -54,10 +55,11 @@ class Game
       piece = @board.find_piece(location)
       # find valid moves
       # might be missing an input here?
-      moves = @board.valid_moves(piece)
+      moves = @board.valid_move(piece)
       # display valid moves and ask player for choice
       # @view.display_valid_moves(player, piece, moves)
       # player picks a move
+
       move_choice = @view.pick_move(player, @view.choice)
       # check for bad user input/a pick that isn't in the moves array.
       valid_move_choice?(moves, move_choice)

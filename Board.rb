@@ -1,6 +1,6 @@
 # TODO: add "piece_captured?" and/or "capture_piece" method(s)
 
-require "byebug"
+# require "byebug"
 
 class Board
   attr_accessor :board
@@ -44,14 +44,6 @@ class Board
   end
 
   # TODO: reconcile this with viewer/controller messages. shouldn't have to pass in old pos, just assign to piece's position before we move
-  def move(new_pos, piece)
-    # this should work...
-    old_pos = piece.location
-    p old_pos
-    piece.set_location(new_pos)
-    @board[new_pos[0]][new_pos[1]] = piece
-    @board[old_pos[0]][old_pos[1]] = nil
-  end
 
   def square(x,y)
     @board[x][y]
@@ -62,6 +54,40 @@ class Board
     @board[new_pos[0]][new_pos[1]] = piece
     @board[old_pos[0]][old_pos[1]] = nil
   end
+
+  def check?(player)          #does player color put the other teams king in check?
+    result = false
+    team = all_pieces_same_color(player)    # all of one player's pieces on board
+    team_moves = []                  # all the potential moves by all the player's pieces
+    team.each do |piece|
+      valid_move(piece).each do |move|
+        x = move[0]
+        y = move[1]
+        next if @board[x][y] == nil
+        result = true if @board[x][y].name == "king"
+        king_location = [x,y]
+        team_moves << move
+    end
+  end
+  if result == true ? checkmate?(team_moves)
+  end
+
+  def checkmate?(team_moves, king_location)
+    team_moves.each
+
+  end
+
+  def all_pieces_same_color(player)
+    team = []
+    @board.each_with_index do |row, r_i|
+      row.each_with_index.select do |col,c_i|
+        next if @board[r_i][c_i] == nil
+        team << @board[r_i][c_i] if @board[r_i][c_i].color == player
+      end
+    end
+    team
+  end
+
 
   #Friday @ 4:05 Things to figure out: 1.       2. move increments are wrong
   def free_space?(piece, check_row, check_col)
@@ -91,7 +117,7 @@ class Board
         vector_array.each { |coord| valid_moves << coord } unless piece.multiple_moves == false || vector_array == []
         # valid_moves << vector_array
       elsif (@board[x][y]).color != piece.color
-        valid_move << move
+        valid_moves << move
       else
         next
       end
@@ -126,10 +152,8 @@ class Board
     @board[check_row][check_col] == nil
   end
 
-  def out_of_bounds?(location)
-    x = location[0]
-    y = location[1]
-    !(x < 0 || y < 0 || x > 7|| y > 7)
+  def out_of_bounds?(x,y)
+   x < 0 || y < 0 || x > 7|| y > 7
   end
 
   #   def find_piece(location_string)
@@ -139,21 +163,10 @@ class Board
   #       valid_moves(piece)
   #   end
 
-  def string_to_index(location_string)
-    # a5
-    col_string, row_index = location_string.split("")
-    row_index = BOARDLENGTH - row_index.to_i
-    col_index = col_string.downcase.ord - 97
-    [row_index, col_index]
-  end
 
 
   def find_piece(location)
     piece = @board[location[0]][location[1]]
-  end
-
-  def out_of_bounds?(x,y)
-    (x < 0 || y < 0 || x > 7|| y > 7)
   end
 
   def find_piece(location_string)
@@ -284,16 +297,30 @@ end
 
 
 b = Board.new
+b.all_pieces_same_color("white")
+ b.board
+ board2 = Board.new
+ test_board = board2.board
+  test_board.each_with_index.map do |row, row_index|
+      row.each_with_index.map do |col, col_index|
+        test_board[row_index][col_index] = nil
+      end
+    end
+    test_board[0][3] = King.new([0,3])
+    test_board[0][4] = Queen.new([0,4], "black")
+    p board2.board
+    p board2.valid_move(board2.board[0][4])
+    p board2.board[0][4].color
+    p board2.board[0][3].color
+p board2.check?("black")
 
-# p b.board
 
-
-# b.move([1,3], [3,3], b.board[1][3])
+ # b.move([1,3], [3,3], b.board[1][3])
 # b.move([1,4], [3,4], b.board[1][4])
 # b.move([1,5], [3,5], b.board[1][5])
-# #b.move([7,7], [3,4], b.board[7][7])
-# # p b.board[3][4]
-# # p b.valid_move(b.board[3][4])
+#  b.move([7,7], [3,4], b.board[7][7])
+# p b.board[3][4].name
+# p b.valid_move(b.board[3][4])
 # b.valid_move(b.board[0][3])
 # b.display
 

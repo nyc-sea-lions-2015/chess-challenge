@@ -89,6 +89,8 @@ describe View do
 end
 
 describe Board do
+
+  # describe move(old_pos, new_pos, piece)
   let(:board1) {Board.new}
   pawn2 = board1[6][2]
   describe "initializes" do
@@ -106,14 +108,35 @@ describe Board do
     #   end
     # end
 
-    # describe "recursive_move_check" do
-    #   it "returns a string beginning with [" do
-    #     expect(board.recursive_check(piece)).to eq "["
-    #   end
-    # end
+    describe "move(current, destination, piece)" do
+      it "moves a piece from its current position into the specified position" do
+        board1.move([7,7], [3,4], board1.board[7][7])
+        expect(board1[3][4].name).to eq "rook"
+      end
+    end
+
+    describe "all_pieces_same_color(player)" do
+      it "selects all of the pieces of a given color" do
+        player = "white"
+        expect(boar1.all_pieces_same_color(player).length).to eq 16
+      end
+    end
+
+    desribe "check?(player)"
+     let(:board2){Board.new}
+     board2.each_with_index.map do |row, row_index|
+      row.each_with_index.map do |col, col_index|
+        @board[row_index][col_index] = nil
+      end
+    end
+    @board[0][3] = King.new
+    @board[0][4] = Queen.new
+    @board[0][4].color = "black"
+    it "returns true if the current player puts the other team's king in check"
+    expect(check2?("white")).to_eq true
 
     # describe "free_space?" do
-    #   it "returns a string beginning with [" do
+    #   it "returns a string beginning with [" do2
     #     expect(task1.to_s[0]).to eq "["
     #   end
     # end
