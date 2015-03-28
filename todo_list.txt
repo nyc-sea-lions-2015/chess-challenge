@@ -1,4 +1,3 @@
-Make view
 Refactor piece classes
 Refactor piece instantiation
 Make controller
