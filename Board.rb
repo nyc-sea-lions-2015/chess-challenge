@@ -5,38 +5,16 @@ require "byebug"
 class Board
   attr_accessor :board, :board_values
   def initialize
-    # @board = [Array.new(8) { Array.new(nil) }]
-    # @first_row = [Rook.new, Knight.new, Bishop.new, Queen.new, King.new, Bishop.new, Knight.new, Rook.new]
-    # @second_row = Array.new(8) {Pawn.new}
-    # @board[0], @board[7] = @first_row, @first_row.reverse.map! { |piece| piece.color = "black"}
-    # @board[1], @board[6] = @second_row, @second_row.map! { |piece| piece.color = "black"}
     @board = [[Rook.new([0,0]), Knight.new([0, 1]), Bishop.new([0, 2]), Queen.new([0, 3]), King.new([0, 4]), Bishop.new([0, 5]), Knight.new([0, 6]), Rook.new([0,7])], [Pawn.new([1,0]), Pawn.new([1,1]), Pawn.new([1,2]), Pawn.new([1,3]), Pawn.new([1,4]), Pawn.new([1,5]), Pawn.new([1,6]), Pawn.new([1,7])], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [Pawn.new([6,0], "black"), Pawn.new([6,1], "black"), Pawn.new([6,2], "black"), Pawn.new([6,3], "black"), Pawn.new([6,4], "black"), Pawn.new([6,5], "black"), Pawn.new([6,6], "black"), Pawn.new([6, 7], "black")], [Rook.new([7, 0], "black"), Knight.new([7, 1], "black"), Bishop.new([7, 2], "black"), King.new([7, 3], "black"), Queen.new([7, 4], "black"), Bishop.new([7, 5], "black"), Knight.new([7, 6], "black"), Rook.new([7, 7], "black")]]
-    @row_nums = [1,2,3,4,5,6,7,8]
     @col_letters = ["a","b","c","d","e","f","g", "h"]
     @boardlength = 8
     @display_board = ""
-    @board_values = { "a1"=> [0,0], "b1"=> [0,1], "c1"=> [0,2], "d1" => [0,3], "e1" => [0,4], "f1" => [0,5], "g1" => [0,6], "h1" => [0,7], "a2" => [1,0], "b2" => [1,1], "c2" => [1,2], "d2" => [1,3], "e2" => [1,4], "f2" => [1,5], "g2" => [1,6], "h2" => [1,7], "a3" => [2,0], "b3" => [2,1], "c3" => [2,2], "d3" => [2,3], "e3" => [2,4], "f3" => [2,5], "g3" => [2,6], "h3" => [2,7], "a4" => [3,0], "b4" => [3,1], "c4" => [3,2], "d4" => [3,3], "e4" => [3,4], "f4" => [3,5], "g4" => [3,6], "h4" => [3,7], "a5" => [4,0], "b5" => [4,1], "c5" => [4,2], "d5" => [4,3], "e5" => [4,4], "f5" => [4,5], "g5" => [4,6], "h5" => [4,7], "a6" => [5,0], "b6" => [5,1], "c6" => [5,2], "d6" => [5,3], "e6" => [5,4], "f6" => [5,5], "g6" => [5,6], "h6" => [5,7], "a7" => [6,0], "b7" => [6,1], "c7" => [6,2], "d7" => [6,3], "e7" => [6,4], "f7" => [6,5], "g7" => [6,6], "h7" => [6,7], "a8" => [7,0], "b8" => [7,1], "c8" => [7,2], "d8" => [7,3], "e8" => [7,4], "f8" => [7,5], "g8" => [7,6], "h8" => [7,7]
-                      }
+    @board_values = { "a1"=> [0,0], "b1"=> [0,1], "c1"=> [0,2], "d1" => [0,3], "e1" => [0,4], "f1" => [0,5], "g1" => [0,6], "h1" => [0,7], "a2" => [1,0], "b2" => [1,1], "c2" => [1,2], "d2" => [1,3], "e2" => [1,4], "f2" => [1,5], "g2" => [1,6], "h2" => [1,7], "a3" => [2,0], "b3" => [2,1], "c3" => [2,2], "d3" => [2,3], "e3" => [2,4], "f3" => [2,5], "g3" => [2,6], "h3" => [2,7], "a4" => [3,0], "b4" => [3,1], "c4" => [3,2], "d4" => [3,3], "e4" => [3,4], "f4" => [3,5], "g4" => [3,6], "h4" => [3,7], "a5" => [4,0], "b5" => [4,1], "c5" => [4,2], "d5" => [4,3], "e5" => [4,4], "f5" => [4,5], "g5" => [4,6], "h5" => [4,7], "a6" => [5,0], "b6" => [5,1], "c6" => [5,2], "d6" => [5,3], "e6" => [5,4], "f6" => [5,5], "g6" => [5,6], "h6" => [5,7], "a7" => [6,0], "b7" => [6,1], "c7" => [6,2], "d7" => [6,3], "e7" => [6,4], "f7" => [6,5], "g7" => [6,6], "h7" => [6,7], "a8" => [7,0], "b8" => [7,1], "c8" => [7,2], "d8" => [7,3], "e8" => [7,4], "f8" => [7,5], "g8" => [7,6], "h8" => [7,7] }
   end
 
   def display
     format
   end
-
-  # TODO: format is only FIRST time around. Call display_icon on an existing icon breaks it.
-  #
-
-  # flatten, turn into icons or spaces, puts each slice
-  # def format
-  #   displayed_board = board.flatten.map do |square|
-  #     square == nil ? square = " " : square.display_icon
-  #   end
-  #   displayed_board.each_slice(8)
-  # end
-
-  # create empty string
-  # get a COPY of the board/or non destructively iterate over
-  # for every cell, if it's nil, add a " " to the string. if it's a piece, add that pieces icon to the string.
 
   #TODO: fix this bullshit formatting
   def format
@@ -53,13 +31,9 @@ class Board
       @board_string += "\n"
       row_num -= 1
     end
-    # board_string += "#{row_num}   " + board_row + "\n"
     @board_string += "   " +  @col_letters.join("  ")
-    # board_string += "    " + @col_letters.join("   ")
-    # board_stringa5
   end
 
-  # TODO: reconcile this with viewer/controller messages. shouldn't have to pass in old pos, just assign to piece's position before we move
   def move(piece,new_pos)
     old_pos = piece.location
     @board[new_pos[0]][new_pos[1]] = piece
@@ -71,13 +45,6 @@ class Board
     @board[x][y]
   end
 
-  # def move(old_pos, new_pos, piece)
-  #   piece.set_location(new_pos)
-  #   @board[new_pos[0]][new_pos[1]] = piece
-  #   @board[old_pos[0]][old_pos[1]] = nil
-  # en
-
-  #Friday @ 4:05 Things to figure out: 1.       2. move increments are wrong
   def free_space?(piece, check_row, check_col)
     @board[check_row][check_col] == nil
   end
@@ -127,15 +94,6 @@ class Board
       array_direction << [x + add_x, y + add_y]
     end
     array_direction
-  end
-
-  def move_one(x,y) #returns array of piece's possible moves in 1 square radius
-    valid_moves = []
-    (piece.moves).each do |vector|
-      x += vectors[0]
-      y += vector[1]
-      valid_moves <<  [x,y]
-    end
   end
 
   def find_piece(location)
