@@ -88,16 +88,16 @@ class Board
   end
 
   def initialize_pieces(color, pawn_row, row)
-    for x in 0..7 do
-      @pieces_array << Pawn.new({color: color, position: [pawn_row, x]})
-    end
-    @pieces_array << Rook.new({color: color, position: [row, 0]})
-    @pieces_array << Rook.new({color: color, position: [row,7]})
-    @pieces_array << Bishop.new({color: color, position: [row,2]})
-    @pieces_array << Bishop.new({color: color, position: [row,5]})
+    # for x in 0..7 do
+    #   @pieces_array << Pawn.new({color: color, position: [pawn_row, x]})
+    # end
+    #@pieces_array << Rook.new({color: color, position: [row, 0]})
+    #@pieces_array << Rook.new({color: color, position: [row,7]})
+    #@pieces_array << Bishop.new({color: color, position: [row,2]})
+    #@pieces_array << Bishop.new({color: color, position: [row,5]})
     @pieces_array << Knight.new({color: color, position: [row,1]})
     @pieces_array << Knight.new({color: color, position: [row,6]})
-    @pieces_array << Queen.new({color: color, position: [row,3]})
+    #@pieces_array << Queen.new({color: color, position: [row,3]})
   end
 
   def initialize_kings
@@ -259,4 +259,8 @@ class Board
   end
 end
 
-
+b = Board.new
+knight = Knight.new({color: "black", position: [5,1]})
+b.place(knight, knight.position)
+puts b.to_s
+p b.check_kk_move(knight)
