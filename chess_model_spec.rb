@@ -22,6 +22,8 @@ describe "Board" do
   let(:bishop_move_test_queen) {Queen.new(color: "white", position:[4,1])}
   let(:bishop_move_test_pawn) {Pawn.new(color: "white", position:[0,5])}
   let(:chess_board) {Board.new}
+  let(:wking) {chess_board.instance_variable_get(:@wking)}
+  let(:bking) {chess_board.instance_variable_get(:@bking)}
 
   describe "initialize" do
     it "should initialize to nil" do
@@ -64,7 +66,7 @@ describe "Board" do
       expect(chess_board.board[1][0]).to eq nil
     end
   end
-  
+
   describe "pawn_move for white pawn" do
     it "should return an array of moves for the pawn passed" do
       expect(chess_board.pawn_move(pawn)).to eq [[2,0],[3,0]]
@@ -79,7 +81,7 @@ describe "Board" do
 
     describe "kk_move(king)" do
     it "should return an array of moves for the king passed" do
-      chess_board.place(king, [1,1])		
+      chess_board.place(king, [1,1])
       expect(chess_board.kk_move(king)).to eq [[2,1], [2,2], [1,2],[0,2],[0,1],[0,0],[1,0],[2,0]]
     end
   end
@@ -141,7 +143,6 @@ describe "Board" do
 
   describe "check_mate?" do
     it "should return true if the black king is captured" do
-      bking = chess_board.instance_variable_get(:@bking)
       chess_board.place(knight, knight.position)
       chess_board.place(bking, [2,5])
       chess_board.place(knight, [2,5])
@@ -149,7 +150,6 @@ describe "Board" do
     end
 
     it "should return true if the white king is captured" do
-      wking = chess_board.instance_variable_get(:@wking)
       chess_board.place(wking, [3,3])
       chess_board.place(king_move_test_brook, [3,2])
       chess_board.place(king_move_test_brook, [3,3])
