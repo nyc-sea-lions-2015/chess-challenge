@@ -47,7 +47,8 @@ class Game
     # white, move which piece?
     @view.choose_piece(player)
     # is user input valid?
-    @board.check?(player)  #player color puts the other player's king in check
+    if @board.check?(player)  #player color puts the other player's king in check
+      @board.checkmate?
     if valid_pick?(@view.choice)
       #
       location = input_to_int(@view.choice)

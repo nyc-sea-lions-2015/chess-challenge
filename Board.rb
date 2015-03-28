@@ -3,7 +3,7 @@
 # require "byebug"
 
 class Board
-  attr_accessor :board
+  attr_accessor :board, :checkmate?
   def initialize
     # @board = [Array.new(8) { Array.new(nil) }]
     # @first_row = [Rook.new, Knight.new, Bishop.new, Queen.new, King.new, Bishop.new, Knight.new, Rook.new]
@@ -80,10 +80,10 @@ class Board
     king_y = king_location[1]
     team_moves.each do |move|       #if the king is in check, and your valid moves also
       valid_move(@board[king_x][king_y]) do |king_move|      # cover its valid moves, it is checkmate
-        return true if move == king_move
+         self.checkmate? = true if move == king_move
       end
     end
-    return false
+
 
   end
 
@@ -173,7 +173,14 @@ class Board
   #       valid_moves(piece)
   #   end
 
+  def piece_captured?(piece, location)
+   (square(location[0], location[1]) != nil)
+ end
 
+ def capture_piece(location)
+   @captured << square(location[0], location[1])
+   square(location[0], location[1]) = nil
+ end
 
   def find_piece(location)
     piece = @board[location[0]][location[1]]
