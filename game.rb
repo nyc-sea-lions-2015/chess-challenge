@@ -1,9 +1,10 @@
-# TODO: critical: FIX DISPLAY METHODS
 # STRETCH: have "pick a move" filter for all legal choices player can make at that time.
-
- 
-#TODO: refactor: use a big ol array full of all possible chess board values to check for user input
 # TODO: refactor: turn message passing variable assignment/method calling/argument names.2
+
+# TODO: critical: FIX DISPLAY METHODS
+# TODO: CRITICAL: create new method to parse user input
+
+
 
 # require "byebug"
 require_relative "Board.rb"
@@ -32,7 +33,7 @@ class Game
     while !game_over?
       players.each do |player|
         # clear screen
-        display_board
+         display_board
         turn(player)
       end
     end
@@ -60,13 +61,12 @@ class Game
       move_choice = @view.pick_move(player, @view.choice)
       # check for bad user input/a pick that isn't in the moves array.
       valid_move_choice?(moves, move_choice)
-      # move the piece
-      move_piece(piece, new_pos)
       # if it was a capture, remove captured piece and display capture message, else move onto next turn.
-      # if piece_captured?
-      # @board.capture_piece(piece)
-      # @view.display_capture_move(player, player2, piece, captured_piece, choice, move)
+      # if piece_captured?(piece)
+      @board.capture_piece(captured_piece)
+      @view.display_capture_move(player, player2, piece, captured_piece, choice, move)
       # else
+      move_piece(piece, new_pos)
       # end turn
     else
       @view.pick_again(player)
@@ -119,7 +119,7 @@ class Game
   end
 
   def display_board
-    puts @board.format
+     @board.format
   end
 
   # checks for king taken, stalemate, or checkmate
@@ -233,10 +233,9 @@ end
 
 G = Game.new()
 
-# G.display_board
 #p G.input_to_int("c4")
 # p G.valid_pick?("c4")
 # p G.bad_input("c52829")
 # p G.valid_pick?("f5")
 
-G.play
+puts G.display_board
