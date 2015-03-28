@@ -17,16 +17,25 @@ SOUTHWEST = [-1, -1]
 WEST = [0, -1]
 NORTHWEST = [1, -1]
 
-class Pawn
 
-  attr_reader :color, :moves, :attack
-  attr_accessor :first_move, :position
+class Piece
+
+attr_reader :color
+attr_accessor :first_move, :position
 
   def initialize(args)
     @position = args[:position]
     @color = args[:color]
     @first_move = true
+  end
 
+end
+
+class Pawn < Piece
+
+  attr_reader :moves, :attack
+  def initialize(args)
+    super(args)
     if @color == "white"
       @moves = [NORTH]
       @attack = [NORTHEAST, NORTHWEST]
@@ -37,68 +46,48 @@ class Pawn
   end
 end
 
-class Knight
+class Knight < Piece
 
-  attr_reader :color, :moves
-  attr_accessor :position, :first_move
-
+  attr_reader :moves
   def initialize(args)
-    @position = args[:position]
-    @color = args[:color]
+    super(args)
     @moves = [[2,1],[1,2],[2,-1],[1,-2],[-2,-1],[-1,-2],[-2,1],[-1,2]]
-    @first_move = true
   end
 end
 
-class Rook
+class Rook < Piece
 
-  attr_reader :color, :moves
-  attr_accessor :position, :first_move
-
+  attr_reader :moves
   def initialize(args)
-    @position = args[:position]
-    @color = args[:color]
+    super(args)
     @moves = [NORTH, EAST, SOUTH, WEST]
-    @first_move = true
   end
 end
 
-class Bishop
+class Bishop < Piece
 
-  attr_reader :color, :moves
-  attr_accessor :position, :first_move
-
+  attr_reader :moves
   def initialize(args)
-    @position = args[:position]
-    @color = args[:color]
+    super(args)
     @moves = [NORTHEAST, SOUTHEAST, SOUTHWEST, NORTHWEST]
-    @first_move = true
   end
 end
 
-class Queen
+class Queen < Piece
 
-  attr_reader :color, :moves
-  attr_accessor :position, :first_move
-
+  attr_reader :moves
   def initialize(args)
-    @position = args[:position]
-    @color = args[:color]
+    super(args)
     @moves = [NORTH, NORTHEAST, EAST, SOUTHEAST, SOUTH, SOUTHWEST, WEST, NORTHWEST]
-    @first_move = true
   end
 end
 
-class King
+class King < Piece
 
-  attr_reader :color, :moves
-  attr_accessor :position, :first_move
-
+  attr_reader :moves
   def initialize(args)
-    @position = args[:position]
-    @color = args[:color]
+    super(args)
     @moves = [NORTH, NORTHEAST, EAST, SOUTHEAST, SOUTH, SOUTHWEST, WEST, NORTHWEST]
-    @first_move = true
   end
 
 end
