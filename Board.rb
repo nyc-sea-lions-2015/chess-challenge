@@ -5,10 +5,10 @@
 # TODO: deal with captures
 
 
-require "byebug"
+# require "byebug"
 
 class Board
-  attr_accessor :board, :board_values
+  attr_accessor :board, :board_values, :checkmate
   def initialize
     @checkmate = false
     @board = [[Rook.new([0,0]), Knight.new([0, 1]), Bishop.new([0, 2]), Queen.new([0, 3]), King.new([0, 4]), Bishop.new([0, 5]), Knight.new([0, 6]), Rook.new([0,7])], [Pawn.new([1,0]), Pawn.new([1,1]), Pawn.new([1,2]), Pawn.new([1,3]), Pawn.new([1,4]), Pawn.new([1,5]), Pawn.new([1,6]), Pawn.new([1,7])], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [Pawn.new([6,0], "black"), Pawn.new([6,1], "black"), Pawn.new([6,2], "black"), Pawn.new([6,3], "black"), Pawn.new([6,4], "black"), Pawn.new([6,5], "black"), Pawn.new([6,6], "black"), Pawn.new([6, 7], "black")], [Rook.new([7, 0], "black"), Knight.new([7, 1], "black"), Bishop.new([7, 2], "black"), King.new([7, 3], "black"), Queen.new([7, 4], "black"), Bishop.new([7, 5], "black"), Knight.new([7, 6], "black"), Rook.new([7, 7], "black")]]
@@ -89,7 +89,7 @@ class Board
         vector_array.each { |coord| valid_moves << coord } unless piece.multiple_moves == false || vector_array == []
         # valid_moves << vector_array
       elsif (@board[x][y]).color != piece.color
-        valid_move << move
+        valid_moves << [x,y]
       else
         next
       end
@@ -127,23 +127,21 @@ class Board
         if @board[x][y].name == "king" #if one of your valid moves equals the king
           king_location = [x,y] # location, the king is in check
           result = true
+          checkmate?(all_possible_team_moves, king_location)
         end
         all_possible_team_moves << move
       end
     end
-    checkmate?(all_possible_team_moves, king_location) if result == true
     result
   end
 
   def checkmate?(all_possible_team_moves, king_location)
     king_x = king_location[0]
     king_y = king_location[1]
-    team_moves.each do |move| #if the king is in check, and your valid moves also
-      valid_move(@board[king_x][king_y]) do |king_move| # cover its valid moves, it is checkmate
-       move == king_move ? (self.checkmate = true) : (self.checkmate = false)
-      end
-    end
-    @checkmate
+   p valid_move(@board[king_x][king_y]).all? do |king_move|
+                all_possible_team_moves.include?(king_move)
+                  end
+   #if the king is in check, and your valid moves also cover its valid moves, it is checkmate
   end
 
   def all_pieces_same_color(player)
@@ -303,12 +301,15 @@ b.all_pieces_same_color("white")
         test_board[row_index][col_index] = nil
       end
     end
-    test_board[0][3] = King.new([0,3])
-    test_board[0][4] = Queen.new([0,4], "black")
-    p board2.board
-    p board2.valid_move(board2.board[0][4])
-    p board2.board[0][4].color
-    p board2.board[0][3].color
-p board2.check?("black")
+    test_board[0][0] = King.new([0,0])
+    # test_board[0][1] = Queen.new([0,1], "black")
+    test_board[1][0] = Rook.new([1,0], "black")
+    test_board[0][1] = Bishop.new([1,1], "black")
+    p "king" valid_move(test_board[0][0])
+    p "rook" valid_move(test_board[1][0])
+    p "bishop" valid_move(test_board[0][1])
 
+    p board2.board
+p board2.check?("black")
+p board2.checkmate
 
