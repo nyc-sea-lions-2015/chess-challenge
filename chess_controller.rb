@@ -32,6 +32,7 @@ while !game.check_mate? do
     reset_screen!
     puts game.to_s
     model_coord, view_coord, move_coord, piece, moves = ""
+    puts "Check" if game.check?
     loop do
       puts "#{player}'s turn"
       puts "#{player}, which piece would you like to move?"
@@ -52,7 +53,6 @@ while !game.check_mate? do
       puts "Invalid selection"
     end
     game.place(piece, v2m_coord_converter(move_coord))
-    puts "Check" if game.check?
   end
 end
 

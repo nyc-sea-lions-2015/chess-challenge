@@ -1,4 +1,3 @@
-require "byebug"
 NORTH = [1,0]
 NORTHEAST = [1, 1]
 EAST = [0, 1]
@@ -8,32 +7,28 @@ SOUTHWEST = [-1, -1]
 WEST = [0, -1]
 NORTHWEST = [1, -1]
 
-
 class Piece
 
-attr_reader :color
-attr_accessor :first_move, :position
-
+  attr_reader :color
+  attr_accessor :first_move, :position
   def initialize(args)
     @position = args[:position]
     @color = args[:color]
     @first_move = true
   end
-
 end
 
 class Pawn < Piece
+
   attr_accessor :pawn_move_count
   attr_reader :moves, :attack
   def initialize(args)
     super(args)
     @pawn_move_count = 0
     if @color == "white"
-      @moves = [NORTH]
-      @attack = [NORTHEAST, NORTHWEST]
+      @moves, @attack = [NORTH], [NORTHEAST, NORTHWEST]
     else
-      @moves = [SOUTH]
-      @attack = [SOUTHEAST, SOUTHWEST]
+      @moves, @attack = [SOUTH], [SOUTHEAST, SOUTHWEST]
     end
   end
 end
@@ -81,16 +76,13 @@ class King < Piece
     super(args)
     @moves = [NORTH, NORTHEAST, EAST, SOUTHEAST, SOUTH, SOUTHWEST, WEST, NORTHWEST]
   end
-
 end
 
 class Board
-  attr_accessor :board, :white_pieces_array, :black_pieces_array, :valid_moves
 
+  attr_accessor :board, :white_pieces_array, :black_pieces_array, :valid_moves
   def initialize
     @board = Array.new(8) {Array.new(8)}
-    initialize_white_pieces
-    initialize_black_pieces
   end
 
   def initialize_white_pieces
@@ -126,6 +118,8 @@ class Board
   end
 
   def set_up_board
+    initialize_white_pieces
+    initialize_black_pieces
     @white_pieces_array.each do |piece|
       place(piece, piece.position)
     end
@@ -279,7 +273,6 @@ class Board
     piece = @board[coord[0]][coord[1]]
     piece != nil && piece.color == player_color && coord[0].between?(0, 7) && coord[1].between?(0, 7) ? true : false
   end
-
 end
 # board = Board.new
 # board.set_up_board
