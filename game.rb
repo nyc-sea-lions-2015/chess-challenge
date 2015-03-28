@@ -1,11 +1,6 @@
-# STRETCH: have "pick a move" filter for all legal choices player can make at that time.
 # STRETCH: allow for undo
 # Stretch: allow for forfeit/end game if user types "forfeit"/"quit"
 # TODO: refactor: turn message passing variable assignment/method calling/argument names.2
-
-# TODO: critical: fix turn method when empty square is called
-
-# TODO: only allow player to pick from IT"S PIECES
 
 # require "byebug"
 require_relative "Board.rb"
@@ -50,7 +45,7 @@ class Game
     begin
       # until user gives a input that matches a piece of their color, keep asking.
       @view.choose_piece(player)
-    end until valid_pick?(@view.choice)
+    end until valid_pick?(@view.choice, player)
     # choose piece
     piece = @board.find_piece(input_to_coord(@view.choice))
     # find valid moves
@@ -80,8 +75,12 @@ class Game
     moves.include?(player_choice)
   end
 
-  def valid_pick?(user_input)
-    @board.board_values.has_key?(user_input)
+  def valid_pick?(user_input, player)
+    coord = input_to_coord(user_input)
+    return false if @board.board[coord[0]][coord[0]] == nil
+    (@board.board_values.has_key?(user_input) && @board.board[coord[0]][coord[0]].color == player)
+    # && (@board[coord[0]][coord[0]].color == player)
+    # this needs to check that the square is occupied by a piece of that player
   end
 
   def input_to_coord(user_input)
