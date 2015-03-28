@@ -76,12 +76,12 @@ class Board
   end
 
   def piece_captured?(piece, location)
-    (square(location[0], location[1]) != nil)
+    (@board[location[0]][location[1]] != nil)
   end
 
   def capture_piece(location)
     @captured << square(location[0], location[1])
-    square(location[0], location[1]) = nil
+    @board[location[0]][location[1]] = nil
   end
 
   def valid_move(piece)
@@ -98,7 +98,7 @@ class Board
         vector_array.each { |coord| valid_moves << coord } unless piece.multiple_moves == false || vector_array == []
         # valid_moves << vector_array
       elsif (@board[x][y]).color != piece.color
-        valid_move << move
+        valid_moves << move
       else
         next
       end
@@ -123,8 +123,6 @@ class Board
   def find_piece(location)
     piece = square(location[0], location[1])
   end
-
-end
 
   def check?(player) #does player color put the other teams king in check?
     result = false
@@ -175,8 +173,6 @@ class Piece
   attr_accessor :color, :moves, :location, :name
   attr_reader :display, :multiple_moves
   def initialize(location, color = "white")
-    @location = location
-    @color = color
     @icon = icon
     @all_adjacent = [[0, 1],[0, -1],[1,0],[-1,0],[1,1],[-1,1],[1,-1],[-1,-1]]
     @location = location
@@ -194,7 +190,7 @@ end
 
 class Pawn < Piece
   attr_reader :color
-  attr_accessor :moves, :multiple_moves #:first_move?, :capturing?
+  attr_accessor :multiple_moves, :location #:first_move?, :capturing?
   #logic for capturing?
   def initialize(location, color = "white")
     @location = location
@@ -202,23 +198,23 @@ class Pawn < Piece
     @color == "white" ? @icon = "♟" : @icon = '♙'
     @multiple_moves = false
     # first_move? == true if self.location[0] == 1 || self.location[0] == 6 #initial row value for pawns
-    x = @location
-    if x[0] == 1 && @color == "white"
-      @moves = [[1,0], [2,0]]
-    elsif @color == "white"
-      @moves = [[1,0]]
-    elsif x[0] == 6 && @color == "black"
-      @moves = [[-1,0], [-2,0]]
-    else
-      @moves = [[-1, 0]]
-    end
     # moves << [0,2] if first_move?
     # moves << [1,1] if capturing?
     @name = "pawn"
   end
 
   def moves
-    @moves
+    moves = []
+    if @location[0] == 1 && @color == "white"
+      moves = [[1,0], [2,0]]
+    elsif @color == "white"
+      moves = [[1,0]]
+    elsif @location[0] == 6 && @color == "black"
+      moves = [[-1,0], [-2,0]]
+    else
+      moves = [[-1, 0]]
+    end
+    moves
   end
 
 end

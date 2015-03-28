@@ -61,7 +61,7 @@ class Game
       @view.display_valid_moves(player, piece.name, moves)
       # player picks a move
       move_choice = input_to_coord(@view.pick_move(player, @view.choice))
-   
+
 
       # if invalid_move_choice(move_choice)
       #   @view.pick_again(player)
