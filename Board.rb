@@ -55,7 +55,6 @@ class Board
   end
 
   def valid_move(piece)
-    p piece.moves
     valid_moves = []
     piece_moves = piece.moves
     current_location = piece.location
