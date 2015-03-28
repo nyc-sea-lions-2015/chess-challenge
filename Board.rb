@@ -88,7 +88,7 @@ class Board
 
   def valid_move(piece)
     valid_moves = []
-    piece_moves = piece.moves
+    piece.respond_to?(:pawn_attack) ? piece_moves = piece.moves(@board) : piece_moves = piece.moves
     current_location = piece.location
     piece_moves.each do |move|
       x = current_location[0] + move[0]
@@ -205,7 +205,7 @@ class Pawn < Piece
     @name = "pawn"
   end
 
-  def moves
+  def moves(board = nil)
     moves = []
     if @location[0] == 1 && @color == "white"
       moves = [[1,0], [2,0]]
@@ -216,7 +216,32 @@ class Pawn < Piece
     else
       moves = [[-1, 0]]
     end
-    moves
+    if pawn_attack(board) == []
+     moves
+    else
+      pawn_attack(board).each { |coord| moves << coord }
+      moves
+    end
+
+  end
+
+  def pawn_attack(board)
+    x = location[0]
+    y = location[1]
+    array = []
+    if board[x + 1][y + 1] != nil && board[x + 1][y + 1].color != self.color && color == "white"
+      array << [x+1, y+1]
+    end
+    if board[x+1][y-1] != nil && (board[x+1][y-1]).color != self.color && color == "white"
+      array << [x+1, y-1]
+    end
+    if board[x-1][y-1] != nil && board[x-1][y-1].color != self.color && color == "black"
+      array << [x-1, y-1]
+    end
+    if board[x-1][y+1] != nil && board[x-1][y+1].color != self.color && color == "black"
+      array << [x-1, y+1]
+    end
+    array
   end
 
 end
@@ -285,3 +310,26 @@ class Knight < Piece
     @name = "knight"
   end
 end
+
+
+b = Board.new
+
+# p b.board
+
+
+#  b.move(b.board[1][3], [3,3])
+
+# # p b.board[3][4]
+# # p b.valid_move(b.board[3][4])
+# p b.valid_move(b.board[1][1])
+
+# b.move([1,3], [3,3])
+# b.move([1,4], [3,4])
+# b.move([1,5], [3,5])
+# b.move([6,1], [5,1])
+# # p b.board[3][4]
+# # p b.valid_move(b.board[3][4])
+# p b.valid_move(b.board[5][1])
+
+# #puts b.display
+# p b.board[1][1]
