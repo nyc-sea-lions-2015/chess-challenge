@@ -50,7 +50,6 @@ class Game
     # is user input valid?
     if valid_pick?(@view.choice)
       #
-      # location = input_to_int(@view.choice)
       location = input_to_coord(@view.choice)
       # choose piece
       piece = @board.find_piece(location)
@@ -58,18 +57,20 @@ class Game
       # might be missing an input here?
       moves = @board.valid_move(piece)
       # display valid moves and ask player for choice
-      # @view.display_valid_moves(player, piece, moves)
+      @view.display_valid_moves(player, piece.name, moves)
       # player picks a move
-      move_choice = @view.pick_move(player, @view.choice)
+      move_choice =input_to_coord(@view.pick_move(player, @view.choice))
       # check for bad user input/a pick that isn't in the moves array.
       # valid_move_choice?(moves, move_choice)
       # if it was a capture, remove captured piece and display capture message, else move onto next turn.
       # if piece_captured?(piece)
-      # @board.capture_piece(captured_piece)
-      # @view.display_capture_move(player, player2, piece, captured_piece, choice, move)
+      #   @board.capture_piece(captured_piece)
+      #   @view.display_capture_move(player, player2, piece, captured_piece, choice, move)
       # else
-      move_piece(piece, move_choice)
-      # end turn
+
+        move_piece(piece, move_choice)
+        # end turn
+      # end
     else
       @view.pick_again(player)
       location = input_to_coord(@view.choice)
@@ -79,6 +80,7 @@ class Game
     # find_piece and return valid_moves 2d array
     # @view.piece_chosen_message(player, piece, moves)
   end
+
 
   #TODO: refactor: use a big ol hash full of all possible chess board values!
 
@@ -119,9 +121,9 @@ class Game
   #   !bad_input?(location)
   # end
 
-  def valid_move_choice?(moves, input)
-    moves.include?(input)
-  end
+  # def valid_move_choice?(moves, input)
+  #   moves.include?(input)
+  # end
 
   # TODO: reconcile this with move method in board!
   # Currently not inputing old_pos anywhere.
@@ -209,7 +211,7 @@ class View
   end
 
   def piece_chosen_message(player, piece, moves)
-    "moves for #{player} #{piece}" + moves.join(" ")
+    "moves for #{player}'s #{piece}" + moves.join(" ")
   end
   # move gets sent to board
   def player_move_message(player, piece, move)

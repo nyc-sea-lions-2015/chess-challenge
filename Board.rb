@@ -15,7 +15,7 @@ class Board
     @col_letters = ["a","b","c","d","e","f","g", "h"]
     @boardlength = 8
     @display_board = ""
-    @board_values = { "a1"=> [0,0], "b1"=> [0,1], "c1"=> [0,2], "d1" => [0,3], "e1" => [0,4], "f1" => [0,5], "g1" => [0,6], "h1" => [0,7], "a2" => [1,0], "b2" => [2,1], "c2" => [3,2], "d2" => [4,3], "e2" => [5,4], "f2" => [6,5], "g2" => [7,6], "h2" => [7,7], "a3" => [2,0], "b3" => [2,1], "d3" => [2,2], "e3" => [2,3], "f3" => [2,4], "g3" => [2,5], "h3" => [3,6], "f3" => [3,7], "a4" => [4,0], "b4" => [4,1], "c4" => [4,2], "d4" => [4,3], "e4" => [4,4], "f4" => [4,5], "g4" => [4,6], "h4" => [4,7], "a5" => [5,0], "b5" => [5,1], "c5" => [5,2], "d5" => [5,3], "e5" => [5,4], "f5" => [5,5], "g5" => [5,6], "h5" => [5,7], "f5" => [5,0], "a6" => [6,0], "b6" => [6,1], "c6" => [6,2], "d6" => [6,3], "e6" => [6,4], "f6" => [6,5], "g6" => [6,6], "h6" => [6,7], "a7" => [7,0], "b7" => [7,1], "c7" => [7,2], "d7" => [7,3], "e7" => [7,4], "f7" => [7,5], "g7" => [7,6], "h7" => [7,7], "a8" => [8,0], "b8" => [8,1], "c8" => [8,2], "d8" => [8,3], "e8" => [8,4], "f8" => [8,5], "g8" => [8,6], "h8" => [8,7],
+    @board_values = { "a1"=> [0,0], "b1"=> [0,1], "c1"=> [0,2], "d1" => [0,3], "e1" => [0,4], "f1" => [0,5], "g1" => [0,6], "h1" => [0,7], "a2" => [1,0], "b2" => [1,1], "c2" => [1,2], "d2" => [1,3], "e2" => [1,4], "f2" => [1,5], "g2" => [1,6], "h2" => [1,7], "a3" => [2,0], "b3" => [2,1], "c3" => [2,2], "d3" => [2,3], "e3" => [2,4], "f3" => [2,5], "g3" => [2,6], "h3" => [2,7], "a4" => [3,0], "b4" => [3,1], "c4" => [3,2], "d4" => [3,3], "e4" => [3,4], "f4" => [3,5], "g4" => [3,6], "h4" => [3,7], "a5" => [4,0], "b5" => [4,1], "c5" => [4,2], "d5" => [4,3], "e5" => [4,4], "f5" => [4,5], "g5" => [4,6], "h5" => [4,7], "a6" => [5,0], "b6" => [5,1], "c6" => [5,2], "d6" => [5,3], "e6" => [5,4], "f6" => [5,5], "g6" => [5,6], "h6" => [5,7], "a7" => [6,0], "b7" => [6,1], "c7" => [6,2], "d7" => [6,3], "e7" => [6,4], "f7" => [6,5], "g7" => [6,6], "h7" => [6,7], "a8" => [7,0], "b8" => [7,1], "c8" => [7,2], "d8" => [7,3], "e8" => [7,4], "f8" => [7,5], "g8" => [7,6], "h8" => [7,7]
                       }
   end
 
@@ -61,9 +61,7 @@ class Board
 
   # TODO: reconcile this with viewer/controller messages. shouldn't have to pass in old pos, just assign to piece's position before we move
   def move(piece,new_pos)
-    p new_pos
-    p old_pos = piece.location
-    p piece
+    old_pos = piece.location
     @board[new_pos[0]][new_pos[1]] = piece
     @board[old_pos[0]][old_pos[1]] = nil
     piece.set_location(new_pos)
@@ -89,7 +87,9 @@ class Board
     square(check_row, check_col).color == piece.color
   end
 
-  def out_of_bounds?(x,y)
+  def out_of_bounds?(location)
+    x = location[0]
+    y = location[1]
     (x < 0 || y < 0 || x > 7|| y > 7)
   end
 
@@ -100,7 +100,7 @@ class Board
     piece_moves.each do |move|
       x = current_location[0] + move[0]
       y = current_location[1] + move[1]
-      next if out_of_bounds?(x,y)
+      next if out_of_bounds?([x,y])
       if free_space?(piece, x, y)
         valid_moves << [x, y] #fix
         vector_array = check_direction(piece, x, y, move[0], move[1])
@@ -116,7 +116,7 @@ class Board
   end
 
   def check_direction(piece, x, y, add_x, add_y, array_direction = [])
-    if out_of_bounds?(x + add_x, y + add_y)
+    if out_of_bounds?([x + add_x, y + add_y])
       return array_direction
     elsif friendly_fire?(piece, x + add_x, y + add_y) #&& piece.name != 'knight'
       return array_direction
@@ -138,52 +138,13 @@ class Board
     end
   end
 
-  def free_space?(piece, check_row, check_col)
-    @board[check_row][check_col] == nil
-  end
-
-  def out_of_bounds?(location)
-    x = location[0]
-    y = location[1]
-    !(x < 0 || y < 0 || x > 7|| y > 7)
-  end
-
-  #   def find_piece(location_string)
-  #       index = string_to_index(location_string)
-  #       piece = @board[index[0]][index[1]]
-  #       piece.location = [index[0], index[1]]
-  #       valid_moves(piece)
-  #   end
-
-  def string_to_index(location_string)
-    # a5
-    col_string, row_index = location_string.split("")
-    row_index = BOARDLENGTH - row_index.to_i
-    col_index = col_string.downcase.ord - 97
-    [row_index, col_index]
-  end
-
-
-  def find_piece(location)
-    piece = @board[location[0]][location[1]]
-  end
-
-  def out_of_bounds?(x,y)
-    (x < 0 || y < 0 || x > 7|| y > 7)
-  end
-
   def find_piece(location)
     piece = square(location[0], location[1])
   end
 
-  # def string_to_index(location_string)
-  #   # a5
-  #   col_string, row_index = location_string.split("")
-  #   row_index = @boardlength - row_index.to_i
-  #   col_index = col_string.downcase.ord - 97
-  #   [row_index, col_index]
-  # end
 end
+
+
 
 
 class Piece
