@@ -151,7 +151,7 @@ class Board
     king_y = king_location[1]
     team_moves.each do |move| #if the king is in check, and your valid moves also
       valid_move(@board[king_x][king_y]) do |king_move| # cover its valid moves, it is checkmate
-       move == king_move ? (self.checkmate = true) : (self.checkmate = false)
+        move == king_move ? (self.checkmate = true) : (self.checkmate = false)
       end
     end
     @checkmate
@@ -333,5 +333,3 @@ b = Board.new
 
 # #puts b.display
 # p b.board[1][1]
-
-
