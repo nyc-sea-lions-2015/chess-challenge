@@ -1,6 +1,7 @@
 # STRETCH: allow for undo
 # Stretch: allow for forfeit/end game if user types "forfeit"/"quit"
 # TODO: refactor turn logic.
+# SHINY: show taken pieces along right side
 
 # require "byebug"
 require_relative "Board.rb"
@@ -16,8 +17,7 @@ class Game
   end
 
   def play
-    # stalemate, king capture, and checkmate should fire game_over
-    while !game_over?
+    while game_over? == false
       players.each do |player|
         # clear screen
         puts "\e[H\e[2J"
