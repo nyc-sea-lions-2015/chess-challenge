@@ -124,16 +124,16 @@ describe Board do
 
     desribe "check?(player)"
      let(:board2){Board.new}
-     board2.each_with_index.map do |row, row_index|
+     board2.board.each_with_index.map do |row, row_index|
       row.each_with_index.map do |col, col_index|
-        @board[row_index][col_index] = nil
+        board2.board[row_index][col_index] = nil
       end
     end
-    @board[0][3] = King.new
-    @board[0][4] = Queen.new
-    @board[0][4].color = "black"
+    board2.board[0][3] = King.new
+    board2.board[0][4] = Queen.new
+    board2.board[0][4].color = "black"
     it "returns true if the current player puts the other team's king in check"
-    expect(check2?("white")).to_eq true
+    expect(board2.check?("white")).to_eq true
 
     # describe "free_space?" do
     #   it "returns a string beginning with [" do2
