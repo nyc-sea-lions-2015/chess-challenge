@@ -1,13 +1,8 @@
 # STRETCH: allow for undo
 # Stretch: allow for forfeit/end game if user types "forfeit"/"quit"
 # TODO: refactor turn logic.
+
 # require "byebug"
-
-
-# TODO: Critical: return a message saying "no legal moves for that piece" when blocked piece is picked
-
-# TODO: Get captured piece message working
-
 require_relative "Board.rb"
 
 class Game
@@ -17,16 +12,7 @@ class Game
     @view = view
     @players = ["white", "black"]
     # col in the sense of display
-    @col_hash = {
-      "a" => 0,
-      "b" => 1,
-      "c" => 2,
-      "d" => 3,
-      "e" => 4,
-      "f" => 5,
-      "g" => 6,
-      "h" => 7
-    }
+    @col_hash = {"a" => 0,"b" => 1,"c" => 2,"d" => 3,"e" => 4,"f" => 5,"g" => 6,"h" => 7}
   end
 
   def play
@@ -42,40 +28,39 @@ class Game
     # end
   end
 
-  # TODO: refactor this mess.
-  def turn(player)
 
-    # "players turn"
+  # TODO: refactor this mess!
+  def turn(player)
+    # "white/black's turn"
     @view.turn_message(player)
-    # player, move which piece?
-    begin
-      # until user gives a input that matches a piece of their color, keep asking.
-      @view.choose_piece(player)
-    end until valid_pick?(@view.choice, player)
-    # choose piece
-    piece = @board.find_piece(input_to_coord(@view.choice))
-    # find valid moves
-    moves = coord_to_string(@board.valid_move(piece))
-    # display valid moves and ask player for choice
+    begin #if a piece is blocked, ask player for input again
+      begin #keeps asking a player which piece they want to move until they choose a piece they control
+        @view.choose_piece(player)
+      end until valid_pick?(@view.choice, player)
+      piece = @board.find_piece(input_to_coord(@view.choice))
+      moves = coord_to_string(@board.valid_move(piece))
+    end while piece_blocked?(moves, piece)
+    # displays valid moves and ask player for choice
     @view.display_valid_moves(player, piece.name, moves)
-    # player picks a move
-    begin
-      # player picks a move
+    begin   # player picks a move
       player_choice = @view.pick_move(player, @view.choice)
     end until valid_move_choice?(player_choice, moves)
 
-    # check for piece capture
-    if @board.piece_captured?(piece, input_to_coord(player_choice))
-      # refactor to capture_piece method
 
+    #TODO: refactor to capture_piece method
+    # checks for piece capture
+    if @board.piece_captured?(piece, input_to_coord(player_choice))
       @board.capture_piece(input_to_coord(player_choice))
-      "puts capture message"
       @view.display_capture_message(player, other_player(player), piece.name, @view.choice, @board.captured.last.name, player_choice)
       @board.move(piece, input_to_coord(player_choice))
       sleep(1.2)
     else
       @board.move(piece, input_to_coord(player_choice))
     end
+  end
+
+  def capture_piece
+    # refactor capture piece, display message, and move into here.
   end
 
   def other_player(current_player)
@@ -90,15 +75,24 @@ class Game
   # Is the user picking a square on the board occupied by their piece?
   def valid_pick?(user_input, player)
     coord = input_to_coord(user_input)
-    return false if @board.board[coord[0]][coord[1]] == nil
+    return false @board.board[coord[0]][coord[1]] == nil
     (@board.board_values.has_key?(user_input) && @board.board[coord[0]][coord[1]].color == player)
   end
 
-  def input_to_coord(user_input)
+  # does that piece have any moves?
+  def piece_blocked?(moves, piece)
+    if moves.empty?
+      puts "no valid moves for #{piece.name}"
+      return true
+    else
+      return false
+    end
+  end
+
+  def string_to_coord(user_input)
     @board.board_values[user_input]
   end
 
-  # turns board coord into player coords
   def coord_to_string(moves)
     moves.map! do |coord|
       coord = @board.board_values.key(coord)
@@ -132,7 +126,6 @@ class Game
   end
 
 end
-
 
 class View
   attr_reader :choice
