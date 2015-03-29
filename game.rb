@@ -1,6 +1,8 @@
+# TODO: refactor turn logic.
+
+
 # STRETCH: allow for undo
 # Stretch: allow for forfeit/end game if user types "forfeit"/"quit"
-# TODO: refactor turn logic.
 # SHINY: show taken pieces along right side
 # SHINY: clear screen after bad input
 
