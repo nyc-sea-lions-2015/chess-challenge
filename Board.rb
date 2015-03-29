@@ -89,6 +89,7 @@ class Board
         vector_array.each { |coord| valid_moves << coord } unless piece.multiple_moves == false || vector_array == []
         # valid_moves << vector_array
       elsif (@board[x][y]).color != piece.color
+
         valid_moves << [x,y]
       else
         next
@@ -115,33 +116,38 @@ class Board
     piece = square(location[0], location[1])
   end
 
-  def check?(player) #does player color put the other teams king in check?
+  def check?(player, team=all_pieces_same_color(player)) #does player color put the other teams king in check?
     result = false
-    team = all_pieces_same_color(player) # all of one player's pieces on board
+ # all of one player's pieces on board
     all_possible_team_moves = [] # all the potential moves by all the player's pieces
     team.each do |piece|
       valid_move(piece).each do |move|
         x = move[0]
         y = move[1]
+        all_possible_team_moves << move
         next if @board[x][y] == nil
         if @board[x][y].name == "king" #if one of your valid moves equals the king
           king_location = [x,y] # location, the king is in check
           result = true
-          checkmate?(all_possible_team_moves, king_location)
+          checkmate?(player, all_possible_team_moves, king_location)
         end
-        all_possible_team_moves << move
+
       end
     end
     result
   end
 
-  def checkmate?(all_possible_team_moves, king_location)
+  def checkmate?(player, all_possible_team_moves, king_location)
     king_x = king_location[0]
     king_y = king_location[1]
-   valid_move(@board[king_x][king_y]).all? do |king_move|
-    p king_move
-                all_possible_team_moves.include?(king_move)
-                  end
+     valid_move(@board[king_x][king_y]).each do |king_move|
+        all_possible_team_moves.include?(king_move) ||
+        check?()
+        #if king captures a location, would he then be in check?
+        end
+
+        # @checkmate = true
+
    #if the king is in check, and your valid moves also cover its valid moves, it is checkmate
   end
 
@@ -303,17 +309,17 @@ b.all_pieces_same_color("white")
       end
     end
     test_board[0][0] = King.new([0,0])
-    # test_board[0][1] = Queen.new([0,1], "black")
-    test_board[1][0] = Rook.new([1,0], "black")
-    test_board[0][1] = Bishop.new([1,1], "black")
+    test_board[0][1] = Queen.new([0,1], "black")
+    test_board[0][2] = Rook.new([0,2], "black")
+    # test_board[1][1] = Bishop.new([1,1], "black")
     p "king"
     p board2.valid_move(test_board[0][0])
     p "rook"
-    p board2.valid_move(test_board[1][0])
-    p "bishop"
+    p board2.valid_move(test_board[0][2])
+    p "queen"
     p board2.valid_move(test_board[0][1])
 
-    p board2.board
+    # p board2.board
 p board2.check?("black")
 p board2.checkmate
 
