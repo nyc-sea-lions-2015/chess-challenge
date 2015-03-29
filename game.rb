@@ -2,6 +2,11 @@
 # Stretch: allow for forfeit/end game if user types "forfeit"/"quit"
 # TODO: refactor turn logic.
 # SHINY: show taken pieces along right side
+# SHINY: clear screen after bad input
+
+# if user.input == "Quit"
+# abort("Quitting Game")
+
 
 # require "byebug"
 require_relative "Board.rb"
@@ -14,6 +19,7 @@ class Game
     @players = ["white", "black"]
   end
 
+
   def play
     while game_over? == false
       players.each do |player|
@@ -22,6 +28,8 @@ class Game
       end
     end
   end
+
+  private
 
   # TODO: refactor this mess!
   def turn(player)
@@ -63,8 +71,8 @@ class Game
   # Is the user picking a square on the board occupied by their piece?
   def valid_pick?(user_input, player)
     coord = string_to_coord(user_input)
-    return false if @board.board[coord[0]][coord[1]] == nil
-    (@board.board_values.has_key?(user_input) && @board.board[coord[0]][coord[1]].color == player)
+    return false if coord == nil
+    return true if (@board.board_values.has_key?(user_input) && @board.board[coord[0]][coord[1]].color == player)
   end
 
   # does that piece have any moves?
@@ -94,7 +102,6 @@ class Game
     # (king_taken? || stalemate? || checkmate?)
   end
 
-
   # utility methods
   def clear_and_display
     @view.clear_and_display(@board.format)
@@ -108,6 +115,7 @@ class Game
   end
 
   def string_to_coord(user_input)
+    # byebug
     @board.board_values[user_input]
   end
 
@@ -177,7 +185,7 @@ class View
 
   def choose_piece_message(player)
     puts
-     "#{@whitespace}choose your piece by grid. (ex: a5)"
+    "#{@whitespace}choose your piece by grid. (ex: a5)"
   end
 
   def piece_chosen_message(player, piece, moves)

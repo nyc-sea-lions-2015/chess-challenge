@@ -1,9 +1,8 @@
-# TODO: add "piece_captured?" and/or "capture_piece" method(s)
-#deal with white pawn movement
+# TODO: refactor
+# TODO: group into public/private methods
 
-# TODO: deal with formatting valid moves strings
-# TODO: deal with captures
-
+# TODO: fix the hardcoded board initialization, for the very least do it for nil values.
+# if any array is less than 8 values, fill it with nils after you initialize.
 
 
 # require "byebug"
@@ -22,8 +21,6 @@ class Board
     @game_over = false
     @empty_square_mark = "."
   end
-
-  public
 
   def display
     format
@@ -52,12 +49,14 @@ class Board
     piece.set_location(new_pos)
   end
 
-  def square(x,y)
-    @board[x][y]
-  end
+
 
   def free_space?(piece, check_row, check_col)
     @board[check_row][check_col] == nil
+  end
+
+  def find_piece(location)
+    piece = square(location[0], location[1])
   end
 
   def friendly_fire?(piece, check_row, check_col)
@@ -74,11 +73,6 @@ class Board
     @board[location[0]][location[1]] = nil
   end
 
-  def out_of_bounds?(location)
-    x = location[0]
-    y = location[1]
-    (x < 0 || y < 0 || x > 7|| y > 7)
-  end
 
   def piece_captured?(piece, location)
     (@board[location[0]][location[1]] != nil)
@@ -88,12 +82,6 @@ class Board
     @captured << square(location[0], location[1])
     @board[location[0]][location[1]] = nil
     @game_over = true if king_taken?
-  end
-
-  def king_taken?
-    @captured.each do |object|
-      return true if object.name == "king"
-    end
   end
 
   def valid_move(piece)
@@ -118,6 +106,24 @@ class Board
     valid_moves
   end
 
+
+  # private
+
+
+  def out_of_bounds?(location)
+    x = location[0]
+    y = location[1]
+    (x < 0 || y < 0 || x > 7|| y > 7)
+  end
+
+
+  def king_taken?
+    @captured.each do |object|
+      return true if object.name == "king"
+    end
+  end
+
+
   def check_direction(piece, x, y, add_x, add_y, array_direction = [])
     if out_of_bounds?([x + add_x, y + add_y])
       return array_direction
@@ -132,8 +138,8 @@ class Board
     array_direction
   end
 
-  def find_piece(location)
-    piece = square(location[0], location[1])
+  def square(x,y)
+    @board[x][y]
   end
 
   def check?(player) #does player color put the other teams king in check?
@@ -253,7 +259,6 @@ class Pawn < Piece
     end
     array
   end
-
 end
 
 # TODO: deal with possible_moves method
