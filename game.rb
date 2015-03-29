@@ -1,10 +1,12 @@
-# TODO: refactor turn logic.
-
-
 # STRETCH: allow for undo
+
+
+# TODO: refactor turn logic. maybe use "retry?"
+
+
 # Stretch: allow for forfeit/end game if user types "forfeit"/"quit"
 # SHINY: show taken pieces along right side
-# SHINY: clear screen after bad input
+# SHINY: clear input after bad input
 
 # if user.input == "Quit"
 # abort("Quitting Game")
@@ -38,6 +40,9 @@ class Game
     # "white/black's turn"
     @view.turn_message(player)
     begin #if a piece is blocked, ask player for input again
+
+      # need to go back to here if @view.pick_move == "undo"
+
       begin #keeps asking a player which piece they want to move until they choose a piece they control
         @view.choose_piece(player)
       end until valid_pick?(@view.choice, player)
@@ -47,6 +52,11 @@ class Game
     # displays valid moves and ask player for choice
     @view.display_valid_moves(player, piece.name, moves)
     begin   # player picks a move
+
+
+      # logic for deselect:
+      # if player enters "undo, return to @view.choose_piece"
+
       player_choice = @view.pick_move(player, @view.choice)
     end until valid_move_choice?(player_choice, moves)
 
@@ -56,7 +66,7 @@ class Game
       @board.capture_piece(string_to_coord(player_choice))
       @view.display_capture_message(player, other_player(player), piece.name, @view.choice, @board.captured.last.name, player_choice)
       @board.move(piece, string_to_coord(player_choice))
-      sleep(1.1)
+      sleep(1.0)
     else
       @board.move(piece, string_to_coord(player_choice))
     end
@@ -195,11 +205,11 @@ class View
   end
   # move gets sent to board
   def player_move_message(player, piece, move)
-    "#{@whitespace}ok, #{player}'s #{piece} #{choice} to move to #{move}"
+    "#{@whitespace}, #{player}'s #{piece} #{choice} moves to #{move}"
   end
 
   def pick_move_message(player, choice)
-    "#{@whitespace}#{player}, move #{choice} where?"
+    "#{@whitespace}#{player}, move #{choice} where? (enter 'undo' to deselect)"
   end
 
   def capture_message(player, player2, piece, starting_location, captured_piece, move)
