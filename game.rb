@@ -12,21 +12,16 @@ class Game
     @board = board
     @view = view
     @players = ["white", "black"]
-    # col in the sense of display
-    @col_hash = {"a" => 0,"b" => 1,"c" => 2,"d" => 3,"e" => 4,"f" => 5,"g" => 6,"h" => 7}
   end
 
   def play
     while game_over? == false
       players.each do |player|
-        # clear screen
-        puts "\e[H\e[2J"
-        puts display_board
+        clear_and_display
         turn(player)
       end
     end
   end
-
 
   # TODO: refactor this mess!
   def turn(player)
@@ -45,7 +40,6 @@ class Game
       player_choice = @view.pick_move(player, @view.choice)
     end until valid_move_choice?(player_choice, moves)
 
-
     #TODO: refactor to capture_piece method
     # checks for piece capture
     if @board.piece_captured?(piece, string_to_coord(player_choice))
@@ -60,11 +54,6 @@ class Game
 
   def capture_piece
     # refactor capture piece, display message, and move into here.
-  end
-
-  def other_player(current_player)
-    other_player = @players.select{|player| player != current_player}
-    other_player[0]
   end
 
   def valid_move_choice?(player_choice, moves)
@@ -88,10 +77,6 @@ class Game
     end
   end
 
-  def string_to_coord(user_input)
-    @board.board_values[user_input]
-  end
-
   def coord_to_string(moves)
     moves.map! do |coord|
       coord = @board.board_values.key(coord)
@@ -103,19 +88,50 @@ class Game
     @board.move(new_pos,piece)
   end
 
-  def display_board
-    @board.format
-  end
-
   # checks for king taken, stalemate, or checkmate
   def game_over?
     @board.game_over
     # (king_taken? || stalemate? || checkmate?)
   end
+
+
+  # utility methods
+  def clear_and_display
+    @view.clear_and_display(@board.format)
+  end
+
+  def coord_to_string(moves)
+    moves.map! do |coord|
+      coord = @board.board_values.key(coord)
+    end
+    return moves
+  end
+
+  def string_to_coord(user_input)
+    @board.board_values[user_input]
+  end
+
+  def other_player(current_player)
+    other_player = @players.select{|player| player != current_player}
+    other_player[0]
+  end
 end
 
 class View
   attr_reader :choice
+
+  def initialize
+    @whitespace = "     "
+  end
+
+  def clear_and_display(board)
+    puts "\e[H\e[2J"
+    puts display_board(board)
+  end
+
+  def display_board(board)
+    puts board
+  end
 
   def turn_message(player)
     message(player_turn_message(player))
@@ -155,23 +171,25 @@ class View
 
   # Messages to console
   def player_turn_message(player)
-    "#{player}'s turn"
+    puts
+    "                #{player}'s turn"
   end
 
   def choose_piece_message(player)
-    "#{player}, which piece do you want to move? ex: a5, e8"
+    puts
+     "#{@whitespace}choose your piece by grid. (ex: a5)"
   end
 
   def piece_chosen_message(player, piece, moves)
-    "moves for #{player}'s #{piece}" +": " + moves.join(", ")
+    "#{@whitespace}moves for #{player}'s #{piece}" +": " + moves.join(", ")
   end
   # move gets sent to board
   def player_move_message(player, piece, move)
-    "ok, #{player}'s #{piece} #{choice} to move to #{move}"
+    "#{@whitespace}ok, #{player}'s #{piece} #{choice} to move to #{move}"
   end
 
   def pick_move_message(player, choice)
-    "#{player}, move #{choice} where?"
+    "#{@whitespace}#{player}, move #{choice} where?"
   end
 
   def capture_message(player, player2, piece, starting_location, captured_piece, move)
@@ -179,7 +197,7 @@ class View
   end
 
   def choose_again_message(player)
-    "#{player}, please choose a valid square"
+    "#{@whitespace}#{player}, please choose a valid square"
   end
 
   def game_over_message(player)
