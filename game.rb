@@ -57,12 +57,12 @@ class Game
       # find valid moves
       # might be missing an input here?
       moves = @board.valid_move(piece)
-      p moves
+      moves_string = moves.map {|move| coord_to_string(move)} #converts coordinates to letter_num
       # display valid moves and ask player for choice
-      @view.display_valid_moves(player, piece.name, moves)
+      @view.display_valid_moves(player, piece.name, moves_string)
       # player picks a move
       move_choice = input_to_coord(@view.pick_move(player, @view.choice))
-      p move_choice
+
 
 
       # if invalid_move_choice(move_choice)
@@ -76,6 +76,7 @@ class Game
       # valid_move_choice?(moves, move_choice)
       # if it was a capture, remove captured piece and display capture message, else move onto next turn.
       if @board.piece_captured?(piece, move_choice)
+
         @board.capture_piece(move_choice)
         # @view.display_capture_move(player, player, piece, captured_piece, choice, move_move)
         @board.move(piece, move_choice)
@@ -106,6 +107,10 @@ class Game
   end
 
   def coord_to_string(output)
+    col_letter = (output[1] + 97).chr
+    row_number = (output[0]+1).to_s
+    string = col_letter + row_number
+    string
 
   end
 
