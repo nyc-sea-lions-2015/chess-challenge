@@ -25,7 +25,6 @@ class Game
         turn(player)
       end
     end
-    # end
   end
 
 
@@ -37,7 +36,7 @@ class Game
       begin #keeps asking a player which piece they want to move until they choose a piece they control
         @view.choose_piece(player)
       end until valid_pick?(@view.choice, player)
-      piece = @board.find_piece(input_to_coord(@view.choice))
+      piece = @board.find_piece(string_to_coord(@view.choice))
       moves = coord_to_string(@board.valid_move(piece))
     end while piece_blocked?(moves, piece)
     # displays valid moves and ask player for choice
@@ -49,13 +48,13 @@ class Game
 
     #TODO: refactor to capture_piece method
     # checks for piece capture
-    if @board.piece_captured?(piece, input_to_coord(player_choice))
-      @board.capture_piece(input_to_coord(player_choice))
+    if @board.piece_captured?(piece, string_to_coord(player_choice))
+      @board.capture_piece(string_to_coord(player_choice))
       @view.display_capture_message(player, other_player(player), piece.name, @view.choice, @board.captured.last.name, player_choice)
-      @board.move(piece, input_to_coord(player_choice))
-      sleep(1.2)
+      @board.move(piece, string_to_coord(player_choice))
+      sleep(1.1)
     else
-      @board.move(piece, input_to_coord(player_choice))
+      @board.move(piece, string_to_coord(player_choice))
     end
   end
 
@@ -74,8 +73,8 @@ class Game
 
   # Is the user picking a square on the board occupied by their piece?
   def valid_pick?(user_input, player)
-    coord = input_to_coord(user_input)
-    return false @board.board[coord[0]][coord[1]] == nil
+    coord = string_to_coord(user_input)
+    return false if @board.board[coord[0]][coord[1]] == nil
     (@board.board_values.has_key?(user_input) && @board.board[coord[0]][coord[1]].color == player)
   end
 
@@ -110,21 +109,9 @@ class Game
 
   # checks for king taken, stalemate, or checkmate
   def game_over?
-    (king_taken? || stalemate? || checkmate?)
+    @board.game_over
+    # (king_taken? || stalemate? || checkmate?)
   end
-
-  def king_taken?
-    false
-  end
-
-  def stalemate?
-    false
-  end
-
-  def checkmate?
-    false
-  end
-
 end
 
 class View
@@ -167,7 +154,6 @@ class View
   end
 
   # Messages to console
-
   def player_turn_message(player)
     "#{player}'s turn"
   end
@@ -200,7 +186,6 @@ class View
     "#{player} wins"
   end
 
-  # siphon methods for prompts and inputs
   def user_input
     gets.chomp
   end
@@ -209,7 +194,6 @@ class View
     puts str
   end
 end
-
 
 G = Game.new()
 
