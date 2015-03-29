@@ -116,9 +116,9 @@ class Board
     piece = square(location[0], location[1])
   end
 
-  def check?(player, team=all_pieces_same_color(player)) #does player color put the other teams king in check?
+  def check?(player, board_state=board) #does player color put the other teams king in check?
     result = false
- # all of one player's pieces on board
+  team = all_pieces_same_color(player)# all of one player's pieces on board
     all_possible_team_moves = [] # all the potential moves by all the player's pieces
     team.each do |piece|
       valid_move(piece).each do |move|
@@ -140,15 +140,20 @@ class Board
   def checkmate?(player, all_possible_team_moves, king_location)
     king_x = king_location[0]
     king_y = king_location[1]
-     valid_move(@board[king_x][king_y]).each do |king_move|
-        all_possible_team_moves.include?(king_move) ||
-        check?()
-        #if king captures a location, would he then be in check?
+    valid_move(@board[king_x][king_y]).each do |king_move|
+        all_possible_team_moves.include?(king_move) || #if the king is in check, and your valid moves also cover its valid moves
+        king_moves_into_check?(player, king_move, king_x, king_y)
+        #if king captures a location, if he is then in check
         end
 
         # @checkmate = true
 
-   #if the king is in check, and your valid moves also cover its valid moves, it is checkmate
+  end
+
+  def king_moves_into_check?(player, king_move, king_x, king_y)
+     # king = @board[king_x][king_y]
+     # check_board = @board.move(king, king_move)
+     #  check?(player, check_board)
   end
 
   def all_pieces_same_color(player)

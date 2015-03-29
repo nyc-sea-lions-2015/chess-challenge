@@ -57,10 +57,12 @@ class Game
       # find valid moves
       # might be missing an input here?
       moves = @board.valid_move(piece)
+      p moves
       # display valid moves and ask player for choice
       @view.display_valid_moves(player, piece.name, moves)
       # player picks a move
       move_choice = input_to_coord(@view.pick_move(player, @view.choice))
+      p move_choice
 
 
       # if invalid_move_choice(move_choice)
