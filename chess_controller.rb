@@ -26,7 +26,7 @@ while !game.check_mate? do
     reset_screen!
     puts game.to_s
     model_coord, view_coord, move_coord, piece, moves, model_move_coord = ""
-    puts "Check" if game.check?
+    puts "#{player} is in check" if game.check?
     loop do
       puts "#{player}'s turn"
       puts "#{player}, which piece would you like to move?"
@@ -54,6 +54,7 @@ while !game.check_mate? do
     end
     game.place(piece, model_move_coord )
     puts string
+    sleep(0.25)
   end
 end
 
