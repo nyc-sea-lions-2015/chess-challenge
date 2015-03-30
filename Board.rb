@@ -13,7 +13,7 @@
 class Board
 
 
-  attr_accessor :board, :board_values, :game_over
+  attr_accessor :board, :board_values, :game_over, :checkmate
   attr_reader :captured
   def initialize
     @checkmate = false
@@ -53,6 +53,7 @@ class Board
   end
 
   def move(piece,new_pos)
+    p new_pos
     old_pos = piece.location
     @board[new_pos[0]][new_pos[1]] = piece
     @board[old_pos[0]][old_pos[1]] = nil
@@ -60,7 +61,7 @@ class Board
   end
 
 
-  def free_space?(check_row, check_col)
+  def free_space?(piece, check_row, check_col)
     @board[check_row][check_col] == nil
   end
 
@@ -69,7 +70,7 @@ class Board
   end
 
   def friendly_fire?(piece, check_row, check_col)
-    return false if free_space?(check_row, check_col)
+    return false if free_space?(piece,check_row, check_col)
     square(check_row, check_col).color == piece.color
   end
 
@@ -103,13 +104,13 @@ class Board
       x = current_location[0] + move[0]
       y = current_location[1] + move[1]
       next if out_of_bounds?([x,y])
-      if free_space?(x, y)
+      if free_space?(piece, x, y)
         valid_moves << [x,y] #fix
         vector_array = check_direction(piece, x, y, move[0], move[1])
         vector_array.each { |coord| valid_moves << coord } unless piece.multiple_moves == false || vector_array == []
         # valid_moves << vector_array
       elsif (@board[x][y]).color != piece.color
-        valid_moves << move
+        valid_moves << [x,y]
       else
         next
       end
@@ -140,7 +141,7 @@ class Board
       return array_direction
     elsif friendly_fire?(piece, x + add_x, y + add_y) #&& piece.name != 'knight'
       return array_direction
-    elsif free_space?(x + add_x, y + add_y)
+    elsif free_space?(piece,x + add_x, y + add_y)
       array_direction << [x + add_x, y + add_y]
       check_direction(piece, x + add_x, y + add_y, add_x, add_y, array_direction )
     else
@@ -182,17 +183,18 @@ class Board
         king_moves_into_check?(player, king_move, king_x, king_y)
         #if king captures a location, if he is then in check
         end
-     true if @checkmate == true
+     # true if @checkmate == true
 
   end
 
   def king_moves_into_check?(player, king_move, king_x, king_y)
      king = @board[king_x][king_y]
+      return if king == nil
      check_board = self.move(king, king_move)
-     if check?(player, check_board)
-      p "king moves into check"
-      true
-    end
+    #  if check?(player, check_board)
+    #   p "king moves into check"
+    #   true
+    # end
   end
 
   def all_pieces_same_color(player)
@@ -237,7 +239,7 @@ end
 
 class Pawn < Piece
   attr_reader :color
-  attr_accessor :multiple_moves, :location #:first_move?, :capturing?
+  attr_accessor :multiple_moves
   #logic for capturing?
   def initialize(location, color = "white")
     @location = location
@@ -245,7 +247,6 @@ class Pawn < Piece
     @color == "white" ? @icon = "♟" : @icon = '♙'
     @multiple_moves = false
     # first_move? == true if self.location[0] == 1 || self.location[0] == 6 #initial row value for pawns
-
     # moves << [0,2] if first_move?
     # moves << [1,1] if capturing?
     @name = "pawn"
@@ -276,16 +277,16 @@ class Pawn < Piece
     y = location[1]
     array = []
     if board[x + 1][y + 1] != nil && board[x + 1][y + 1].color != self.color && color == "white"
-      array << [x+1, y+1]
+      array << [1, 1]
     end
     if board[x+1][y-1] != nil && (board[x+1][y-1]).color != self.color && color == "white"
-      array << [x+1, y-1]
+      array << [1, -1]
     end
-    if board[x-1][y-1] != nil && board[x-1][y-1].color != self.color && color == "black"
-      array << [x-1, y-1]
+    if board[x-1][y-1] != nil && board[x-1][y-1].color != color && color == "black"
+      array << [-1, -1]
     end
     if board[x-1][y+1] != nil && board[x-1][y+1].color != self.color && color == "black"
-      array << [x-1, y+1]
+      array << [-1, +1]
     end
     array
   end
@@ -375,6 +376,9 @@ b = Board.new
 
 b = Board.new
 
+b = Board.new
+b.all_pieces_same_color("white")
+ b.board
  board2 = Board.new
  test_board = board2.board
   test_board.each_with_index.map do |row, row_index|
@@ -382,13 +386,11 @@ b = Board.new
         test_board[row_index][col_index] = nil
       end
     end
-
     test_board[0][0] = King.new([0,0])
-    # test_board[0][1] = Queen.new([0,1], "black")
+    test_board[0][1] = Queen.new([0,1], "black")
     test_board[0][2] = Rook.new([0,2], "black")
     # test_board[1][1] = Bishop.new([1,1], "black")
     p "king"
-    p test_board[0][0]
     p board2.valid_move(test_board[0][0])
     p "rook"
     p board2.valid_move(test_board[0][2])
@@ -398,5 +400,4 @@ b = Board.new
     # p board2.board
 p board2.check?("black")
 p board2.checkmate
-
 
