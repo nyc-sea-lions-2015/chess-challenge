@@ -1,3 +1,4 @@
+
 # STRETCH: allow for undo
 
 
@@ -7,6 +8,7 @@
 # Stretch: allow for forfeit/end game if user types "forfeit"/"quit"
 # SHINY: show taken pieces along right side
 # SHINY: clear input after bad input
+
 
 # if user.input == "Quit"
 # abort("Quitting Game")
@@ -27,6 +29,8 @@ class Game
   def play
     while game_over? == false
       players.each do |player|
+
+
         clear_and_display
         turn(player)
       end
@@ -39,6 +43,7 @@ class Game
   def turn(player)
     # "white/black's turn"
     @view.turn_message(player)
+
     begin #if a piece is blocked, ask player for input again
 
       # need to go back to here if @view.pick_move == "undo"
@@ -201,7 +206,9 @@ class View
   end
 
   def piece_chosen_message(player, piece, moves)
+
     "#{@whitespace}moves for #{player}'s #{piece}" +": " + moves.join(", ")
+
   end
   # move gets sent to board
   def player_move_message(player, piece, move)
@@ -234,5 +241,11 @@ class View
 end
 
 G = Game.new()
+
+
+#p G.input_to_int("c4")
+# p G.valid_pick?("c4")
+# p G.bad_input("c52829")
+# p G.valid_pick?("f5")
 
 puts G.play
