@@ -1,14 +1,18 @@
-# TODO: add "piece_captured?" and/or "capture_piece" method(s)
-#deal with white pawn movement
 
-# TODO: deal with formatting valid moves strings
-# TODO: deal with captures
+# TODO: refactor
+# TODO: group into public/private methods
+
+# TODO: fix the hardcoded board initialization, for the very least do it for nil values.
+# if any array is less than 8 values, fill it with nils after you initialize.
 
 
-require "byebug"
+# require "byebug"
 
 class Board
-  attr_accessor :board, :board_values
+
+  attr_accessor :board, :board_values, :game_over
+  attr_reader :captured
+
   def initialize
     @checkmate = false
     @board = [[Rook.new([0,0]), Knight.new([0, 1]), Bishop.new([0, 2]), Queen.new([0, 3]), King.new([0, 4]), Bishop.new([0, 5]), Knight.new([0, 6]), Rook.new([0,7])], [Pawn.new([1,0]), Pawn.new([1,1]), Pawn.new([1,2]), Pawn.new([1,3]), Pawn.new([1,4]), Pawn.new([1,5]), Pawn.new([1,6]), Pawn.new([1,7])], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [nil, nil, nil, nil, nil,nil, nil, nil], [Pawn.new([6,0], "black"), Pawn.new([6,1], "black"), Pawn.new([6,2], "black"), Pawn.new([6,3], "black"), Pawn.new([6,4], "black"), Pawn.new([6,5], "black"), Pawn.new([6,6], "black"), Pawn.new([6, 7], "black")], [Rook.new([7, 0], "black"), Knight.new([7, 1], "black"), Bishop.new([7, 2], "black"), King.new([7, 3], "black"), Queen.new([7, 4], "black"), Bishop.new([7, 5], "black"), Knight.new([7, 6], "black"), Rook.new([7, 7], "black")]]
@@ -17,6 +21,10 @@ class Board
     @display_board = ""
     @board_values = { "a1"=> [0,0], "b1"=> [0,1], "c1"=> [0,2], "d1" => [0,3], "e1" => [0,4], "f1" => [0,5], "g1" => [0,6], "h1" => [0,7], "a2" => [1,0], "b2" => [1,1], "c2" => [1,2], "d2" => [1,3], "e2" => [1,4], "f2" => [1,5], "g2" => [1,6], "h2" => [1,7], "a3" => [2,0], "b3" => [2,1], "c3" => [2,2], "d3" => [2,3], "e3" => [2,4], "f3" => [2,5], "g3" => [2,6], "h3" => [2,7], "a4" => [3,0], "b4" => [3,1], "c4" => [3,2], "d4" => [3,3], "e4" => [3,4], "f4" => [3,5], "g4" => [3,6], "h4" => [3,7], "a5" => [4,0], "b5" => [4,1], "c5" => [4,2], "d5" => [4,3], "e5" => [4,4], "f5" => [4,5], "g5" => [4,6], "h5" => [4,7], "a6" => [5,0], "b6" => [5,1], "c6" => [5,2], "d6" => [5,3], "e6" => [5,4], "f6" => [5,5], "g6" => [5,6], "h6" => [5,7], "a7" => [6,0], "b7" => [6,1], "c7" => [6,2], "d7" => [6,3], "e7" => [6,4], "f7" => [6,5], "g7" => [6,6], "h7" => [6,7], "a8" => [7,0], "b8" => [7,1], "c8" => [7,2], "d8" => [7,3], "e8" => [7,4], "f8" => [7,5], "g8" => [7,6], "h8" => [7,7] }
     @captured = []
+
+    @game_over = false
+    @empty_square_mark = "."
+
   end
 
   def display
@@ -28,16 +36,17 @@ class Board
     @board_string = ""
     board_row = []
     @board.reverse.each do |row|
-      @board_string += "#{row_num} "
+
+      @board_string += "#{row_num}  "
       row.each do |cell|
-        # byebug
-        cell == nil ? cell = ' ' : cell = cell.display_icon
-        @board_string +=" " + cell + " "
+        cell == nil ? cell = @empty_square_mark : cell = cell.display_icon
+        @board_string +="  " + cell + "  "
       end
-      @board_string += "\n"
+      @board_string += "\n" + "\n"
       row_num -= 1
     end
-    @board_string += "   " +  @col_letters.join("  ")
+    @board_string += "     " +  @col_letters.join("    ")
+
   end
 
   def move(piece,new_pos)
@@ -47,12 +56,13 @@ class Board
     piece.set_location(new_pos)
   end
 
-  def square(x,y)
-    @board[x][y]
-  end
 
   def free_space?(piece, check_row, check_col)
     @board[check_row][check_col] == nil
+  end
+
+  def find_piece(location)
+    piece = square(location[0], location[1])
   end
 
   def friendly_fire?(piece, check_row, check_col)
@@ -61,7 +71,9 @@ class Board
   end
 
   def piece_captured?(piece, location)
-    (square(location[0], location[1]) != nil)
+
+    (@board[location[0]][location[1]] != nil)
+
   end
 
   def capture_piece(location)
@@ -69,33 +81,57 @@ class Board
     @board[location[0]][location[1]] = nil
   end
 
-  def out_of_bounds?(location)
-    x = location[0]
-    y = location[1]
-    (x < 0 || y < 0 || x > 7|| y > 7)
+
+  def piece_captured?(piece, location)
+    (@board[location[0]][location[1]] != nil)
+  end
+
+  def capture_piece(location)
+    @captured << square(location[0], location[1])
+    @board[location[0]][location[1]] = nil
+    @game_over = true if king_taken?
+
   end
 
   def valid_move(piece)
     valid_moves = []
-    piece_moves = piece.moves
+    piece.respond_to?(:pawn_attack) ? piece_moves = piece.moves(@board) : piece_moves = piece.moves
     current_location = piece.location
     piece_moves.each do |move|
       x = current_location[0] + move[0]
       y = current_location[1] + move[1]
       next if out_of_bounds?([x,y])
       if free_space?(piece, x, y)
-        valid_moves << [x, y] #fix
+        valid_moves << [x,y] #fix
         vector_array = check_direction(piece, x, y, move[0], move[1])
         vector_array.each { |coord| valid_moves << coord } unless piece.multiple_moves == false || vector_array == []
         # valid_moves << vector_array
       elsif (@board[x][y]).color != piece.color
-        valid_move << move
+        valid_moves << move
       else
         next
       end
     end
     valid_moves
   end
+
+
+  # private
+
+
+  def out_of_bounds?(location)
+    x = location[0]
+    y = location[1]
+    (x < 0 || y < 0 || x > 7|| y > 7)
+  end
+
+
+  def king_taken?
+    @captured.each do |object|
+      return true if object.name == "king"
+    end
+  end
+
 
   def check_direction(piece, x, y, add_x, add_y, array_direction = [])
     if out_of_bounds?([x + add_x, y + add_y])
@@ -110,6 +146,7 @@ class Board
     end
     array_direction
   end
+
 
   def find_piece(location)
     piece = square(location[0], location[1])
@@ -157,6 +194,12 @@ class Board
     team
   end
 
+
+  def square(x,y)
+    @board[x][y]
+  end
+
+
 end
 
 
@@ -164,8 +207,6 @@ class Piece
   attr_accessor :color, :moves, :location, :name
   attr_reader :display, :multiple_moves
   def initialize(location, color = "white")
-    @location = location
-    @color = color
     @icon = icon
     @all_adjacent = [[0, 1],[0, -1],[1,0],[-1,0],[1,1],[-1,1],[1,-1],[-1,-1]]
     @location = location
@@ -183,7 +224,7 @@ end
 
 class Pawn < Piece
   attr_reader :color
-  attr_accessor :moves, :multiple_moves #:first_move?, :capturing?
+  attr_accessor :multiple_moves, :location #:first_move?, :capturing?
   #logic for capturing?
   def initialize(location, color = "white")
     @location = location
@@ -191,25 +232,50 @@ class Pawn < Piece
     @color == "white" ? @icon = "♟" : @icon = '♙'
     @multiple_moves = false
     # first_move? == true if self.location[0] == 1 || self.location[0] == 6 #initial row value for pawns
-    x = @location
-    if x[0] == 1 && @color == "white"
-      @moves = [[1,0], [2,0]]
-    elsif @color == "white"
-      @moves = [[1,0]]
-    elsif x[0] == 6 && @color == "black"
-      @moves = [[-1,0], [-2,0]]
-    else
-      @moves = [[-1, 0]]
-    end
+
     # moves << [0,2] if first_move?
     # moves << [1,1] if capturing?
     @name = "pawn"
   end
 
-  def moves
-    @moves
+  def moves(board = nil)
+    moves = []
+    if @location[0] == 1 && @color == "white"
+      moves = [[1,0], [2,0]]
+    elsif @color == "white"
+      moves = [[1,0]]
+    elsif @location[0] == 6 && @color == "black"
+      moves = [[-1,0], [-2,0]]
+    else
+      moves = [[-1, 0]]
+    end
+    if pawn_attack(board) == []
+      moves
+    else
+      pawn_attack(board).each { |coord| moves << coord }
+      moves
+    end
+
   end
 
+  def pawn_attack(board)
+    x = location[0]
+    y = location[1]
+    array = []
+    if board[x + 1][y + 1] != nil && board[x + 1][y + 1].color != self.color && color == "white"
+      array << [x+1, y+1]
+    end
+    if board[x+1][y-1] != nil && (board[x+1][y-1]).color != self.color && color == "white"
+      array << [x+1, y-1]
+    end
+    if board[x-1][y-1] != nil && board[x-1][y-1].color != self.color && color == "black"
+      array << [x-1, y-1]
+    end
+    if board[x-1][y+1] != nil && board[x-1][y+1].color != self.color && color == "black"
+      array << [x-1, y+1]
+    end
+    array
+  end
 end
 
 # TODO: deal with possible_moves method
@@ -276,6 +342,7 @@ class Knight < Piece
     @name = "knight"
   end
 end
+
 
 
 b = Board.new
