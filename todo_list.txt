@@ -1,6 +1,0 @@
-Make view
-Refactor piece classes
-Refactor piece instantiation
-Make controller
-Make move methods
-Make tests (1 per method?)
