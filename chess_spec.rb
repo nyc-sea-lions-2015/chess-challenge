@@ -74,6 +74,7 @@ require_relative 'Board'
 #   end
 # end
 
+
 describe Board do
 
   # describe move(old_pos, new_pos, piece)
@@ -91,122 +92,123 @@ describe Board do
     end
   end
 
-    describe "valid_moves(piece)" do
-      it "returns an array of the valid destinations for a given piece"  do
-        expect(valid_moves(pawn2)).to eq [[5,2],[4,2]]
-      end
-    end
-
-    describe "move(piece, destination)" do
-      it "moves a piece from its current position into the specified position" do
-        board1.move(board1.board[6][0], [5,0])
-        expect(board1[5][0].name).to eq "pawn"
-      end
-    end
-
-    describe "all_pieces_same_color(player)" do
-      it "selects all of the pieces of a given color" do
-        player = "white"
-        expect(board1.all_pieces_same_color(player).length).to eq 16
-      end
-    end
-
-  desribe "check?(player)" do
-    board2.board.each_with_index.map do |row, row_index|
-    row.each_with_index.map do |col, col_index|
-      board2.board[row_index][col_index] = nil
+  describe "valid_move(piece)" do
+    it "returns an array of the valid destinations for a given piece"  do
+      expect(valid_move(pawn2)).to eq [[5,2],[4,2]]
     end
   end
-  board2.board[0][3] = King.new([0,3])
-  board2.board[0][4] = Queen.new([0,4], "black")
 
+  describe "move(piece, destination)" do
+    it "moves a piece from its current position into the specified position" do
+      board1.move(board1.board[6][0], [5,0])
+      expect(board1.board[5][0].name).to eq "pawn"
+    end
+  end
+
+  describe "all_pieces_same_color(player)" do
+    it "selects all of the pieces of a given color" do
+      player = "white"
+      expect(board1.all_pieces_same_color(player).length).to eq 16
+    end
+  end
+
+
+  describe "check?(player)" do
     it "returns true if the current player puts the other team's king in check" do
-    expect(board2.check?("white")).to_eq true
+    board2.board.each_with_index.map do |row, row_index|
+      row.each_with_index.map do |col, col_index|
+        board2.board[row_index][col_index] = nil
+      end
+      end
+       board2.board[0][3] = King.new([0,3])
+      board2.board[0][4] = Queen.new([0,4], "black")
+      expect(board2.check?("white")).to_eq true
+    end
   end
-end
 
-describe "checkmate" do
-  it "returns false when the opponent's king is not in checkmate" do
+  describe "checkmate" do
+    it "returns false when the opponent's king is not in checkmate" do
       expect(board2.checkmate).to eq false
+    end
+    it "returns true when the opponent's king is in checkmate" do
+      board2.board[0][5] = Rook.new([0,5], "black")
+      board2.board[2][3] = Bishop.new([2,3], "black")
+      expect(board2.checkmate).to eq true
+    end
   end
-  it "returns true when the opponent's king is in checkmate" do
-   board2.board[0][5] = Rook.new([0,5], "black")
-   board2.board[2][3] = Bishop.new([2,3], "black")
-   expect(board2.checkmate).to eq true
- end
+
+  describe "free_space?(x,y)" do
+    it "returns a a boolean value as to whether the space is empty on the board" do
+      expect(board2.board.free_space?(4,4)).to eq true
+    end
+  end
+
+
+  describe "out_of_bounds?(location)" do
+    it "returns a a boolean value as to whether a given move would put the piece outside the board" do
+      expect(board2.board.out_of_bounds([-1,-1])).to eq true
+    end
+  end
+
 end
 
-    describe "free_space?(x,y)" do
-      it "returns a a boolean value as to whether the space is empty on the board" do
-        expect(board2.free_space(4,4)).to eq true
-      end
-    end
-
-
-    describe "out_of_bounds?(location)" do
-      it "returns a a boolean value as to whether a given move would put the piece outside the board" do
-        expect(board2.out_of_bounds([-1,-1])).to eq true
-      end
-    end
-
-  end
-
-  describe Piece do
-    let(:piece1){Piece.new}
-    describe "all adjacent" do
-      it "has an attribute which returns an array of all 8 vector directions" do
-        expect(piece.all_adjacent).to eq [[0, 1],[0, -1],[1,0],[-1,0],[1,1],[-1,1],[1,-1],[-1,-1]]
-      end
+describe Piece do
+  let(:piece1){Piece.new}
+  describe "all adjacent" do
+    it "has an attribute which returns an array of all 8 vector directions" do
+      expect(piece.all_adjacent).to eq [[0, 1],[0, -1],[1,0],[-1,0],[1,1],[-1,1],[1,-1],[-1,-1]]
     end
   end
+end
 
-#   describe Pawn do
-#     let(:pawn1){Pawn.new}
-#     pawn1.location = [1,0]
-#     describe "moves" do
-#       it "has a moves attribute of the basic move up 1" do
-#         expect(pawn1.moves).to eq [[0,1],[2,0]]
-#       end
-#   end
+  describe Pawn do
+    let(:pawn1){Pawn.new}
 
-#   describe Rook do
-#     let(:rook1){Rook.new}
-#     describe "name" do
-#       it "has the name attribute 'rook'" do
-#         expect(rook1.name).to eq "rook"
-#       end
-#     end
-#   end
+    describe "moves" do
+      it "has a moves attribute of the basic move up 1" do
+        pawn1.location = [1,0]
+        expect(pawn1.moves).to eq [[0,1],[2,0]]
+      end
+  end
+end
+  describe Rook do
+    let(:rook1){Rook.new}
+    describe "name" do
+      it "has the name attribute 'rook'" do
+        expect(rook1.name).to eq "rook"
+      end
+    end
+  end
 
-#   describe Bishop do
-#     let(:bishop1){Bishop.new}
-#     describe "icon" do
-#       it "has the icon attribute ♝" do
-#         expect(bishop1.icon).to eq "♝"
-#       end
-#     end
-#   end
+  describe Bishop do
+    let(:bishop1){Bishop.new}
+    describe "icon" do
+      it "has the icon attribute ♝" do
+        expect(bishop1.icon).to eq "♝"
+      end
+    end
+  end
 
-#   desribe Queen do
-#      let(:queen1){Queen.new}
-#     describe "color" do
-#       it "has the color attribute white upon initializing" do
-#         expect(queen1.color).to eq "white"
-#       end
-#     end
-#   end
+  describe Queen do
+     let(:queen1){Queen.new}
+    describe "color" do
+      it "has the color attribute white upon initializing" do
+        expect(queen1.color).to eq "white"
+      end
+    end
+  end
 
-#   describe King do
-#     let(:board5){Board.new}
-#      let(:king1){King.new}
-#     describe "location" do
-#       it "has the location attribute [0,4] upon initializing a board" do
-#         expect(king1.location).to eq [0,4]
-#       end
-#     end
+  describe King do
+    let(:board5){Board.new}
+     let(:king1){King.new}
+    describe "location" do
+      it "has the location attribute [0,4] upon initializing a board" do
+        expect(king1.location).to eq [0,4]
+      end
+    end
+
+end
+
+# describe Knight do
 
 # end
-
-  # describe Knight do
-
-  # end
