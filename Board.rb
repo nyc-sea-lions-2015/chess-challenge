@@ -60,7 +60,7 @@ class Board
   end
 
 
-  def free_space?(piece, check_row, check_col)
+  def free_space?(check_row, check_col)
     @board[check_row][check_col] == nil
   end
 
@@ -69,7 +69,7 @@ class Board
   end
 
   def friendly_fire?(piece, check_row, check_col)
-    return false if free_space?(piece, check_row, check_col)
+    return false if free_space?(check_row, check_col)
     square(check_row, check_col).color == piece.color
   end
 
@@ -103,7 +103,7 @@ class Board
       x = current_location[0] + move[0]
       y = current_location[1] + move[1]
       next if out_of_bounds?([x,y])
-      if free_space?(piece, x, y)
+      if free_space?(x, y)
         valid_moves << [x,y] #fix
         vector_array = check_direction(piece, x, y, move[0], move[1])
         vector_array.each { |coord| valid_moves << coord } unless piece.multiple_moves == false || vector_array == []
@@ -140,7 +140,7 @@ class Board
       return array_direction
     elsif friendly_fire?(piece, x + add_x, y + add_y) #&& piece.name != 'knight'
       return array_direction
-    elsif free_space?(piece, x + add_x, y + add_y)
+    elsif free_space?(x + add_x, y + add_y)
       array_direction << [x + add_x, y + add_y]
       check_direction(piece, x + add_x, y + add_y, add_x, add_y, array_direction )
     else
@@ -182,8 +182,7 @@ class Board
         king_moves_into_check?(player, king_move, king_x, king_y)
         #if king captures a location, if he is then in check
         end
-
-        # @checkmate = true
+     true if @checkmate == true
 
   end
 
@@ -315,7 +314,7 @@ class King < Piece
     @color = color
     @color =="white" ? @icon = "♚" : @icon = '♔'
     @multiple_moves = false
-    @moves = [[0, 1],[0, -1],[1,0],[-1,0],[1,1],[-1,1],[1,-1],[-1,-1]]
+    @moves =  [[0, 1],[0, -1],[1,0],[-1,0],[1,1],[-1,1],[1,-1],[-1,-1]]
     @name = "king"
   end
 end
@@ -327,7 +326,7 @@ class Queen < Piece
     @location = location
     @color = color
     @color == "white" ? @icon = "♛" : @icon = '♕'
-    @moves = [[1, 0], [1,1], [1, -1], [0, -1], [0, 1], [-1, 0], [-1, 1], [-1, -1]]
+    @moves = [[0, 1],[0, -1],[1,0],[-1,0],[1,1],[-1,1],[1,-1],[-1,-1]]
     @name = "queen"
   end
 end
@@ -375,8 +374,7 @@ b = Board.new
 # p b.board[1][1]
 
 b = Board.new
-b.all_pieces_same_color("white")
- b.board
+
  board2 = Board.new
  test_board = board2.board
   test_board.each_with_index.map do |row, row_index|
@@ -390,6 +388,7 @@ b.all_pieces_same_color("white")
     test_board[0][2] = Rook.new([0,2], "black")
     # test_board[1][1] = Bishop.new([1,1], "black")
     p "king"
+    p test_board[0][0]
     p board2.valid_move(test_board[0][0])
     p "rook"
     p board2.valid_move(test_board[0][2])
