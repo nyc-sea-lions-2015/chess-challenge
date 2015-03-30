@@ -163,8 +163,8 @@ class Board
         x = move[0]
         y = move[1]
         all_possible_team_moves << move
-        next if @board[x][y] == nil
-        if @board[x][y].name == "king" #if one of your valid moves equals the king
+        next if board_state[x][y] == nil
+        if board_state[x][y].name == "king" #if one of your valid moves equals the king
           king_location = [x,y] # location, the king is in check
           result = true
           checkmate?(player, all_possible_team_moves, king_location)
@@ -183,18 +183,15 @@ class Board
         king_moves_into_check?(player, king_move, king_x, king_y)
         #if king captures a location, if he is then in check
         end
-     # true if @checkmate == true
 
   end
 
   def king_moves_into_check?(player, king_move, king_x, king_y)
      king = @board[king_x][king_y]
       return if king == nil
-     check_board = self.move(king, king_move)
-    #  if check?(player, check_board)
-    #   p "king moves into check"
-    #   true
-    # end
+     self.move(king, king_move)
+     check?(player, board)
+
   end
 
   def all_pieces_same_color(player)
@@ -389,7 +386,7 @@ b.all_pieces_same_color("white")
     test_board[0][0] = King.new([0,0])
     test_board[0][1] = Queen.new([0,1], "black")
     test_board[0][2] = Rook.new([0,2], "black")
-    # test_board[1][1] = Bishop.new([1,1], "black")
+    test_board[1][1] = Bishop.new([1,1], "black")
     p "king"
     p board2.valid_move(test_board[0][0])
     p "rook"
