@@ -23,12 +23,8 @@ class Board
     @display_board = ""
     @board_values = { "a1"=> [0,0], "b1"=> [0,1], "c1"=> [0,2], "d1" => [0,3], "e1" => [0,4], "f1" => [0,5], "g1" => [0,6], "h1" => [0,7], "a2" => [1,0], "b2" => [1,1], "c2" => [1,2], "d2" => [1,3], "e2" => [1,4], "f2" => [1,5], "g2" => [1,6], "h2" => [1,7], "a3" => [2,0], "b3" => [2,1], "c3" => [2,2], "d3" => [2,3], "e3" => [2,4], "f3" => [2,5], "g3" => [2,6], "h3" => [2,7], "a4" => [3,0], "b4" => [3,1], "c4" => [3,2], "d4" => [3,3], "e4" => [3,4], "f4" => [3,5], "g4" => [3,6], "h4" => [3,7], "a5" => [4,0], "b5" => [4,1], "c5" => [4,2], "d5" => [4,3], "e5" => [4,4], "f5" => [4,5], "g5" => [4,6], "h5" => [4,7], "a6" => [5,0], "b6" => [5,1], "c6" => [5,2], "d6" => [5,3], "e6" => [5,4], "f6" => [5,5], "g6" => [5,6], "h6" => [5,7], "a7" => [6,0], "b7" => [6,1], "c7" => [6,2], "d7" => [6,3], "e7" => [6,4], "f7" => [6,5], "g7" => [6,6], "h7" => [6,7], "a8" => [7,0], "b8" => [7,1], "c8" => [7,2], "d8" => [7,3], "e8" => [7,4], "f8" => [7,5], "g8" => [7,6], "h8" => [7,7] }
     @captured = []
-
-
     @game_over = false
     @empty_square_mark = "."
-
-
   end
 
   def display
@@ -93,7 +89,6 @@ class Board
     @captured << square(location[0], location[1])
     @board[location[0]][location[1]] = nil
     @game_over = true if king_taken?
-
   end
 
   def valid_move(piece)
@@ -156,7 +151,7 @@ class Board
 
   def check?(player, board_state=board) #does player color put the other teams king in check?
     result = false
-  team = all_pieces_same_color(player)# all of one player's pieces on board
+    team = all_pieces_same_color(player)# all of one player's pieces on board
     all_possible_team_moves = [] # all the potential moves by all the player's pieces
     team.each do |piece|
       valid_move(piece).each do |move|
@@ -179,18 +174,17 @@ class Board
     king_x = king_location[0]
     king_y = king_location[1]
     @checkmate = valid_move(@board[king_x][king_y]).all? do |king_move|
-        all_possible_team_moves.include?(king_move) || #if the king is in check, and your valid moves also cover its valid moves
+      all_possible_team_moves.include?(king_move) || #if the king is in check, and your valid moves also cover its valid moves
         king_moves_into_check?(player, king_move, king_x, king_y)
-        #if king captures a location, if he is then in check
-        end
-     # true if @checkmate == true
-
+      #if king captures a location, if he is then in check
+    end
+    # true if @checkmate == true
   end
 
   def king_moves_into_check?(player, king_move, king_x, king_y)
-     king = @board[king_x][king_y]
-      return if king == nil
-     check_board = self.move(king, king_move)
+    king = @board[king_x][king_y]
+    return if king == nil
+    check_board = self.move(king, king_move)
     #  if check?(player, check_board)
     #   p "king moves into check"
     #   true
@@ -378,26 +372,25 @@ b = Board.new
 
 b = Board.new
 b.all_pieces_same_color("white")
- b.board
- board2 = Board.new
- test_board = board2.board
-  test_board.each_with_index.map do |row, row_index|
-      row.each_with_index.map do |col, col_index|
-        test_board[row_index][col_index] = nil
-      end
-    end
-    test_board[0][0] = King.new([0,0])
-    test_board[0][1] = Queen.new([0,1], "black")
-    test_board[0][2] = Rook.new([0,2], "black")
-    # test_board[1][1] = Bishop.new([1,1], "black")
-    p "king"
-    p board2.valid_move(test_board[0][0])
-    p "rook"
-    p board2.valid_move(test_board[0][2])
-    p "queen"
-    p board2.valid_move(test_board[0][1])
+b.board
+board2 = Board.new
+test_board = board2.board
+test_board.each_with_index.map do |row, row_index|
+  row.each_with_index.map do |col, col_index|
+    test_board[row_index][col_index] = nil
+  end
+end
+test_board[0][0] = King.new([0,0])
+test_board[0][1] = Queen.new([0,1], "black")
+test_board[0][2] = Rook.new([0,2], "black")
+# test_board[1][1] = Bishop.new([1,1], "black")
+p "king"
+p board2.valid_move(test_board[0][0])
+p "rook"
+p board2.valid_move(test_board[0][2])
+p "queen"
+p board2.valid_move(test_board[0][1])
 
-    # p board2.board
+# p board2.board
 p board2.check?("black")
 p board2.checkmate
-

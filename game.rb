@@ -1,19 +1,10 @@
-
 # STRETCH: allow for undo
-
-
 # TODO: refactor turn logic. maybe use "retry?"
-
-
 # Stretch: allow for forfeit/end game if user types "forfeit"/"quit"
 # SHINY: show taken pieces along right side
 # SHINY: clear input after bad input
-
-
 # if user.input == "Quit"
 # abort("Quitting Game")
-
-
 # require "byebug"
 require_relative "Board.rb"
 
@@ -29,13 +20,12 @@ class Game
   def play
     while game_over? == false
       players.each do |player|
-
-
         clear_and_display
         turn(player)
       end
     end
   end
+
 
   private
 
@@ -115,7 +105,7 @@ class Game
 
   # checks for king taken, stalemate, or checkmate
   def game_over?
-    @board.game_over
+    @board.checkmate
     # (king_taken? || stalemate? || checkmate?)
   end
 
