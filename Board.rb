@@ -1,3 +1,5 @@
+
+
 # TODO: refactor
 # TODO: group into public/private methods
 
@@ -5,10 +7,13 @@
 # if any array is less than 8 values, fill it with nils after you initialize.
 
 
+
 # require "byebug"
 
 class Board
-  attr_accessor :board, :board_values, :game_over
+
+
+  attr_accessor :board, :board_values, :game_over, :checkmate
   attr_reader :captured
   def initialize
     @checkmate = false
@@ -40,15 +45,16 @@ class Board
       row_num -= 1
     end
     @board_string += "     " +  @col_letters.join("    ")
+
   end
 
   def move(piece,new_pos)
+    p new_pos
     old_pos = piece.location
     @board[new_pos[0]][new_pos[1]] = piece
     @board[old_pos[0]][old_pos[1]] = nil
     piece.set_location(new_pos)
   end
-
 
 
   def free_space?(piece, check_row, check_col)
@@ -60,12 +66,13 @@ class Board
   end
 
   def friendly_fire?(piece, check_row, check_col)
-    return false if free_space?(piece, check_row, check_col)
+    return false if free_space?(piece,check_row, check_col)
     square(check_row, check_col).color == piece.color
   end
 
   def piece_captured?(piece, location)
     (@board[location[0]][location[1]] != nil)
+
   end
 
   def capture_piece(location)
@@ -98,7 +105,7 @@ class Board
         vector_array.each { |coord| valid_moves << coord } unless piece.multiple_moves == false || vector_array == []
         # valid_moves << vector_array
       elsif (@board[x][y]).color != piece.color
-        valid_moves << move
+        valid_moves << [x,y]
       else
         next
       end
@@ -129,7 +136,7 @@ class Board
       return array_direction
     elsif friendly_fire?(piece, x + add_x, y + add_y) #&& piece.name != 'knight'
       return array_direction
-    elsif free_space?(piece, x + add_x, y + add_y)
+    elsif free_space?(piece,x + add_x, y + add_y)
       array_direction << [x + add_x, y + add_y]
       check_direction(piece, x + add_x, y + add_y, add_x, add_y, array_direction )
     else
@@ -138,39 +145,50 @@ class Board
     array_direction
   end
 
-  def square(x,y)
-    @board[x][y]
+  def find_piece(location)
+    piece = square(location[0], location[1])
   end
 
-  def check?(player) #does player color put the other teams king in check?
+  def check?(player, board_state=board) #does player color put the other teams king in check?
     result = false
-    team = all_pieces_same_color(player) # all of one player's pieces on board
+    team = all_pieces_same_color(player)# all of one player's pieces on board
     all_possible_team_moves = [] # all the potential moves by all the player's pieces
     team.each do |piece|
       valid_move(piece).each do |move|
         x = move[0]
         y = move[1]
+        all_possible_team_moves << move
         next if @board[x][y] == nil
         if @board[x][y].name == "king" #if one of your valid moves equals the king
           king_location = [x,y] # location, the king is in check
           result = true
+          checkmate?(player, all_possible_team_moves, king_location)
         end
-        all_possible_team_moves << move
+
       end
     end
-    checkmate?(all_possible_team_moves, king_location) if result == true
     result
   end
 
-  def checkmate?(all_possible_team_moves, king_location)
+  def checkmate?(player, all_possible_team_moves, king_location)
     king_x = king_location[0]
     king_y = king_location[1]
-    team_moves.each do |move| #if the king is in check, and your valid moves also
-      valid_move(@board[king_x][king_y]) do |king_move| # cover its valid moves, it is checkmate
-        move == king_move ? (self.checkmate = true) : (self.checkmate = false)
-      end
+    @checkmate = valid_move(@board[king_x][king_y]).all? do |king_move|
+      all_possible_team_moves.include?(king_move) || #if the king is in check, and your valid moves also cover its valid moves
+        king_moves_into_check?(player, king_move, king_x, king_y)
+      #if king captures a location, if he is then in check
     end
-    @checkmate
+    # true if @checkmate == true
+  end
+
+  def king_moves_into_check?(player, king_move, king_x, king_y)
+    king = @board[king_x][king_y]
+    return if king == nil
+    check_board = self.move(king, king_move)
+    #  if check?(player, check_board)
+    #   p "king moves into check"
+    #   true
+    # end
   end
 
   def all_pieces_same_color(player)
@@ -183,6 +201,13 @@ class Board
     end
     team
   end
+
+
+
+  def square(x,y)
+    @board[x][y]
+  end
+
 
 end
 
@@ -208,7 +233,7 @@ end
 
 class Pawn < Piece
   attr_reader :color
-  attr_accessor :multiple_moves, :location #:first_move?, :capturing?
+  attr_accessor :multiple_moves
   #logic for capturing?
   def initialize(location, color = "white")
     @location = location
@@ -246,16 +271,16 @@ class Pawn < Piece
     y = location[1]
     array = []
     if board[x + 1][y + 1] != nil && board[x + 1][y + 1].color != self.color && color == "white"
-      array << [x+1, y+1]
+      array << [1, 1]
     end
     if board[x+1][y-1] != nil && (board[x+1][y-1]).color != self.color && color == "white"
-      array << [x+1, y-1]
+      array << [1, -1]
     end
-    if board[x-1][y-1] != nil && board[x-1][y-1].color != self.color && color == "black"
-      array << [x-1, y-1]
+    if board[x-1][y-1] != nil && board[x-1][y-1].color != color && color == "black"
+      array << [-1, -1]
     end
     if board[x-1][y+1] != nil && board[x-1][y+1].color != self.color && color == "black"
-      array << [x-1, y+1]
+      array << [-1, +1]
     end
     array
   end
@@ -284,7 +309,7 @@ class King < Piece
     @color = color
     @color =="white" ? @icon = "♚" : @icon = '♔'
     @multiple_moves = false
-    @moves = [[0, 1],[0, -1],[1,0],[-1,0],[1,1],[-1,1],[1,-1],[-1,-1]]
+    @moves =  [[0, 1],[0, -1],[1,0],[-1,0],[1,1],[-1,1],[1,-1],[-1,-1]]
     @name = "king"
   end
 end
@@ -296,7 +321,7 @@ class Queen < Piece
     @location = location
     @color = color
     @color == "white" ? @icon = "♛" : @icon = '♕'
-    @moves = [[1, 0], [1,1], [1, -1], [0, -1], [0, 1], [-1, 0], [-1, 1], [-1, -1]]
+    @moves = [[0, 1],[0, -1],[1,0],[-1,0],[1,1],[-1,1],[1,-1],[-1,-1]]
     @name = "queen"
   end
 end
@@ -325,3 +350,47 @@ class Knight < Piece
     @name = "knight"
   end
 end
+
+
+
+b = Board.new
+
+# p b.board
+
+
+# b.move([1,3], [3,3])
+# b.move([1,4], [3,4])
+# b.move([1,5], [3,5])
+# b.move([6,1], [5,1])
+# # p b.board[3][4]
+# # p b.valid_move(b.board[3][4])
+# p b.valid_move(b.board[5][1])
+# #puts b.display
+# p b.board[1][1]
+
+b = Board.new
+
+b = Board.new
+b.all_pieces_same_color("white")
+b.board
+board2 = Board.new
+test_board = board2.board
+test_board.each_with_index.map do |row, row_index|
+  row.each_with_index.map do |col, col_index|
+    test_board[row_index][col_index] = nil
+  end
+end
+test_board[0][0] = King.new([0,0])
+test_board[0][1] = Queen.new([0,1], "black")
+test_board[0][2] = Rook.new([0,2], "black")
+# test_board[1][1] = Bishop.new([1,1], "black")
+p "king"
+p board2.valid_move(test_board[0][0])
+p "rook"
+p board2.valid_move(test_board[0][2])
+p "queen"
+p board2.valid_move(test_board[0][1])
+
+# p board2.board
+p board2.check?("black")
+p board2.checkmate
