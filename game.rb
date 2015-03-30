@@ -5,7 +5,7 @@
 # SHINY: clear input after bad input
 # if user.input == "Quit"
 # abort("Quitting Game")
-# require "byebug"
+require "byebug"
 require_relative "Board.rb"
 
 class Game
@@ -78,7 +78,7 @@ class Game
   # Is the user picking a square on the board occupied by their piece?
   def valid_pick?(user_input, player)
     coord = string_to_coord(user_input)
-    return false if coord == nil
+    return false if (coord == nil || @board.board[coord[0]][coord[1]] == nil)
     return true if (@board.board_values.has_key?(user_input) && @board.board[coord[0]][coord[1]].color == player)
   end
 
