@@ -1,16 +1,9 @@
 
-<<<<<<< HEAD
-
-# TODO: fix valid moves formatting
-# TODO: Only allow user to pick move from valid move array, not any square.
-# TODO: critical: fix turn method when empty square is called
-=======
 # STRETCH: allow for undo
 # Stretch: allow for forfeit/end game if user types "forfeit"/"quit"
 # TODO: refactor turn logic.
 # SHINY: show taken pieces along right side
 # SHINY: clear screen after bad input
->>>>>>> chupa_master
 
 
 # if user.input == "Quit"
@@ -32,14 +25,9 @@ class Game
   def play
     while game_over? == false
       players.each do |player|
-<<<<<<< HEAD
-        # clear screen
-        puts display_board
-=======
+
 
         clear_and_display
-
->>>>>>> chupa_master
         turn(player)
       end
     end
@@ -51,50 +39,6 @@ class Game
   def turn(player)
     # "white/black's turn"
     @view.turn_message(player)
-<<<<<<< HEAD
-    # white, move which piece?
-    @view.choose_piece(player)
-    # is user input valid?
-    if valid_pick?(@view.choice)
-      #
-      location = input_to_coord(@view.choice)
-      # choose piece
-      piece = @board.find_piece(location)
-      # find valid moves
-      # might be missing an input here?
-      moves = @board.valid_move(piece)
-      moves_string = moves.map {|move| coord_to_string(move)} #converts coordinates to letter_num
-      # display valid moves and ask player for choice
-      @view.display_valid_moves(player, piece.name, moves_string)
-      # player picks a move
-      move_choice = input_to_coord(@view.pick_move(player, @view.choice))
-
-
-
-      # if invalid_move_choice(move_choice)
-      #   @view.pick_again(player)
-
-
-      # else
-      # end
-
-      # check for bad user input/a pick that isn't in the moves array.
-      # valid_move_choice?(moves, move_choice)
-      # if it was a capture, remove captured piece and display capture message, else move onto next turn.
-      if @board.piece_captured?(piece, move_choice)
-
-        @board.capture_piece(move_choice)
-        # @view.display_capture_move(player, player, piece, captured_piece, choice, move_move)
-        @board.move(piece, move_choice)
-      else
-        @board.move(piece, move_choice)
-        # end turn
-      end
-    else
-      @view.pick_again(player)
-      location = input_to_coord(@view.choice)
-      piece = @board.find_piece(location)
-=======
 
     begin #if a piece is blocked, ask player for input again
       begin #keeps asking a player which piece they want to move until they choose a piece they control
@@ -118,39 +62,9 @@ class Game
       sleep(1.1)
     else
       @board.move(piece, string_to_coord(player_choice))
->>>>>>> chupa_master
     end
   end
 
-<<<<<<< HEAD
-  def invalid_move_choice(move_choice, moves)
-    moves.include?(input_to_coord(move_choice))
-  end
-
-  def valid_pick?(user_input)
-    @board.board_values.has_key?(user_input)
-  end
-
-  def input_to_coord(user_input)
-    @board.board_values[user_input]
-  end
-
-  def coord_to_string(output)
-    col_letter = (output[1] + 97).chr
-    row_number = (output[0]+1).to_s
-    string = col_letter + row_number
-    string
-
-  end
-
-  # def valid_move_choice?(moves, input)
-  #   moves.include?(input)
-  # end
-
-  # TODO: reconcile this with move method in board!
-  # Currently not inputing old_pos anywhere.
-  # maybe use "choice?
-=======
   def capture_piece
     # refactor capture piece, display message, and move into here.
   end
@@ -183,18 +97,10 @@ class Game
     return moves
   end
 
->>>>>>> chupa_master
   def move_piece(new_pos,piece)
     @board.move(new_pos,piece)
   end
 
-<<<<<<< HEAD
-  def display_board
-    @board.format
-  end
-
-=======
->>>>>>> chupa_master
   # checks for king taken, stalemate, or checkmate
   def game_over?
     @board.game_over
@@ -288,12 +194,9 @@ class View
   end
 
   def piece_chosen_message(player, piece, moves)
-<<<<<<< HEAD
-    "moves for #{player}'s #{piece}" +": " + moves.join(" ")
-=======
+
     "#{@whitespace}moves for #{player}'s #{piece}" +": " + moves.join(", ")
 
->>>>>>> chupa_master
   end
   # move gets sent to board
   def player_move_message(player, piece, move)
