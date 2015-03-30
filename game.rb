@@ -3,7 +3,6 @@
 
 # TODO: refactor turn logic. maybe use "retry?"
 
-
 # Stretch: allow for forfeit/end game if user types "forfeit"/"quit"
 # SHINY: show taken pieces along right side
 # SHINY: clear input after bad input
@@ -23,7 +22,6 @@ class Game
     @players = ["white", "black"]
   end
 
-
   def play
     while game_over? == false
       players.each do |player|
@@ -40,7 +38,6 @@ class Game
     # "white/black's turn"
     @view.turn_message(player)
     begin #if a piece is blocked, ask player for input again
-
       # need to go back to here if @view.pick_move == "undo"
 
       begin #keeps asking a player which piece they want to move until they choose a piece they control
@@ -83,8 +80,11 @@ class Game
   # Is the user picking a square on the board occupied by their piece?
   def valid_pick?(user_input, player)
     coord = string_to_coord(user_input)
-    return false if coord == nil
-    return true if (@board.board_values.has_key?(user_input) && @board.board[coord[0]][coord[1]].color == player)
+    if @board.board[coord[0]][coord[1]] == nil
+      return false
+    else
+      return true if (@board.board_values.has_key?(user_input) && @board.board[coord[0]][coord[1]].color == player)
+    end
   end
 
   # does that piece have any moves?
